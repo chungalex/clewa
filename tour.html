@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/tour.html" />
+<meta name="description" content="Try the backward planner, FX lock, safe-to-pay gate, BOM auto-deduction, and live translation — the invisible machinery of Clewa, working in your browser." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clewa — Interactive tour" />
+<meta property="og:description" content="Try the backward planner, FX lock, safe-to-pay gate, BOM auto-deduction, and live translation — the invisible machinery of Clewa, working in your browser." />
+<title>Clewa — See it work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --red:#9c3b2f;--red-bg:#f6ece9;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.num{font-variant-numeric:tabular-nums;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.ey.od{color:var(--on-dark-2);}
+
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;font-family:inherit;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;transform:translateY(-1px);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+@media(max-width:860px){.nav-links{display:none;}}
+
+/* hero */
+.hero{padding:clamp(56px,9vh,104px) 0 clamp(40px,6vh,64px);text-align:center;}
+.hero h1{font-family:var(--serif);font-weight:300;font-size:clamp(38px,6.4vw,80px);line-height:1.05;letter-spacing:-0.03em;max-width:20ch;margin:24px auto 0;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:clamp(17px,2vw,21px);color:var(--ink-2);line-height:1.55;max-width:40em;margin:32px auto 0;}
+.hero-cta{display:flex;gap:13px;justify-content:center;margin-top:32px;flex-wrap:wrap;}
+.hero-scope{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+.chip{font-size:13px;color:var(--ink-2);border:1px solid var(--hair-2);border-radius:999px;padding:8px 15px;background:var(--paper);}
+.chip b{color:var(--ink);font-weight:600;}
+
+/* section */
+.sec{padding:clamp(56px,9vh,104px) 0;border-top:1px solid var(--hair);}
+.sec.dark{background:var(--dark);color:var(--on-dark);border-top:0;}
+.sec-head{max-width:680px;}
+.sec-head.ctr{margin:0 auto;text-align:center;}
+.sec-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(28px,4.2vw,48px);line-height:1.06;letter-spacing:-0.02em;margin-top:18px;}
+.sec-head h2 em{font-style:italic;color:var(--gold);}
+.sec.dark .sec-head h2{color:var(--on-dark);}
+.sec-head p{font-size:17px;color:var(--ink-2);margin-top:18px;line-height:1.6;}
+.sec.dark .sec-head p{color:var(--on-dark-2);}
+.demo-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(154,123,34,0.25);border-radius:999px;padding:6px 13px;margin-bottom:6px;}
+.demo-tag .dd{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:bp 2s infinite;}
+@keyframes bp{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* generic demo frame */
+.frame{margin-top:44px;border:1px solid var(--hair);border-radius:18px;overflow:hidden;background:var(--paper);box-shadow:0 40px 90px -55px rgba(20,19,17,0.4);}
+.frame-bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--hair);background:var(--paper-2);}
+.frame-dot{width:10px;height:10px;border-radius:50%;background:var(--hair-2);}
+.frame-ttl{margin-left:8px;font-size:12px;color:var(--ink-3);}
+.frame-live{margin-left:auto;font-size:11px;color:var(--sage);display:flex;align-items:center;gap:6px;}
+.frame-live .ld{width:7px;height:7px;border-radius:50%;background:var(--sage);}
+
+/* ===== backward planner demo ===== */
+.bp{padding:clamp(22px,3vw,34px);}
+.bp-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:30px;}
+.bp-controls .lbl{font-size:13px;color:var(--ink-3);}
+.bp-pre{display:flex;gap:7px;flex-wrap:wrap;}
+.bp-pre button{font-family:inherit;font-size:13px;color:var(--ink-2);background:var(--paper);border:1px solid var(--hair-2);border-radius:999px;padding:8px 14px;cursor:pointer;transition:all .2s;}
+.bp-pre button:hover{border-color:var(--ink-3);}
+.bp-pre button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.bp-date{font-family:inherit;font-size:14px;color:var(--ink);border:1px solid var(--hair-2);border-radius:9px;padding:9px 12px;background:var(--paper);}
+.bp-date:focus{outline:none;border-color:var(--gold);}
+.bp-track{display:flex;align-items:stretch;min-width:680px;}
+.bp-scroll{overflow-x:auto;padding-bottom:8px;}
+.bp-node{flex:1;position:relative;padding:0 5px;text-align:center;}
+.bp-node::before{content:"";position:absolute;top:14px;left:0;right:0;height:2px;background:var(--hair-2);}
+.bp-node:first-child::before{left:50%;}.bp-node:last-child::before{right:50%;}
+.bp-dot{position:relative;z-index:1;width:30px;height:30px;border-radius:50%;background:var(--paper);border:2px solid var(--hair-2);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-3);transition:all .3s;}
+.bp-node.done .bp-dot{border-color:var(--sage-line);background:var(--sage-bg);color:var(--sage);}
+.bp-node.key .bp-dot{border-color:var(--gold);background:var(--gold);color:#fff;box-shadow:0 0 0 5px var(--gold-bg);}
+.bp-node.drop .bp-dot{border-color:var(--ink);background:var(--ink);color:#fff;}
+.bp-when{font-family:var(--serif);font-size:14px;margin-top:11px;letter-spacing:-0.01em;transition:all .3s;}
+.bp-what{font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.3;}
+.bp-node.key .bp-what{color:var(--gold);font-weight:600;}
+.bp-callout{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:28px;padding:16px 18px;border:1px solid var(--gold-2);background:var(--gold-bg);border-radius:12px;}
+.bp-callout .ci{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;flex-shrink:0;}
+.bp-callout .tx{font-size:13.5px;color:var(--ink-2);line-height:1.5;}
+.bp-callout .tx b{color:var(--ink);}
+.bp-callout .tx .s{color:var(--gold);font-weight:700;}
+
+/* ===== two-up demo layout ===== */
+.demo2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,5vw,72px);align-items:center;margin-top:44px;}
+.demo2.flip .d2-media{order:-1;}
+.d2 h3{font-family:var(--serif);font-weight:300;font-size:clamp(24px,3.2vw,36px);line-height:1.1;letter-spacing:-0.02em;margin-top:14px;}
+.d2 h3 em{font-style:italic;color:var(--gold);}
+.d2 p{font-size:15.5px;color:var(--ink-2);margin-top:14px;line-height:1.6;}
+.sec.dark .d2 h3{color:var(--on-dark);}.sec.dark .d2 p{color:var(--on-dark-2);}
+@media(max-width:840px){.demo2{grid-template-columns:1fr;gap:32px;}.demo2.flip .d2-media{order:0;}.bp-controls{gap:10px;}}
+
+/* fx demo */
+.fx{padding:24px;}
+.fx-slider{width:100%;margin:6px 0 4px;-webkit-appearance:none;appearance:none;height:5px;border-radius:999px;background:var(--paper-3);outline:none;}
+.fx-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.fx-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:3px solid #fff;}
+.fx-scaleL{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-bottom:18px;}
+.fx-rows{display:flex;flex-direction:column;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:11px;overflow:hidden;}
+.fx-r{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--paper);padding:14px 16px;}
+.fx-r .k{font-size:13px;color:var(--ink-2);}
+.fx-r .k b{display:block;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:2px;}
+.fx-r .v{font-family:var(--serif);font-size:19px;}
+.fx-r.lock{background:var(--sage-bg);}
+.fx-r.lock .v{color:var(--sage);}
+.fx-r.market .v{color:var(--red);}
+.fx-delta{margin-top:16px;font-size:13.5px;color:var(--ink-2);text-align:center;line-height:1.5;}
+.fx-delta b{font-family:var(--serif);}
+.fx-delta .save{color:var(--sage);font-weight:600;}
+
+/* safe-to-pay gate demo */
+.stp2{padding:24px;}
+.stp2-amt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--hair);}
+.stp2-amt .a{font-family:var(--serif);font-size:30px;letter-spacing:-0.01em;}
+.stp2-amt .to{font-size:12px;color:var(--ink-3);margin-top:2px;}
+.stp2-seal{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border-radius:999px;padding:7px 14px;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(154,123,34,0.3);transition:all .3s;white-space:nowrap;}
+.stp2.safe .stp2-seal{color:#fff;background:var(--sage);border-color:var(--sage);}
+.stp2-rows{display:flex;flex-direction:column;margin-top:6px;}
+.stp2-row{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:13px 2px;border:0;border-top:1px solid var(--hair);background:none;font-family:inherit;font-size:14px;color:var(--ink-2);text-align:left;cursor:pointer;transition:background .2s;width:100%;}
+.stp2-row:first-child{border-top:0;}
+.stp2-row:hover{background:var(--paper-2);}
+.stp2-row .c{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--hair-2);display:flex;align-items:center;justify-content:center;color:transparent;transition:all .25s;flex-shrink:0;}
+.stp2-row.done .c{background:var(--sage-bg);border:1px solid var(--sage-line);color:var(--sage);}
+.stp2-row .c svg{width:11px;height:11px;}
+.stp2-row .tx b{display:block;font-weight:400;font-size:11.5px;color:var(--ink-3);margin-top:1px;}
+.stp2-row .when{font-size:11px;color:var(--ink-3);font-style:italic;white-space:nowrap;}
+.stp2-row.done .when{color:var(--sage);}
+.stp2-gate{display:flex;gap:4px;margin-top:14px;}
+.stp2-gate i{height:5px;flex:1;border-radius:3px;background:var(--paper-3);transition:background .3s;}
+.stp2-gate i.on{background:var(--gold);}
+.stp2.safe .stp2-gate i.on{background:var(--sage);}
+.stp2-verdict{margin-top:14px;font-size:13.5px;color:var(--ink-2);line-height:1.55;border-top:1px solid var(--hair);padding-top:14px;min-height:58px;}
+.stp2-verdict b{color:var(--ink);font-weight:600;}
+.stp2.safe .stp2-verdict b{color:var(--sage);}
+
+/* bom demo */
+.bom{padding:24px;}
+.bom-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px;}
+.bom-top .u{font-family:var(--serif);font-size:24px;}
+.bom-top .u small{font-family:var(--sans);font-size:12px;color:var(--ink-3);}
+.bom-comp{display:flex;flex-direction:column;gap:11px;margin-top:20px;}
+.bc{display:grid;grid-template-columns:120px 1fr 86px;gap:12px;align-items:center;}
+.bc .nm{font-size:13px;color:var(--ink);}
+.bc .nm small{display:block;color:var(--ink-3);font-size:11px;}
+.bc-track{height:9px;border-radius:999px;background:var(--paper-3);overflow:hidden;}
+.bc-fill{height:100%;border-radius:999px;background:var(--gold);transition:width .25s,background .25s;}
+.bc-fill.low{background:var(--red);}
+.bc .rem{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-2);}
+.bc .rem.short{color:var(--red);font-weight:600;}
+.bom-alert{margin-top:18px;padding:14px 16px;border:1px solid var(--red);background:var(--red-bg);border-radius:11px;font-size:13px;color:var(--ink-2);line-height:1.5;display:none;}
+.bom-alert.show{display:block;}
+.bom-alert b{color:var(--red);}
+.bom-ok{margin-top:18px;padding:14px 16px;border:1px solid var(--sage-line);background:var(--sage-bg);border-radius:11px;font-size:13px;color:var(--ink-2);line-height:1.5;}
+.bom-ok.hide{display:none;}
+.bom-ok b{color:var(--sage);}
+
+/* translate demo */
+.tr{padding:24px;}
+.tr-in{display:flex;gap:10px;align-items:center;border:1px solid var(--hair-2);border-radius:11px;padding:7px 7px 7px 15px;}
+.tr-in input{flex:1;border:0;outline:none;font-family:inherit;font-size:14.5px;color:var(--ink);background:transparent;}
+.tr-send{width:38px;height:38px;border-radius:9px;border:0;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.tr-send svg{width:17px;height:17px;}
+.tr-out{margin-top:18px;border:1px solid var(--hair);border-radius:13px;overflow:hidden;}
+.tr-row{padding:13px 16px;font-size:13.5px;line-height:1.45;}
+.tr-row.them{background:var(--paper-2);border-bottom:1px solid var(--hair);}
+.tr-row .who{font-size:11px;color:var(--ink-3);margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+.tr-row .who .av{width:18px;height:18px;border-radius:50%;background:var(--gold);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.tr-row .who .av.you{background:var(--ink);}
+.tr-lang{margin-left:auto;color:var(--gold);}
+
+/* feature strip */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:44px;}
+.st{background:var(--paper);padding:22px;}
+.st .si{width:28px;height:28px;color:var(--gold);margin-bottom:12px;}
+.st h4{font-family:var(--serif);font-weight:400;font-size:16px;margin-bottom:6px;}
+.st p{font-size:12.5px;color:var(--ink-3);line-height:1.5;}
+@media(max-width:860px){.strip{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.strip{grid-template-columns:1fr;}}
+
+/* cta */
+.cta{text-align:center;background:var(--dark);color:var(--on-dark);border-top:0;}
+.cta h2{font-family:var(--serif);font-weight:300;font-size:clamp(32px,5vw,62px);line-height:1.0;letter-spacing:-0.03em;}
+.cta h2 em{font-style:italic;color:var(--gold-2);}
+.cta p{font-size:18px;color:var(--on-dark-2);max-width:34em;margin:20px auto 0;}
+.cta-b{display:flex;gap:13px;justify-content:center;margin-top:32px;flex-wrap:wrap;}
+.cta .btn{background:transparent;color:var(--on-dark);border-color:rgba(255,255,255,0.22);}
+.cta .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+.foot{background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;text-align:center;}
+.foot .brand{margin-bottom:10px;}
+.foot p{font-size:13px;color:var(--ink-3);}
+
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+
+/* go-live: mobile menu + shared footer */
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+.mnav a .ar{color:var(--gold);}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .signin,.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+.foot{text-align:left;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="#plan">Plan</a><a href="#money">Money</a><a href="#stock">Stock</a><a href="#talk">Talk</a>
+      <a href="features.html">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="security.html">Security & trust</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="app.html">Live demo</a>
+    <a href="start.html">Start free <span class="ar">→</span></a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="ey" style="justify-content:center;"><span class="d"></span>Production &amp; inventory, one system</div>
+    <h1>Run everything you <em>make</em> — in one place.</h1>
+    <p class="hero-sub">From the first tech pack to the reorder, Clewa manages your whole production operation and the inventory it runs on. Local atelier or factory overseas, your own maker or one we source — it's the calm system underneath all of it.</p>
+    <div class="hero-cta">
+      <a class="btn gold" href="app.html">Open the live demo <span class="ar">→</span></a>
+      <a class="btn" href="#plan">See it work below</a>
+    </div>
+    <div class="hero-scope">
+      <span class="chip"><b>Local</b> or overseas</span>
+      <span class="chip"><b>Your factory</b> or one we source</span>
+      <span class="chip">Make <b>+ inventory</b> + planning</span>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO 1: BACKWARD PLANNER -->
+<section class="sec" id="plan">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="demo-tag"><span class="dd"></span>Interactive · try it</span>
+      <h2>Pick your launch date. <em>Watch the whole plan build itself backward.</em></h2>
+      <p>The thing a spreadsheet can't do: enter the day you need product in hand, and Clewa works backward through every stage — sampling, production, QC, shipping — around your factory's holidays, and tells you the one date you must place the order. Change the date and the whole plan re-flows.</p>
+    </div>
+    <div class="frame rv">
+      <div class="frame-bar"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-ttl">Clewa · backward planner</span><span class="frame-live"><span class="ld"></span>live</span></div>
+      <div class="bp">
+        <div class="bp-controls">
+          <span class="lbl">Launch date</span>
+          <div class="bp-pre" id="bpPre">
+            <button data-d="2026-09-01" class="on">Sep 1</button>
+            <button data-d="2026-11-20">Nov 20</button>
+            <button data-d="2027-02-14">Feb 14</button>
+          </div>
+          <input class="bp-date" id="bpDate" type="date" value="2026-09-01" />
+          <span class="lbl" style="margin-left:auto;">Lead path: <b style="color:var(--ink);">~13 weeks</b></span>
+        </div>
+        <div class="bp-scroll">
+          <div class="bp-track" id="bpTrack">
+            <div class="bp-node done"><div class="bp-dot">1</div><div class="bp-when" data-wk="13">—</div><div class="bp-what">Tech pack locked</div></div>
+            <div class="bp-node done"><div class="bp-dot">2</div><div class="bp-when" data-wk="11">—</div><div class="bp-what">Quotes chosen</div></div>
+            <div class="bp-node key"><div class="bp-dot">3</div><div class="bp-when" data-wk="10">—</div><div class="bp-what">Place order</div></div>
+            <div class="bp-node"><div class="bp-dot">4</div><div class="bp-when" data-wk="8">—</div><div class="bp-what">Sampling &amp; fit</div></div>
+            <div class="bp-node"><div class="bp-dot">5</div><div class="bp-when" data-wk="5">—</div><div class="bp-what">Production</div></div>
+            <div class="bp-node"><div class="bp-dot">6</div><div class="bp-when" data-wk="2">—</div><div class="bp-what">QC</div></div>
+            <div class="bp-node"><div class="bp-dot">7</div><div class="bp-when" data-wk="1">—</div><div class="bp-what">Ship</div></div>
+            <div class="bp-node drop"><div class="bp-dot"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><div class="bp-when" data-wk="0">—</div><div class="bp-what">Launch</div></div>
+          </div>
+        </div>
+        <div class="bp-callout">
+          <span class="ci">C</span>
+          <span class="tx">To make this launch, <b>place your order by <span class="s" id="bpOrderby">—</span></b>. That's your date minus the full critical path — with the factory's closures already routed around. <span id="bpWarn"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO 2: FX LOCK -->
+<section class="sec dark" id="money">
+  <div class="wrap">
+    <div class="demo2 flip">
+      <div class="d2-media rv">
+        <div class="frame" style="box-shadow:none;border-color:var(--dark-2);background:var(--dark-2);">
+          <div class="frame-bar" style="background:#1d180f;border-color:var(--dark-2);"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-ttl" style="color:var(--on-dark-2);">Order #2491 · €15,360</span></div>
+          <div class="fx">
+            <div class="fx-scaleL"><span>Rate at order</span><span>Drag to see the market drift →</span></div>
+            <input class="fx-slider" id="fxSlider" type="range" min="-6" max="6" value="3" step="1" />
+            <div class="fx-scaleL"><span>€ weaker</span><span>€ stronger</span></div>
+            <div class="fx-rows" style="margin-top:18px;">
+              <div class="fx-r lock"><span class="k">Your cost — locked at PO<b>€/$ fixed at 1.085 when you signed</b></span><span class="v">$18,880</span></div>
+              <div class="fx-r market"><span class="k">If Clewa hadn't locked it<b id="fxRate">€/$ now 1.118</b></span><span class="v" id="fxMarket">$19,454</span></div>
+            </div>
+            <div class="fx-delta" id="fxDelta"></div>
+          </div>
+        </div>
+      </div>
+      <div class="d2 rv">
+        <span class="demo-tag"><span class="dd"></span>Interactive · drag it</span>
+        <h3>The exchange rate moved. <em>Your cost didn't.</em></h3>
+        <p>You quote in dollars; your factory thinks in euros, dong or lira. Between deposit and final payment, the rate drifts — and the invoice surprises you. Clewa locks the FX snapshot at PO, so your real cost in your currency stays fixed no matter what the market does. Drag the slider and watch the gap you'd have eaten.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO 2.5: SAFE TO PAY -->
+<section class="sec alt" id="pay">
+  <div class="wrap">
+    <div class="demo2">
+      <div class="d2 rv">
+        <span class="demo-tag"><span class="dd"></span>Interactive · click each check</span>
+        <h3>Your factory asks for the balance. <em>Clewa tells you if it's safe.</em></h3>
+        <p>The moment people get burned is the moment money moves before conditions are met. Clewa gates every payment behind the things you agreed — QC passed, invoice matching the record, packing confirmed — and holds a clear <b>don't-pay-yet</b> until each one is verified. Click the checks and watch the gate open.</p>
+        <p style="font-size:13.5px;color:var(--ink-3);">And when it opens, you pay your factory directly — your bank to theirs. Clewa never holds or moves your money.</p>
+      </div>
+      <div class="d2-media rv">
+        <div class="frame" style="margin-top:0;">
+          <div class="frame-bar"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-ttl">Balance payment · Wool Overcoat #2491</span></div>
+          <div class="stp2" id="stp2">
+            <div class="stp2-amt">
+              <div><span class="a num">$10,480</span><div class="to">to Atelier Norte · due on shipment</div></div>
+              <span class="stp2-seal" id="stpSeal">Holding · 1 of 3</span>
+            </div>
+            <div class="stp2-rows">
+              <button class="stp2-row done" type="button"><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="tx">Pre-shipment QC passed<b>AQL 2.5 — both sides inspected the same list</b></span><span class="when">verified Jun 28</span></button>
+              <button class="stp2-row" type="button"><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="tx">Invoice matches the record<b>$10,480 — exactly what was signed at PO</b></span><span class="when">tap to verify</span></button>
+              <button class="stp2-row" type="button"><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="tx">Packing list confirmed<b>320 units · 27 cartons · size curve intact</b></span><span class="when">tap to verify</span></button>
+            </div>
+            <div class="stp2-gate" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+            <div class="stp2-verdict" id="stpVerdict"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO 3: BOM AUTO-DEDUCT -->
+<section class="sec" id="stock">
+  <div class="wrap">
+    <div class="demo2">
+      <div class="d2 rv">
+        <span class="demo-tag"><span class="dd"></span>Interactive · slide it</span>
+        <h3>Make 320 coats and your buttons just <em>run out at 290.</em></h3>
+        <p>This is the inventory nobody tracks: the trims, labels and fabric a production order quietly consumes. Clewa links every order to its bill of materials and draws stock down as units are made — then flags the shortage <b>weeks before</b> the line stops. Slide through the run and watch it catch the gap.</p>
+      </div>
+      <div class="d2-media rv">
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-ttl">Wool Overcoat · 320 units</span></div>
+          <div class="bom">
+            <div class="bom-top"><span class="u num" id="bomUnits">0</span><span style="font-size:12px;color:var(--ink-3);">units produced</span></div>
+            <input class="fx-slider" id="bomSlider" type="range" min="0" max="320" value="0" step="10" />
+            <div class="bom-comp">
+              <div class="bc"><span class="nm">Boiled wool<small>1.9m / unit</small></span><div class="bc-track"><div class="bc-fill" data-per="1.9" data-stock="640"></div></div><span class="rem num" data-stock="640" data-per="1.9">640m</span></div>
+              <div class="bc"><span class="nm">Horn buttons<small>7 / unit · 220 stock</small></span><div class="bc-track"><div class="bc-fill" data-per="7" data-stock="2030"></div></div><span class="rem num" data-stock="2030" data-per="7">2030</span></div>
+              <div class="bc"><span class="nm">Care labels<small>1 / unit</small></span><div class="bc-track"><div class="bc-fill" data-per="1" data-stock="400"></div></div><span class="rem num" data-stock="400" data-per="1">400</span></div>
+            </div>
+            <div class="bom-ok" id="bomOk"><b>All components covered.</b> Slide through the production run — Clewa is drawing each one down live.</div>
+            <div class="bom-alert" id="bomAlert"><b>Horn buttons run short at unit 290.</b> 30 coats can't be finished. Clewa caught it now — order 200 more (3-week lead) and the line never stops.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO 4: TRANSLATION -->
+<section class="sec" id="talk">
+  <div class="wrap">
+    <div class="sec-head ctr rv">
+      <span class="demo-tag"><span class="dd"></span>Interactive · type something</span>
+      <h2>Type in your language. <em>They read it in theirs.</em></h2>
+      <p>Whether your maker is across town or across the world, the message lands in their language and their reply comes back in yours — kept on the order, not lost in a chat thread. Try it.</p>
+    </div>
+    <div class="frame rv" style="max-width:680px;margin-left:auto;margin-right:auto;">
+      <div class="frame-bar"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-ttl">Messages · Marco, Atelier Norte</span><span class="frame-live"><span class="ld" style="background:var(--gold);"></span>PT ⇄ EN</span></div>
+      <div class="tr">
+        <div class="tr-in">
+          <input id="trInput" type="text" placeholder="e.g. Can you confirm the wool is 340gsm?" />
+          <button class="tr-send" id="trSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+        </div>
+        <div class="tr-out" id="trOut">
+          <div class="tr-row them">
+            <div class="who"><span class="av">M</span>Marco · Atelier Norte<span class="tr-lang">translated from Portuguese</span></div>
+            Bom dia! Pronto para começar assim que aprovar a prova.
+            <div style="color:var(--ink-3);font-style:italic;margin-top:5px;">"Morning! Ready to start as soon as you approve the sample."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MORE INVISIBLE DETAILS -->
+<section class="sec dark">
+  <div class="wrap">
+    <div class="sec-head ctr rv">
+      <span class="ey od" style="justify-content:center;"><span class="d"></span>The details you'd never think to track</span>
+      <h2>It quietly handles the things that <em>burn people one at a time.</em></h2>
+    </div>
+    <div class="strip rv" style="background:var(--dark-2);border-color:var(--dark-2);">
+      <div class="st" style="background:#1d180f;color:var(--on-dark);"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div><h4 style="color:var(--on-dark);">Factory holidays</h4><p style="color:var(--on-dark-2);">Tet, Lunar New Year, the August break — built into your timeline before they blindside a drop.</p></div>
+      <div class="st" style="background:#1d180f;color:var(--on-dark);"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM9 9h6v6H9z"/></svg></div><h4 style="color:var(--on-dark);">Double-booked fabric</h4><p style="color:var(--on-dark-2);">Reserve a lot to one order and Clewa won't let you promise it to another. No silent shortage.</p></div>
+      <div class="st" style="background:#1d180f;color:var(--on-dark);"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></div><h4 style="color:var(--on-dark);">The size that sells out</h4><p style="color:var(--on-dark-2);">It learns you under-buy M by 8% and re-curves the reorder, so you stop selling out of your best size.</p></div>
+      <div class="st" style="background:#1d180f;color:var(--on-dark);"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg></div><h4 style="color:var(--on-dark);">Invoice ≠ the record</h4><p style="color:var(--on-dark-2);">The bill comes in €286 over what you agreed. Clewa flags it before you pay a cent.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:40px;"><a class="btn gold" href="app.html">See all of it in the live demo <span class="ar">→</span></a></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec cta">
+  <div class="wrap rv">
+    <h2>This is what running production <em>calmly</em> feels like.</h2>
+    <p>Local or overseas, first order or your fiftieth — bring your making into one system and watch the cracks close.</p>
+    <div class="cta-b">
+      <a class="btn gold" href="start.html">Start free — first order's on us <span class="ar">→</span></a>
+      <a class="btn" href="index.html">Read the full story</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* reveal */
+  function revealAll(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in');});}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+    setTimeout(revealAll,1200);
+  } else { revealAll(); }
+
+  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt(d){return MO[d.getMonth()]+' '+d.getDate();}
+
+  /* ===== backward planner ===== */
+  var track=document.getElementById('bpTrack'), dateIn=document.getElementById('bpDate');
+  function plan(str){
+    var L=new Date(str+'T00:00:00'); if(isNaN(L))return;
+    track.querySelectorAll('.bp-when').forEach(function(el){
+      var wk=parseInt(el.getAttribute('data-wk'),10)||0;
+      var d=new Date(L); d.setDate(d.getDate()-wk*7); el.textContent=fmt(d);
+    });
+    var key=track.querySelector('.bp-node.key .bp-when').textContent;
+    document.getElementById('bpOrderby').textContent=key;
+    /* warn if order-by is within ~2 weeks of today (demo: today = Aug 13 2026) */
+    var today=new Date('2026-08-13T00:00:00');
+    var L2=new Date(str+'T00:00:00'); var ob=new Date(L2); ob.setDate(ob.getDate()-10*7);
+    var days=Math.round((ob-today)/86400000);
+    var w=document.getElementById('bpWarn');
+    if(days<0){w.innerHTML=' <b style="color:var(--gold);">That date has already passed — not makeable on a 13-week path.</b>';}
+    else if(days<21){w.innerHTML=' <b style="color:var(--gold);">Only '+days+' days to place — move fast.</b>';}
+    else {w.innerHTML=' That leaves '+days+' days of runway before you need to commit.';}
+  }
+  document.getElementById('bpPre').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on'); dateIn.value=b.getAttribute('data-d'); plan(b.getAttribute('data-d'));
+  });
+  dateIn.addEventListener('change',function(){
+    document.querySelectorAll('#bpPre button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-d')===dateIn.value);});
+    plan(dateIn.value);
+  });
+  plan('2026-09-01');
+
+  /* ===== fx ===== */
+  var fx=document.getElementById('fxSlider'), base=15360, lockUSD=18880, lockRate=1.085;
+  function doFx(){
+    var drift=parseInt(fx.value,10); /* -6..6 => +/-3.3% */
+    var rate=lockRate*(1+drift*0.0055);
+    var mkt=Math.round(base*rate/1000*1000)/1+0; mkt=Math.round(base*rate);
+    document.getElementById('fxRate').textContent='€/$ now '+rate.toFixed(3);
+    document.getElementById('fxMarket').textContent='$'+mkt.toLocaleString('en-US');
+    var diff=mkt-lockUSD;
+    var el=document.getElementById('fxDelta');
+    if(diff>0){el.innerHTML='The rate moved against you — that is <b>$'+diff.toLocaleString('en-US')+' more</b> you would have paid, <span class="save">saved entirely</span> because Clewa locked the rate at PO.';}
+    else if(diff<0){el.innerHTML='The rate moved your way this time — but it just as easily would not. <b>A locked rate means your margin is never a gamble.</b>';}
+    else {el.innerHTML='Right now they match — but rates rarely sit still between deposit and final payment.';}
+  }
+  fx.addEventListener('input',doFx); doFx();
+
+  /* ===== safe to pay ===== */
+  var stp=document.getElementById('stp2');
+  if(stp){
+    var stpRows=stp.querySelectorAll('.stp2-row');
+    var stpSeal=document.getElementById('stpSeal'), stpVerdict=document.getElementById('stpVerdict'), stpSegs=stp.querySelectorAll('.stp2-gate i');
+    function stpGate(){
+      var done=stp.querySelectorAll('.stp2-row.done').length;
+      stpSegs.forEach(function(s,i){s.classList.toggle('on',i<done);});
+      var all=done===stpRows.length;
+      stp.classList.toggle('safe',all);
+      if(all){
+        stpSeal.textContent='Safe to pay';
+        stpVerdict.innerHTML='<b>All conditions verified — safe to pay.</b> Wire Atelier Norte directly, your bank to theirs. Clewa never touches the money; it just made sure you weren\u2019t paying blind.';
+      } else {
+        stpSeal.textContent='Holding · '+done+' of '+stpRows.length;
+        var left=stpRows.length-done;
+        stpVerdict.innerHTML='<b>Don\u2019t send anything yet.</b> '+left+' condition'+(left>1?'s':'')+' still unverified — this is exactly the moment deposits get burned.';
+      }
+    }
+    stpRows.forEach(function(r){r.addEventListener('click',function(){
+      r.classList.toggle('done');
+      var w=r.querySelector('.when'); if(w){w.textContent=r.classList.contains('done')?'verified just now':'tap to verify';}
+      stpGate();
+    });});
+    stpGate();
+  }
+
+  /* ===== bom ===== */
+  var bs=document.getElementById('bomSlider');
+  function doBom(){
+    var u=parseInt(bs.value,10); document.getElementById('bomUnits').textContent=u;
+    var short=false;
+    document.querySelectorAll('.bom .bc').forEach(function(bc){
+      var fill=bc.querySelector('.bc-fill'), rem=bc.querySelector('.rem');
+      var per=parseFloat(fill.getAttribute('data-per')), stock=parseFloat(fill.getAttribute('data-stock'));
+      var used=u*per, left=stock-used, pct=Math.max(0,Math.min(100,used/stock*100));
+      fill.style.width=pct+'%';
+      var isWool=per===1.9;
+      rem.textContent=(left<0?left:left)+(isWool?'m':'');
+      if(left<0){fill.classList.add('low');rem.classList.add('short');short=true;rem.textContent=left+(isWool?'m':'');}
+      else {fill.classList.remove('low');rem.classList.remove('short');}
+    });
+    document.getElementById('bomAlert').classList.toggle('show',short);
+    document.getElementById('bomOk').classList.toggle('hide',short);
+  }
+  bs.addEventListener('input',doBom); doBom();
+
+  /* ===== translate ===== */
+  var dict={'can you confirm the wool is 340gsm?':'Pode confirmar que a lã é 340gsm?','when will the sample ship?':'Quando é que a amostra é enviada?','please use the corozo buttons':'Por favor, use os botões de corozo','is the order on track for september?':'O pedido está dentro do prazo para setembro?'};
+  function translate(t){
+    var k=t.trim().toLowerCase();
+    var pt=dict[k]||('\u201c'+t+'\u201d \u2014 enviado em português');
+    var out=document.getElementById('trOut');
+    var div=document.createElement('div'); div.className='tr-row';
+    div.innerHTML='<div class="who"><span class="av you">M</span>You<span class="tr-lang">sent in Portuguese</span></div>'+pt;
+    out.appendChild(div); out.scrollTop=out.scrollHeight;
+  }
+  document.getElementById('trSend').addEventListener('click',function(){var i=document.getElementById('trInput');if(i.value.trim()){translate(i.value);i.value='';}});
+  document.getElementById('trInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&this.value.trim()){translate(this.value);this.value='';}});
+})();
+</script>
+<script>
+(function(){
+  var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');
+  if(!n||!b)return;
+  b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});
+  document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});
+})();
+</script>
+</body>
+</html>

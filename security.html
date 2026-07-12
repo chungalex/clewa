@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/security.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clewa — Security &amp; trust" />
+<meta property="og:description" content="Your money never touches us, everything lives on the record, and your data is yours. Five commitments, in plain language." />
+<title>Clewa — Security &amp; trust</title>
+<meta name="description" content="How Clewa earns the right to run your whole operation: your money never touches us, everything lives on the record, and your data is yours." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;transform:translateY(-1px);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.on{color:var(--ink);border-bottom:1px solid var(--gold);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+@media(max-width:900px){.nav-links{display:none;}}
+
+/* hero */
+.shero{padding:clamp(54px,8vh,92px) 0 clamp(40px,6vh,64px);text-align:center;}
+.shero h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.6vw,66px);line-height:1.04;letter-spacing:-0.03em;max-width:20ch;margin:22px auto 0;}
+.shero h1 em{font-style:italic;color:var(--gold);}
+.shero p{font-size:clamp(16px,1.9vw,20px);color:var(--ink-2);max-width:38em;margin:22px auto 0;line-height:1.55;}
+
+/* commitments */
+.comm{border-top:1px solid var(--hair);}
+.comm-row{display:grid;grid-template-columns:64px 320px 1fr;gap:clamp(20px,4vw,56px);padding:clamp(28px,4vh,44px) 0;border-bottom:1px solid var(--hair);align-items:start;}
+.comm-num{font-family:var(--serif);font-style:italic;font-size:clamp(28px,3vw,40px);color:var(--gold);line-height:1;font-weight:300;}
+.comm-row h2{font-family:var(--serif);font-weight:300;font-size:clamp(24px,2.8vw,34px);line-height:1.12;letter-spacing:-0.02em;}
+.comm-row h2 em{font-style:italic;color:var(--gold);}
+.comm-body p{font-size:15.5px;color:var(--ink-2);line-height:1.65;max-width:44em;}
+.comm-body p + p{margin-top:12px;}
+.comm-body .fine{font-size:13.5px;color:var(--ink-3);margin-top:14px;}
+@media(max-width:860px){.comm-row{grid-template-columns:44px 1fr;}.comm-body{grid-column:1 / -1;}}
+
+/* inline demo cards */
+.mini{margin-top:20px;border:1px solid var(--hair);border-radius:14px;background:var(--paper-2);padding:20px 22px;max-width:520px;}
+.mini .mh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+.mini .mh h4{font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-3);}
+.mini .tag{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border-radius:999px;padding:3px 10px;}
+.tag.hold{color:var(--gold);background:var(--gold-bg);border:1px solid rgba(154,123,34,0.25);}
+.tag.ok{color:var(--sage);background:var(--sage-bg);border:1px solid var(--sage-line);}
+.gate{list-style:none;display:flex;flex-direction:column;}
+.gate li{display:grid;grid-template-columns:20px 1fr auto;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--hair);font-size:14px;color:var(--ink-2);}
+.gate li:first-child{border-top:0;}
+.gate .c{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.gate .c.done{background:var(--sage-bg);border:1px solid var(--sage-line);color:var(--sage);}
+.gate .c.wait{background:var(--paper);border:1px solid var(--hair-2);color:var(--ink-3);}
+.gate .c svg{width:10px;height:10px;}
+.gate .who{font-size:12px;color:var(--ink-3);}
+.mini .mf{margin-top:14px;padding-top:14px;border-top:1px solid var(--hair);font-size:13.5px;color:var(--ink-2);}
+.mini .mf b{font-weight:600;}
+
+/* who sees what table */
+.wsw{margin-top:20px;border:1px solid var(--hair);border-radius:14px;overflow:hidden;max-width:640px;}
+.wsw-row{display:grid;grid-template-columns:1fr 120px 120px;border-top:1px solid var(--hair);background:var(--paper);}
+.wsw-row:first-child{border-top:0;background:var(--paper-2);}
+.wsw-row > div{padding:11px 16px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;}
+.wsw-row:first-child > div{font-size:11.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);}
+.wsw-row > div:nth-child(2),.wsw-row > div:nth-child(3){justify-content:center;}
+.pip{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.pip.y{background:var(--sage-bg);border:1px solid var(--sage-line);color:var(--sage);}
+.pip.n{background:var(--paper-2);border:1px solid var(--hair-2);color:var(--hair-2);}
+.pip svg{width:10px;height:10px;}
+@media(max-width:560px){.wsw-row{grid-template-columns:1fr 70px 70px;}}
+
+/* practices grid */
+.prax{padding:clamp(48px,7vh,80px) 0 0;}
+.prax-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--hair);padding-bottom:18px;}
+.prax-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em;}
+.prax-head .gd{font-size:14.5px;color:var(--ink-3);margin-left:auto;max-width:34em;}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px;}
+.pg{border:1px solid var(--hair);border-radius:14px;padding:22px;background:var(--paper);}
+.pg .si{width:28px;height:28px;color:var(--gold);margin-bottom:12px;}
+.pg .si svg{width:100%;height:100%;}
+.pg h4{font-family:var(--serif);font-weight:400;font-size:17px;letter-spacing:-0.01em;margin-bottom:6px;}
+.pg p{font-size:13px;color:var(--ink-3);line-height:1.5;}
+@media(max-width:860px){.pgrid{grid-template-columns:1fr 1fr;}.prax-head .gd{margin-left:0;}}
+@media(max-width:480px){.pgrid{grid-template-columns:1fr;}}
+
+/* straight answers */
+.qa{padding:clamp(48px,7vh,80px) 0 0;}
+.qa-list{margin-top:26px;border-top:1px solid var(--hair);}
+.qa-item{border-bottom:1px solid var(--hair);}
+.qa-item summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:20px 0;font-family:var(--serif);font-weight:400;font-size:clamp(17px,2vw,21px);letter-spacing:-0.01em;}
+.qa-item summary::-webkit-details-marker{display:none;}
+.qa-item summary .pl{font-family:var(--serif);font-style:italic;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.qa-item[open] summary .pl{transform:rotate(45deg);}
+.qa-item .qa-a{padding:0 0 22px;font-size:15px;color:var(--ink-2);line-height:1.65;max-width:46em;}
+
+/* cta */
+.cta{margin-top:clamp(56px,9vh,100px);text-align:center;background:var(--dark);color:var(--on-dark);padding:clamp(56px,9vh,96px) 0;}
+.cta h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.6vw,56px);line-height:1.02;letter-spacing:-0.03em;}
+.cta h2 em{font-style:italic;color:var(--gold-2);}
+.cta p{font-size:17px;color:var(--on-dark-2);max-width:34em;margin:18px auto 0;}
+.cta-b{display:flex;gap:13px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+.cta .btn{background:transparent;color:var(--on-dark);border-color:rgba(255,255,255,0.22);}
+.cta .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+.foot{background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;text-align:center;}
+.foot .brand{margin-bottom:10px;}
+.foot p{font-size:13px;color:var(--ink-3);}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+
+/* go-live: mobile menu + shared footer */
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+.mnav a .ar{color:var(--gold);}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .signin,.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+.foot{text-align:left;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="features.html">Features</a>
+      <a href="tour.html">Interactive tour</a>
+      <a class="on" href="security.html">Security &amp; trust</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="tour.html">Interactive tour</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="app.html">Live demo</a>
+    <a href="start.html">Start free <span class="ar">→</span></a>
+  </nav>
+</header>
+
+<section class="shero">
+  <div class="wrap">
+    <div class="ey" style="justify-content:center;"><span class="d"></span>Security &amp; trust</div>
+    <h1>You're trusting us with your whole operation. <em>Here's what we do to deserve it.</em></h1>
+    <p>Money, designs, agreements, factory relationships — everything that can go wrong in production goes through Clewa. So the trust model isn't fine print. It's the product. Five commitments, in plain language.</p>
+  </div>
+</section>
+
+<section class="comm">
+  <div class="wrap">
+
+    <div class="comm-row rv">
+      <div class="comm-num">01</div>
+      <h2>We never hold or move <em>your money.</em></h2>
+      <div class="comm-body">
+        <p>Clewa is not a payment processor, an escrow, or a wallet. Every payment goes from your bank to your factory's bank, directly — the same wire you'd send anyway. What Clewa adds is the moment before: the <b>safe-to-pay check</b>, which verifies that a milestone's agreed conditions are actually met before you send anything.</p>
+        <p>If the sample isn't approved, if QC hasn't passed, if the invoice doesn't match the record — Clewa tells you, before the money leaves.</p>
+        <div class="mini">
+          <div class="mh"><h4>Safe to pay · Balance $10,480</h4><span class="tag hold">Holding — 1 condition open</span></div>
+          <ul class="gate">
+            <li><span class="c done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Pre-shipment QC passed — AQL 2.5<span class="who">Jun 28</span></li>
+            <li><span class="c done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Invoice matches the record — $10,480<span class="who">Jul 1</span></li>
+            <li><span class="c wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8"/></svg></span>Packing list confirmed — 320 units<span class="who">waiting on factory</span></li>
+          </ul>
+          <div class="mf">When all three are green, Clewa marks it <b>safe to pay</b> — and you pay Atelier Norte directly.</div>
+        </div>
+        <p class="fine">We will never ask you to "release funds through Clewa." If anyone does, it isn't us.</p>
+      </div>
+    </div>
+
+    <div class="comm-row rv">
+      <div class="comm-num">02</div>
+      <h2>Everything lives <em>on the record.</em></h2>
+      <div class="comm-body">
+        <p>Every spec, price, and term you agree with a factory is locked into a versioned record, signed off by both sides with a date. Every change afterwards is a new version — nothing is edited in place, nothing quietly disappears.</p>
+        <p>So when the bulk arrives at 300gsm instead of the agreed 350, it isn't a he-said-she-said across a language barrier. It's a breach of the record, and you have the receipts.</p>
+      </div>
+    </div>
+
+    <div class="comm-row rv">
+      <div class="comm-num">03</div>
+      <h2>Nothing proceeds until <em>it's been read.</em></h2>
+      <div class="comm-body">
+        <p>Most production disasters aren't malice — they're a factory that skimmed. Clewa makes reading structural: your factory confirms each spec line individually, and unconfirmed lines block the next stage from starting. A read receipt on every line that matters.</p>
+      </div>
+    </div>
+
+    <div class="comm-row rv">
+      <div class="comm-num">04</div>
+      <h2>Your factory sees only <em>what you share.</em></h2>
+      <div class="comm-body">
+        <p>Factories join as guests, scoped to the orders you invite them into. They see the specs, the timeline, the messages — never your margins, your other factories, or your finances. A hard boundary, not a setting you can get wrong.</p>
+        <div class="wsw">
+          <div class="wsw-row"><div>On a shared order</div><div>You</div><div>Factory</div></div>
+          <div class="wsw-row"><div>Specs, timeline &amp; the record</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+          <div class="wsw-row"><div>Messages, translated both ways</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+          <div class="wsw-row"><div>Your margins &amp; retail pricing</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div></div>
+          <div class="wsw-row"><div>Your other factories &amp; quotes</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div></div>
+          <div class="wsw-row"><div>Season finances &amp; cashflow</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comm-row rv">
+      <div class="comm-num">05</div>
+      <h2>Your data <em>is yours.</em></h2>
+      <div class="comm-body">
+        <p>Every table in Clewa exports to Excel, on every page — orders, costs, inventory, contacts, the lot. If you ever leave, you take a complete, usable copy of your operation with you. We keep you by being useful, not by holding your data hostage.</p>
+        <p>Your designs, tech packs, and prices are confidential business data. We don't sell them, share them, or show them to anyone you haven't invited.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="prax">
+  <div class="wrap">
+    <div class="prax-head rv"><h2>The practical layer</h2><span class="gd">The unglamorous things that keep the commitments true, day to day.</span></div>
+    <div class="pgrid rv">
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h4>Encrypted, in transit and at rest</h4><p>Your files, messages, and records are encrypted on the wire and on disk — standard, serious infrastructure.</p></div>
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg></div><h4>Role-scoped access</h4><p>Owner, production, design, factory guest — each role sees its slice and nothing more. Access is granted per order, revocable any time.</p></div>
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h4>A dated trail of everything</h4><p>Sign-offs, changes, confirmations, and payments-marked-safe all carry a timestamp and a name. Nothing important is anonymous.</p></div>
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></div><h4>Export everywhere</h4><p>Excel export on every table. Full account export on request. Leaving is always an option — that's the point.</p></div>
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v5h5"/><path d="M12 7v5l3 3"/></svg></div><h4>Versioned, never overwritten</h4><p>Documents and records are versioned. An old tech pack, a superseded price, a changed date — all still there, all still dated.</p></div>
+      <div class="pg"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h4>Humans you can reach</h4><p>Security questions get answered by the people who built it — not a ticket queue. Ask us anything before you commit.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="qa">
+  <div class="wrap">
+    <div class="prax-head rv"><h2>Straight answers</h2><span class="gd">The questions careful founders ask before moving their operation in.</span></div>
+    <div class="qa-list rv">
+      <details class="qa-item">
+        <summary>If Clewa never holds money, how does it protect me from getting burned?<span class="pl">+</span></summary>
+        <div class="qa-a">By sequencing, not custody. Getting burned almost always means paying before conditions were met — a deposit before terms were locked, a balance before QC. Clewa gates each payment behind verifiable conditions (sample approved, QC passed, invoice matching the record) and tells you when it's safe. You stay in full control of your money; you just stop paying blind.</div>
+      </details>
+      <details class="qa-item">
+        <summary>Can my factory see my margins or my other suppliers?<span class="pl">+</span></summary>
+        <div class="qa-a">No. Factory guests are scoped to the orders you share, and the boundary is structural: costing, margins, finances, and your other factory relationships are never rendered in a factory-facing view. There is no toggle to get this wrong.</div>
+      </details>
+      <details class="qa-item">
+        <summary>What happens to my data if I cancel?<span class="pl">+</span></summary>
+        <div class="qa-a">You export everything — every order, record, cost sheet, and contact — in normal, usable formats (Excel, PDF). Then, on request, we delete your account data. No exit fee, no held-hostage archive.</div>
+      </details>
+      <details class="qa-item">
+        <summary>Is my tech pack safe? Designs are my whole business.<span class="pl">+</span></summary>
+        <div class="qa-a">Your designs are encrypted, access-controlled, and visible only to your team and the factory guests you explicitly invite, per order. We never use your designs or business data for anything except running your workspace — not for marketing, not for other customers, not for training anything.</div>
+      </details>
+      <details class="qa-item">
+        <summary>What does the AI see, and can I turn it off?<span class="pl">+</span></summary>
+        <div class="qa-a">The intelligence layer reads only your own workspace — your orders, dates, and records — to warn you about your own risks. It's a toggle: switch AI assist off and Clewa remains a complete system of record, no predictions, no suggestions.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap rv">
+    <h2>Trust is the product. <em>Test it.</em></h2>
+    <p>The fastest way to judge us is to click through the live demo and ask us the hard questions.</p>
+    <div class="cta-b">
+      <a class="btn gold" href="app.html">Open the live demo <span class="ar">→</span></a>
+      <a class="btn" href="pricing.html">See pricing</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function revealAll(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in');});}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+    setTimeout(revealAll,1200);
+  } else { revealAll(); }
+})();
+</script>
+<script>
+(function(){
+  var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');
+  if(!n||!b)return;
+  b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});
+  document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});
+})();
+</script>
+</body>
+</html>

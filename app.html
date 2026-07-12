@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clewa — App</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<link rel="stylesheet" href="app.css" />
+<link rel="stylesheet" href="app-v2.css" />
+<script>
+/* animation gate — content visible by default; animations only once a real
+   CSS transition is confirmed to interpolate in this environment */
+(function () {
+  function arm() { document.documentElement.classList.add('anim-ready'); }
+  try {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var p = document.createElement('div');
+    p.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;transition:opacity 240ms linear;pointer-events:none;';
+    document.documentElement.appendChild(p);
+    void p.offsetWidth;
+    p.style.opacity = '1';
+    var tries = 0;
+    (function probe() {
+      tries++;
+      var v = parseFloat(getComputedStyle(p).opacity);
+      if (v > 0.001 && v < 0.999) { arm(); p.remove(); return; }
+      if (tries < 8) { requestAnimationFrame(probe); }
+      else { try { p.remove(); } catch (e) {} }
+    })();
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="app">
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="side-brand"><a href="index.html" title="Back to clewa.com" style="color:inherit;text-decoration:none;">Cle<span class="seg">w</span>a</a></div>
+    <div class="side-new"><button type="button" data-go="po">+ New order</button></div>
+    <nav class="side-nav">
+      <div class="nav-core">
+      <div class="nav-i on" data-go="home"><span class="ni-dot"></span>Home</div>
+      <div class="nav-i" data-go="orders"><span class="ni-dot"></span>Orders<span class="ni-badge">3</span></div>
+      <div class="nav-i" data-go="calendar"><span class="ni-dot"></span>Calendar</div>
+      <div class="nav-i" data-go="messages"><span class="ni-dot"></span>Messages<span class="ni-badge">3</span></div>
+      <div class="nav-i" data-go="finances"><span class="ni-dot"></span>Finances</div>
+      </div>
+      <div class="side-sec">Make &amp; plan</div>
+      <div class="nav-i" data-go="techpack"><span class="ni-dot"></span>Tech packs</div>
+      <div class="nav-i" data-go="planning"><span class="ni-dot"></span>Planning</div>
+      <div class="nav-i" data-go="po"><span class="ni-dot"></span>PO generator</div>
+      <div class="side-sec">Track</div>
+      <div class="nav-i" data-go="inventory"><span class="ni-dot"></span>Inventory<span class="ni-badge">2</span></div>
+      <div class="nav-i" data-go="samples"><span class="ni-dot"></span>Samples<span class="ni-badge">1</span></div>
+      <div class="nav-i" data-go="quality"><span class="ni-dot"></span>Quality</div>
+      <div class="nav-i" data-go="sharedview"><span class="ni-dot"></span>Shared view</div>
+      <div class="nav-i" data-go="inbox"><span class="ni-dot"></span>Inbox<span class="ni-badge">2</span></div>
+      <div class="side-sec">Intelligence</div>
+      <div class="nav-i ai-surface" data-go="intel"><span class="ni-dot"></span>Intelligence</div>
+      <div class="nav-i ai-surface" data-go="ask"><span class="ni-dot"></span>Ask Clewa</div>
+      <div class="side-sec">Library</div>
+      <div class="nav-i" data-go="documents"><span class="ni-dot"></span>Documents</div>
+      <div class="nav-i" data-go="contacts"><span class="ni-dot"></span>Contacts</div>
+      <div class="nav-i" data-go="seasonclose"><span class="ni-dot"></span>Season close</div>
+      <div class="nav-i" data-go="team"><span class="ni-dot"></span>Team &amp; roles</div>
+    </nav>
+    <div class="side-foot"><span class="sf-av">M</span><div><div class="sf-name">Maison Ardent</div><div class="sf-plan">Atelier plan</div></div></div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <span class="tb-title" id="tb-title">Home</span>
+        <span class="tb-crumb" id="tb-crumb">Maison Ardent · FW26</span>
+      </div>
+      <div class="tb-right">
+        <button class="cz-btn" type="button" onclick="document.getElementById('czPanel').classList.add('open');document.getElementById('czScrim').classList.add('open');" title="Customize your workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 12h2M10 12h10M4 17h7M15 17h5"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="13" cy="17" r="2"/></svg></button>
+        <div class="mode-seg" title="Guided walks first-timers through each step. Pro is the full dashboard.">
+          <button type="button" onclick="var p=this.parentNode;p.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});this.classList.add('on');document.body.classList.add('guided');try{localStorage.setItem('clewa-mode','guided');}catch(e){}">Guided</button>
+          <button type="button" class="on" onclick="var p=this.parentNode;p.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});this.classList.add('on');document.body.classList.remove('guided');try{localStorage.setItem('clewa-mode','pro');}catch(e){}">Pro</button>
+        </div>
+        <button class="ai-toggle" type="button" onclick="var off=document.body.classList.toggle('ai-off'); this.querySelector('.ait-state').textContent=off?'Off':'On'; try{localStorage.setItem('clewa-ai',off?'off':'on');}catch(e){}" title="Clewa runs fully without AI. Toggle the assist layer."><span class="ait-sw"></span>AI assist · <span class="ait-state">On</span></button>
+        <span class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Search orders, factories, files…</span>
+        <span class="tb-ico" data-toast="No new notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg><span class="tb-bub"></span></span>
+        <span class="tb-ico" data-toast="Settings — coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.6h-4l-.3 2.6a7 7 0 0 0-1.7 1l-2.3-1-2 3.4L5 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg></span>
+      </div>
+    </div>
+
+    <div class="page-scroll">
+      <div class="coach-bar" id="coachBar"><span class="cb-mk">C</span><span class="cb-tx" id="coachTx"></span></div>
+      <div class="coach-terms" id="coachTerms"></div>
+
+      <!-- ============ HOME ============ -->
+      <section class="page on" data-page="home">
+        <div class="cv2">
+
+          <div class="ai-offline-note"><b>AI assist is off.</b> Clewa is running as a pure system of record — every order, payment, spec and count is here and fully functional. Turn assist back on for drafting, predictions and your morning briefing.</div>
+
+          <div class="cv2-top">
+            <div>
+              <h2 class="cv2-hello">Good morning, Mara.</h2>
+              <p class="cv2-sub">Thursday, August 13 · FW26 · <b>2 things need you</b> before the day gets away.</p>
+            </div>
+            <div class="cv2-actions">
+              <button class="x-btn ghost" type="button" data-toast="Composer opened — Marco, Atelier Norte">Message a factory</button>
+              <button class="hx-newbtn" type="button" data-go="po">+ New order</button>
+            </div>
+          </div>
+
+          <!-- GUIDED (beginner) WALKTHROUGH -->
+          <div class="guide">
+            <div class="guide-top">
+              <span class="guide-mk">C</span>
+              <div>
+                <div class="guide-kick">Guided mode · I'll walk you through it</div>
+                <div class="guide-h">Let's get your first order moving, Mara.</div>
+                <div class="guide-sub">No jargon — I'll explain each step in plain language and tell you exactly what to do next. You can switch to Pro any time; it's the same data with more control.</div>
+              </div>
+              <div class="guide-prog"><div class="gp-ring"><i>3<span>/12</span></i></div></div>
+            </div>
+            <div class="guide-steps">
+              <div class="gstep done"><span class="gs-c"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="gs-t">Define your product</div><div class="gs-d">Tech pack locked — nicely done.</div></div></div>
+              <div class="gstep done"><span class="gs-c"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="gs-t">Set your target costs</div><div class="gs-d">Landed cost and margin worked out.</div></div></div>
+              <div class="gstep now"><span class="gs-c">3</span><div><div class="gs-t">Choose your factory</div>
+                <div class="gs-coach"><b>What this means:</b> picking a maker who can actually produce your coat at your quality and quantity. <b>What to do now:</b> compare the three quotes I normalized so they're apples-to-apples — I've flagged <b>Atelier Norte</b> as the best fit (94% on-time on outerwear, holds your 340gsm wool).</div>
+                <div class="gs-act"><button class="dm-btn primary" type="button" data-go="orders">Compare the 3 quotes</button><button class="dm-btn" type="button" data-go="ask">Why Atelier?</button></div>
+              </div></div>
+              <div class="gstep"><span class="gs-c">4</span><div><div class="gs-t">Agree terms &amp; sign the PO</div><div class="gs-d">Next — and I'll check it's safe before any money moves.</div></div></div>
+              <div class="gstep"><span class="gs-c">5</span><div><div class="gs-t">Approve your sample</div></div></div>
+              <div class="gstep"><span class="gs-c">6</span><div><div class="gs-t">Production, QC &amp; ship</div></div></div>
+            </div>
+            <div class="guide-foot"><span class="gf-x">⇄</span>Stuck on anything? Ask me in plain English — I'm always a click away.</div>
+          </div>
+
+          <!-- FOCUS BAND -->
+          <div class="focus">
+            <div class="focus-body">
+              <div class="focus-kick"><span class="fk-pulse"></span>Today's focus · 2 days of runway</div>
+              <div class="focus-h">Approve the Overcoat fit sample — it's the <em>only</em> thing between you and the Sep 1 drop.</div>
+              <div class="focus-why">Atelier Norte closes Friday for the August break. Sign off today and cutting starts the morning they reopen. Wait past tomorrow and you lose 8 days, not 2 — and the drop slips.</div>
+            </div>
+            <div class="focus-side">
+              <button class="focus-btn" type="button" data-go="samples">Review the sample</button>
+              <button class="focus-btn ghost" type="button" data-toast="Snoozed until tomorrow 9am">Snooze a day</button>
+              <span class="focus-meta">Round 2 · 2 open comments</span>
+            </div>
+          </div>
+
+          <!-- KPI STRIP -->
+          <div class="cv2-pulse">
+            <div class="cv2-stat"><div class="cs-num">$61.4k</div><div class="cs-lab">Committed · FW26</div></div>
+            <div class="cv2-stat warn"><div class="cs-num">$8.4k</div><div class="cs-lab">Due in 7 days</div></div>
+            <div class="cv2-stat"><div class="cs-num">64%</div><div class="cs-lab">Blended margin · tgt 60</div></div>
+            <div class="cv2-stat"><div class="cs-num">94%</div><div class="cs-lab">On-time · last 12</div></div>
+            <div class="cv2-stat"><div class="cs-num">12d</div><div class="cs-lab">To next ship</div></div>
+          </div>
+
+          <!-- WHOSE MOVE -->
+          <div class="court">
+            <div class="shared-h">
+              <span class="sh-title">Whose move is it?</span>
+              <span class="sh-live"><span class="shl-dot"></span>Marco is viewing #2491 right now</span>
+            </div>
+            <div class="court-cols">
+              <div class="court-col you">
+                <div class="cc-h">Waiting on you <span class="cc-n">2</span></div>
+                <div class="cc-item" data-go="samples">
+                  <div class="cc-what">Sign off the Overcoat fit</div>
+                  <div class="cc-sub">Marco's line is reserved for Monday — your sign-off is what lets them cut. Atelier closes Friday.</div>
+                </div>
+                <div class="cc-item" data-go="techpack">
+                  <div class="cc-what">Close 2 gaps in the Peacoat tech pack</div>
+                  <div class="cc-sub">Lining + care label — blocks sending it out for quotes.</div>
+                </div>
+              </div>
+              <div class="court-col them">
+                <div class="cc-h">Waiting on them <span class="cc-n">2</span></div>
+                <div class="cc-item" data-go="orders">
+                  <div class="cc-what">Ende Studio · canvas swatches</div>
+                  <div class="cc-sub">Due Thursday with the revised Tote quote.</div>
+                </div>
+                <div class="cc-item" data-go="orders">
+                  <div class="cc-what">Lotus Knit · confirm QC date</div>
+                  <div class="cc-sub">Aug 18 proposed — Lan usually replies overnight.</div>
+                </div>
+              </div>
+            </div>
+            <div class="shared-foot">
+              <span>Both sides work on the same live record — when it's your move, it's here; everything else is safely theirs.</span>
+              <span class="shf-link" data-go="order">Open the shared order →</span>
+            </div>
+          </div>
+
+          <!-- BENTO -->
+          <div class="bento">
+
+            <div class="hx-card b-orders">
+              <div class="hx-chead"><span class="hc-title">Active orders</span><span class="hc-link" data-go="orders">All orders →</span></div>
+              <div class="bo-row" data-go="order">
+                <div><div class="bo-name">Wool Overcoat — FW</div><div class="bo-meta">320u · Atelier Norte</div></div>
+                <div><div class="hx-track"><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k now"></span><span class="ht-l"></span><span class="ht-k"></span><span class="ht-l"></span><span class="ht-k"></span></div><div class="bo-next">Sampling — <b>sign off fit</b>, then production</div></div>
+                <div class="bo-right"><span class="bo-pill risk">Action</span><div class="bo-val">$18,880</div></div>
+              </div>
+              <div class="bo-row" data-go="order">
+                <div><div class="bo-name">Organic Tee — Core</div><div class="bo-meta">1,500u · Lotus Knit</div></div>
+                <div><div class="hx-track"><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k now"></span><span class="ht-l"></span><span class="ht-k"></span></div><div class="bo-next">In production — <b>QC Aug 18</b>, on pace</div></div>
+                <div class="bo-right"><span class="bo-pill ok">On track</span><div class="bo-val">$28,000</div></div>
+              </div>
+              <div class="bo-row" data-go="order">
+                <div><div class="bo-name">Canvas Tote</div><div class="bo-meta">800u · Ende Studio</div></div>
+                <div><div class="hx-track"><span class="ht-k done"></span><span class="ht-l done"></span><span class="ht-k now"></span><span class="ht-l"></span><span class="ht-k"></span><span class="ht-l"></span><span class="ht-k"></span><span class="ht-l"></span><span class="ht-k"></span></div><div class="bo-next">Quoting — <b>compare 3 quotes</b>, normalized</div></div>
+                <div class="bo-right"><span class="bo-pill idle">Quoting</span><div class="bo-val">est. $11,360</div></div>
+              </div>
+              <div class="bo-row next" data-go="techpack">
+                <div><div class="bo-name">Boiled-wool Peacoat — SS</div><div class="bo-meta">next up · in the studio</div></div>
+                <div><div class="bo-next" id="tpHomeNext">Tech pack <b>82%</b> — 2 gaps to fix, then it’s ready for quotes</div></div>
+                <div class="bo-right"><span class="bo-pill draft">Drafting</span><div class="bo-val">—</div></div>
+              </div>
+            </div>
+
+            <div class="hx-card b-money">
+              <div class="hx-chead"><span class="hc-title">Money</span><span class="hc-link" data-go="finances">Finances →</span></div>
+              <div class="bm-body">
+                <div class="bm-big">$28,000</div>
+                <div class="bm-cap">scheduled out · next 60 days</div>
+                <div class="bm-bar"><div class="bm-fill" style="width:38%"></div></div>
+                <div class="bm-scale"><span>$23.4k paid</span><span>$61.4k committed</span></div>
+                <div class="bm-row"><span class="bm-dot sched"></span><div><div class="bm-main">Deposit · Overcoat</div><div class="bm-sub">Due tomorrow · verified, safe to pay</div></div><span class="bm-amt">$8,400</span></div>
+                <div class="bm-row"><span class="bm-dot gated"></span><div><div class="bm-main">Balance · Organic Tee</div><div class="bm-sub">Pay after QC passes</div></div><span class="bm-amt">$19,600</span></div>
+                <div class="bm-row"><span class="bm-dot paid"></span><div><div class="bm-main">Deposit · Organic Tee</div><div class="bm-sub">Paid Jul 30</div></div><span class="bm-amt">$8,400</span></div>
+              </div>
+            </div>
+
+            <div class="hx-card b-week">
+              <div class="hx-chead"><span class="hc-title">This week</span><span class="hc-link" data-go="calendar">Full calendar →</span></div>
+              <div class="hw-grid">
+                <div class="hw-day"><div class="hw-head">Mon <b>11</b></div><span class="hw-ev sample">Fit v2 arrived</span></div>
+                <div class="hw-day"><div class="hw-head">Tue <b>12</b></div><span class="hw-ev done">Spec confirmed</span></div>
+                <div class="hw-day today"><div class="hw-head">Wed <b>13</b></div><span class="hw-ev hot">Fit sign-off due</span></div>
+                <div class="hw-day"><div class="hw-head">Thu <b>14</b></div><span class="hw-ev pay">$8,400 deposit</span></div>
+                <div class="hw-day closed"><div class="hw-head">Fri <b>15</b></div><span class="hw-ev clo">Atelier closes</span></div>
+                <div class="hw-day closed"><div class="hw-head">Sat <b>16</b></div></div>
+                <div class="hw-day closed"><div class="hw-head">Sun <b>17</b></div></div>
+              </div>
+            </div>
+
+            <div class="hx-card b-feed">
+              <div class="hx-chead"><span class="hc-title">While you slept</span><span class="hc-sub">factory hours</span></div>
+              <div class="bf-item"><span class="bf-time">02:14</span><div class="bf-what"><b>Lan</b> uploaded 4 production photos — Organic Tee, line 2</div></div>
+              <div class="bf-item"><span class="bf-time">23:40</span><div class="bf-what"><b>Marco</b> confirmed the collar revision, line by line</div></div>
+              <div class="bf-item"><span class="bf-time">05:02</span><div class="bf-what"><b>Clewa</b> drafted the QC checklist for Aug 18 — review when ready</div></div>
+              <div class="bf-item" data-go="techpack" style="cursor:pointer;"><span class="bf-time">05:20</span><div class="bf-what"><b>Clewa</b> checked the Peacoat tech pack — <span id="tpFeedSub">2 gaps to close before it can go out</span></div></div>
+            </div>
+
+            <div class="hx-card b-inv">
+              <div class="hx-chead"><span class="hc-title">Inventory signals</span><span class="hc-link" data-go="inventory">Inventory →</span></div>
+              <div class="bi-row"><div><div class="bi-name">Organic Tee — Black</div><div class="bi-sub">sells out ~3 weeks · 6-wk lead</div></div><span class="bi-pill reorder">Reorder</span></div>
+              <div class="bi-row"><div><div class="bi-name">Horn buttons</div><div class="bi-sub">220 left · below next Overcoat run</div></div><span class="bi-pill reorder">Order</span></div>
+              <div class="bi-row"><div><div class="bi-name">Wool Overcoat — Camel</div><div class="bi-sub">320u incoming · lands Sep 1</div></div><span class="bi-pill incoming">Incoming</span></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ORDERS ============ -->
+      <section class="page" data-page="orders">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Orders</h2><div class="pg-sub">3 active · planned backward from each drop</div></div>
+            <div class="dv-tools"><button class="x-btn" data-toast="Exported orders.xlsx"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export to Excel</button><button class="btn btn-primary" data-go="po">+ New order</button></div>
+          </div>
+          <div class="otab">
+            <div class="otab-head"><span>Order</span><span>Factory</span><span>Stage</span><span>Value</span><span>Drop</span></div>
+            <div class="otab-row" data-go="order">
+              <div><div class="ot-name">Wool Overcoat — FW</div><div class="ot-sub">#2491 · 320 units</div></div>
+              <div class="ot-fac">Atelier Norte</div>
+              <div class="o-track"><span class="ok done"></span><span class="ot done"></span><span class="ok done"></span><span class="ot done"></span><span class="ok now"></span><span class="ot"></span><span class="ok"></span><span class="ot"></span><span class="ok"></span></div>
+              <div class="ot-val">$18,880</div>
+              <div><span class="ot-stage risk">Sep 1</span></div>
+            </div>
+            <div class="otab-row" data-go="order">
+              <div><div class="ot-name">Organic Tee — Core</div><div class="ot-sub">#2488 · 1,500 units</div></div>
+              <div class="ot-fac">Lotus Knit</div>
+              <div class="o-track"><span class="ok done"></span><span class="ot done"></span><span class="ok done"></span><span class="ot done"></span><span class="ok done"></span><span class="ot done"></span><span class="ok now"></span><span class="ot"></span><span class="ok"></span></div>
+              <div class="ot-val">$28,000</div>
+              <div><span class="ot-stage live">Sep 8</span></div>
+            </div>
+            <div class="otab-row" data-go="order">
+              <div><div class="ot-name">Canvas Tote</div><div class="ot-sub">#2495 · 800 units</div></div>
+              <div class="ot-fac">Ende Studio</div>
+              <div class="o-track"><span class="ok done"></span><span class="ot done"></span><span class="ok now"></span><span class="ot"></span><span class="ok"></span><span class="ot"></span><span class="ok"></span><span class="ot"></span><span class="ok"></span></div>
+              <div class="ot-val">$11,360</div>
+              <div><span class="ot-stage idle">Oct 5</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ORDER DETAIL ============ -->
+      <section class="page" data-page="order">
+        <div class="page-w">
+          <div class="od-back" data-go="orders">← All orders</div>
+          <div class="od-head">
+            <div>
+              <div class="od-title">Wool Overcoat — FW</div>
+              <div class="od-meta">Order #2491 · 320 units · Atelier Norte, Porto · drop Sep 1</div>
+            </div>
+            <div class="od-actions"><button class="btn btn-ghost" data-go="po">Generate PO</button><button class="btn btn-primary" data-toast="Opened sample review">Review sample</button></div>
+          </div>
+          <div class="od-tabs">
+            <button class="od-tab on" data-od="overview">Overview</button>
+            <button class="od-tab" data-od="record">The record</button>
+            <button class="od-tab" data-od="contract">Contract</button>
+            <button class="od-tab" data-od="samples">Samples</button>
+            <button class="od-tab" data-od="messages">Messages</button>
+            <button class="od-tab" data-od="docs">Documents</button>
+          </div>
+
+          <div class="od-view on" data-od="overview">
+            <div class="od-cols">
+              <div class="stack">
+                <div class="dm-panel">
+                  <div class="dm-phead"><h4>Timeline · backward from Sep 1</h4><span class="ph-link risk-link" style="color:var(--thread)">Action needed</span></div>
+                  <div class="dm-pbody">
+                    <div class="up-row"><span class="up-date">done</span><div><div class="up-what">Tech pack v4 locked</div><div class="up-tag">Aug 5</div></div></div>
+                    <div class="up-row"><span class="up-date">done</span><div><div class="up-what">PO signed · deposit scheduled</div><div class="up-tag">Aug 8</div></div></div>
+                    <div class="up-row risk"><span class="up-date">now</span><div><div class="up-what">Approve fit sample · round 2</div><div class="up-tag">Due in 2 days — blocks production</div></div></div>
+                    <div class="up-row"><span class="up-date">Aug 18</span><div><div class="up-what">Production start</div><div class="up-tag">after Atelier's Aug break</div></div></div>
+                    <div class="up-row"><span class="up-date">Aug 26</span><div><div class="up-what">Ship · FOB Porto</div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="stack">
+                <div class="dm-panel">
+                  <div class="dm-phead"><h4>At a glance</h4></div>
+                  <div class="dm-pbody">
+                    <div class="cash-row"><span></span><div><div class="cr-main">Landed cost</div><div class="cr-sub">$59.00 / unit</div></div><span class="cr-amt">68% margin</span></div>
+                    <div class="cash-row"><span></span><div><div class="cr-main">Next payment</div><div class="cr-sub">Deposit · Aug 14</div></div><span class="cr-amt">$8,400</span></div>
+                    <div class="cash-row"><span></span><div><div class="cr-main">Order value</div></div><span class="cr-amt">$18,880</span></div>
+                  </div>
+                </div>
+                <div class="dm-panel">
+                  <div class="dm-phead"><h4>Factory</h4></div>
+                  <div class="dm-pbody">
+                    <div class="rolo-foot" style="border:0;margin:0;padding:6px 0"><div class="rolo-person"><span class="rp-av">M</span><div><div class="rp-name">Marco Pereira</div><div class="rp-role">Atelier Norte · 96% on-time</div></div></div><span class="rolo-msg" data-go="contacts">Open →</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="od-view" data-od="record">
+            <div class="rec-window" style="margin-top:0">
+              <div class="rec-winbar">
+                <div class="rw-left"><span class="rw-thumb">W</span><div><div class="rw-name">The agreed record</div><div class="rw-sub">Order #2491 · locked &amp; versioned</div></div></div>
+                <span class="rec-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Agreed by both parties</span>
+              </div>
+              <div class="rec-cols">
+                <div class="rec-agreement">
+                  <div class="rec-coltitle">The agreement</div>
+                  <div class="rec-line"><span class="rl-label">Fabric</span><span class="rl-value">340gsm boiled wool</span><span class="rl-stamp"><span class="rs-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aug 5</span></div>
+                  <div class="rec-line"><span class="rl-label">Quantity</span><span class="rl-value">320 units</span><span class="rl-stamp"><span class="rs-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aug 5</span></div>
+                  <div class="rec-line"><span class="rl-label">Unit price</span><span class="rl-value">$14.20 landed<span class="rl-from">$15.10</span></span><span class="rl-stamp"><span class="rs-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aug 8</span></div>
+                  <div class="rec-line"><span class="rl-label">Payment</span><span class="rl-value">30% deposit · 70% on QC</span><span class="rl-stamp"><span class="rs-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aug 8</span></div>
+                  <div class="rec-line"><span class="rl-label">Ship by</span><span class="rl-value">Aug 26</span><span class="rl-stamp"><span class="rs-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aug 8</span></div>
+                </div>
+                <div class="rec-history">
+                  <div class="rec-coltitle">Change history</div>
+                  <div class="rec-event"><div class="re-rail"><span class="re-dot"></span><span class="re-line"></span></div><div class="re-body"><div class="re-date">Aug 12</div><div class="re-what">Fit sample approved. Collar shortened 0.5cm.</div><div class="re-who"><span class="rw-dot"></span>You &amp; Atelier Norte</div></div></div>
+                  <div class="rec-event"><div class="re-rail"><span class="re-dot"></span><span class="re-line"></span></div><div class="re-body"><div class="re-date">Aug 8</div><div class="re-what">Price agreed at $14.20, down from $15.10.</div><div class="re-who"><span class="rw-dot"></span>You &amp; Atelier Norte</div></div></div>
+                  <div class="rec-event"><div class="re-rail"><span class="re-dot"></span></div><div class="re-body"><div class="re-date">Aug 5</div><div class="re-what">Spec revised: added 340gsm with ±5% tolerance.</div><div class="re-who"><span class="rw-dot"></span>You</div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="co-card">
+              <div class="co-h"><span class="co-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11M4 12h16M4 17h9"/><path d="M17 4l3 3-3 3"/></svg>Change order · CO-03 proposed</span><span class="co-badge">Awaiting re-confirmation</span></div>
+              <div class="co-diff">
+                <div class="co-line"><span class="co-k">Buttons</span><span class="co-v"><span class="co-old">18mm horn</span><span class="co-arrow">→</span><span class="co-new">18mm corozo · eco</span></span></div>
+                <div class="co-line"><span class="co-k">Unit price</span><span class="co-v"><span class="co-old">$14.20</span><span class="co-arrow">→</span><span class="co-new">$14.45 landed</span></span></div>
+              </div>
+              <div class="co-impact"><span class="co-imp">Cost<b>+$80 / order</b></span><span class="co-imp">Timing<b>no change</b></span><span class="co-imp">Margin<b>67.6%</b></span></div>
+              <div class="co-gate">
+                <div class="co-party"><span class="cop-av">M</span>You<span class="cop-st ok">Confirmed</span></div>
+                <div class="co-party"><span class="cop-av f">M</span>Atelier Norte<span class="cop-st wait">Awaiting</span></div>
+              </div>
+              <div class="co-foot"><span>Until <b>both</b> re-confirm, the change isn't live — production holds the old spec and the record can't drift.</span><button class="dm-btn" type="button" data-toast="Reminder sent to Atelier — in Portuguese">Nudge factory</button></div>
+            </div>
+          </div>
+
+          <div class="od-view" data-od="contract">
+            <div class="ct-doc">
+              <div class="ct-head">
+                <div><div class="ct-kick">Manufacturing agreement · auto-drafted</div><div class="ct-title">Wool Overcoat — FW · Order #2491</div><div class="ct-sub">Generated from the agreed record · plain-language · EN ⇄ PT</div></div>
+                <span class="ct-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Ready to sign</span>
+              </div>
+              <div class="ct-body">
+                <div class="ct-clause"><span class="cc-n">1 · Parties</span><p>Maison Ardent ("Buyer") and Atelier Norte Lda., Porto ("Maker") agree to the manufacture of the goods below.</p></div>
+                <div class="ct-clause"><span class="cc-n">2 · Goods &amp; specification</span><p>320 units of the Wool Overcoat in <b>340gsm boiled wool (±5%)</b>, per Tech Pack v4 and the approved fit sample. The agreed record forms part of this contract.</p></div>
+                <div class="ct-clause"><span class="cc-n">3 · Price &amp; payment</span><p>$14.20/unit landed, $18,880 total. <b>30% deposit</b> on signing; <b>70% balance</b> due after QC pass (AQL 2.5). Buyer pays the Maker directly; FX fixed at PO.</p></div>
+                <div class="ct-clause"><span class="cc-n">4 · Delivery</span><p>Ship by <b>Aug 26, 2026</b>, FOB Porto. Each week late reduces the unit price by 2%, to a cap of 10%.</p></div>
+                <div class="ct-clause"><span class="cc-n">5 · Quality &amp; remedies</span><p>Goods must match the approved sample and spec. Off-spec goods (e.g. fabric below 340gsm) may be rejected or reworked at the Maker's cost — the breach is measured against the record.</p></div>
+                <div class="ct-sign">
+                  <div class="ct-party"><span class="cp-av">M</span><div><div class="cp-n">Maison Ardent</div><div class="cp-r">Buyer · signed Aug 8</div></div><span class="cp-st ok">Signed</span></div>
+                  <div class="ct-party"><span class="cp-av f">A</span><div><div class="cp-n">Atelier Norte</div><div class="cp-r">Maker · awaiting</div></div><span class="cp-st wait">Awaiting</span></div>
+                </div>
+              </div>
+              <div class="ct-foot">
+                <span>Clewa drafts the agreement so you skip the hard conversation — and when something slips, what was agreed is already in writing. Not a substitute for legal advice.</span>
+                <div class="ct-actions"><button class="dm-btn" type="button" data-toast="Exported agreement.pdf · bilingual">Export PDF</button><button class="dm-btn primary" type="button" data-toast="Sent to Atelier Norte for e-signature, in Portuguese">Send to sign</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="od-view" data-od="samples">
+            <div class="rv-window" style="margin-top:0">
+              <div class="rv-bar"><div class="rvb-title">Fit review · round 2</div><div class="rvb-ver"><span>Proto · v1</span><span class="on">Fit · v2</span></div></div>
+              <div class="rv-cols">
+                <div class="rv-stage">
+                  <div class="rv-photo"><span class="rp-label">Proto · v1</span><svg class="rp-silhouette" viewBox="0 0 80 110" fill="none" stroke="currentColor" stroke-width="2"><path d="M26 12l14 8 14-8 14 10-8 12-4-3v62H22V31l-4 3-8-12z"/></svg><span class="rp-cap">Sleeves ran long</span></div>
+                  <div class="rv-photo"><span class="rp-label">Fit · v2</span><svg class="rp-silhouette" viewBox="0 0 80 110" fill="none" stroke="currentColor" stroke-width="2"><path d="M26 12l14 8 14-8 14 10-8 12-4-3v62H22V31l-4 3-8-12z"/></svg><span class="rp-cap">For sign-off</span><span class="rv-pin" style="top:30%;left:30%">1</span><span class="rv-pin" style="top:55%;left:60%">2</span></div>
+                </div>
+                <div class="rv-side">
+                  <div class="rvs-label">Pinned comments · 2</div>
+                  <div class="rv-comment resolved"><span class="rvc-pin">1</span><div><div class="rvc-who">You<span class="rvc-time">resolved</span></div><div class="rvc-text">Collar sits better now. Approved.</div></div></div>
+                  <div class="rv-comment"><span class="rvc-pin">2</span><div><div class="rvc-who">You<span class="rvc-time">Aug 11</span></div><div class="rvc-text">Pocket 1cm high vs spec — drop to match.</div></div></div>
+                  <div class="rv-actions"><div class="rv-gate"><span class="rvg-dot"></span>Fit gate · unlocks production</div><div class="rv-btns"><button class="rv-btn approve" data-toast="Fit approved — production unlocked">Approve fit</button><button class="rv-btn" data-toast="Change request sent">Request changes</button></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="od-view" data-od="messages">
+            <div class="dm-panel">
+              <div class="dm-phead"><h4>Order conversation · translated</h4><span class="ph-link">English ⇄ Portuguese</span></div>
+              <div class="dm-pbody">
+                <div class="msg-row"><span class="mr-av">Y</span><div><div class="mr-name">You</div><div class="mr-text">Approving fit. Is the bulk wool the same 340gsm as the proto?</div></div></div>
+                <div class="msg-row"><span class="mr-av">M</span><div><div class="mr-name">Marco · Atelier Norte</div><div class="mr-text"><span class="mr-tr">“Yes, same 340gsm, batch confirmed. We start cutting Monday.”</span> · from Portuguese</div></div></div>
+                <div class="msg-row"><span class="mr-av">M</span><div><div class="mr-name">Marco · Atelier Norte <span class="mr-badge">REPLY</span></div><div class="mr-text"><span class="mr-tr">“Can you confirm the button color before we cut?”</span></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="od-view" data-od="docs">
+            <div class="dv-window" style="margin-top:0;box-shadow:none">
+              <div class="dv-list">
+                <div class="dv-listhead"><span>Document</span><span>Type</span><span>Updated</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/></svg></span><div><div class="dr-title">Tech Pack v4</div><div class="dr-sub">340gsm tolerance added</div></div></div><span class="dr-type">Tech pack</span><span class="dr-meta"><b>Aug 5</b></span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8"/></svg></span><div><div class="dr-title">Purchase Order #2491</div><div class="dr-sub">Signed · both parties</div></div></div><span class="dr-type">PO</span><span class="dr-meta"><b>Aug 8</b></span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M15 15l4 4"/></svg></span><div><div class="dr-title">Fit Sample Report — r2</div><div class="dr-sub">awaiting sign-off</div></div></div><span class="dr-type">Inspection</span><span class="dr-meta"><b>Aug 11</b></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CALENDAR ============ -->
+      <section class="page" data-page="calendar">
+        <div class="page-w">
+          <div class="pg-bar"><div><h2 class="pg-h">Calendar</h2><div class="pg-sub">Plan backward from your launch — Clewa lays out every milestone in reverse and flags the date you must place by</div></div></div>
+
+          <!-- BACKWARD PLANNER -->
+          <div class="bplan" id="bplanner">
+            <div class="bplan-h">
+              <div><div class="bp-kick">Backward planner</div><div class="bp-title">Work back from your launch date</div></div>
+              <div class="bp-launch">
+                <span class="bpl-lab">Launch</span>
+                <div class="bp-presets">
+                  <button class="bp-preset on" type="button" data-date="2026-11-20">Resort · Nov 20</button>
+                  <button class="bp-preset" type="button" data-date="2027-02-14">SS27 · Feb 14</button>
+                </div>
+                <input class="bp-date" id="bp-dateinput" type="date" value="2026-11-20" />
+              </div>
+            </div>
+            <div class="bp-chain">
+              <div class="bp-track">
+                <div class="bp-node done"><div class="bp-dot">1</div><div class="bp-when" data-wk="13">—</div><div class="bp-what">Tech pack locked</div></div>
+                <div class="bp-node done"><div class="bp-dot">2</div><div class="bp-when" data-wk="11">—</div><div class="bp-what">Quotes in &amp; chosen</div></div>
+                <div class="bp-node key"><div class="bp-dot">3</div><div class="bp-when" data-wk="10">—</div><div class="bp-what">Place order · deposit</div></div>
+                <div class="bp-node"><div class="bp-dot">4</div><div class="bp-when" data-wk="9">—</div><div class="bp-what">Sampling &amp; fit</div></div>
+                <div class="bp-node"><div class="bp-dot">5</div><div class="bp-when" data-wk="6">—</div><div class="bp-what">Production</div></div>
+                <div class="bp-node"><div class="bp-dot">6</div><div class="bp-when" data-wk="2">—</div><div class="bp-what">QC &amp; inspection</div></div>
+                <div class="bp-node"><div class="bp-dot">7</div><div class="bp-when" data-wk="1">—</div><div class="bp-what">Ship &amp; transit</div></div>
+                <div class="bp-node drop"><div class="bp-dot"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><div class="bp-when" data-wk="0">—</div><div class="bp-what">Launch / drop</div></div>
+              </div>
+            </div>
+            <div class="bp-foot">
+              <span class="bpf-ic">C</span>
+              <span class="bpf-tx">To hit this launch, <b>place the order by <span class="bpf-strong" id="bp-orderby">—</span></b> — that's the drop minus a 10-week critical path, with Atelier's August break already routed around. Slip the order date and Clewa re-flows everything after it.</span>
+            </div>
+          </div>
+
+          <div class="cal-wrap">
+            <div class="dv-toolbar">
+              <h3>Operations calendar</h3>
+              <div class="dv-tools">
+                <div class="seg-mini" data-toggle-group="calview"><button data-view="timeline" class="on">Timeline</button><button data-view="month">Month</button></div>
+                <button class="x-btn" data-toast="Exported calendar.xlsx"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button>
+              </div>
+            </div>
+            <div class="calview-panel active" data-view-panel="calview" data-view="timeline">
+              <div class="cal-grid">
+                <div class="cal-months"><div class="cm-cell">Order</div><div class="cm-cell">Aug 1</div><div class="cm-cell">Aug 8</div><div class="cm-cell">Aug 15</div><div class="cm-cell">Aug 22</div><div class="cm-cell">Sep 1</div><div class="cm-cell">Sep 8</div><div class="cm-cell">Sep 15</div><div class="cm-cell">Sep 22</div></div>
+                <div class="cal-row"><div class="cr-label"><div class="cr-name">Wool Overcoat</div><div class="cr-fac">Atelier Norte · 320u</div></div><div class="cal-track"><div class="cal-closure" style="left:25%;width:13%"><span class="clo-lab">Closed · Aug break</span></div><div class="cal-today head" style="left:18%"></div><div class="cal-bar b-sample" style="left:5%;width:18%">Sampling</div><div class="cal-bar b-prod" style="left:23%;width:18%">Production</div><div class="cal-pay" style="left:10%">$</div><div class="cal-mile drop" style="left:55%"></div></div></div>
+                <div class="cal-row"><div class="cr-label"><div class="cr-name">Organic Tee</div><div class="cr-fac">Lotus Knit · 1,500u</div></div><div class="cal-track"><div class="cal-today" style="left:18%"></div><div class="cal-bar b-prod" style="left:0%;width:48%">Production</div><div class="cal-mile" style="left:30%"></div><div class="cal-bar b-ship" style="left:48%;width:11%">Ship</div><div class="cal-mile drop" style="left:66%"></div></div></div>
+                <div class="cal-row"><div class="cr-label"><div class="cr-name">Canvas Tote</div><div class="cr-fac">Ende Studio · 800u</div></div><div class="cal-track"><div class="cal-today" style="left:18%"></div><div class="cal-bar b-quote" style="left:5%;width:25%">Quoting</div><div class="cal-bar b-sample" style="left:30%;width:27%">Sampling</div><div class="cal-bar b-prod" style="left:57%;width:34%">Production</div></div></div>
+              </div>
+              <div class="cal-alert"><span class="ca-ic2">!</span><span class="ca-txt"><b>Atelier Norte closes Aug 15–22</b>, across your Overcoat production — you'd <span class="ca-strong">miss the Sep 1 drop</span>. Clewa tracks every factory's holidays, including Tet, months out.</span></div>
+            </div>
+            <div class="calview-panel" data-view-panel="calview" data-view="month">
+              <div class="cmg-wrap">
+                <div class="cmg-head"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
+                <div class="cmg-grid">
+                  <div class="cmg-cell dim"><span class="cmg-date">28</span></div><div class="cmg-cell dim"><span class="cmg-date">29</span></div><div class="cmg-cell dim"><span class="cmg-date">30</span></div><div class="cmg-cell dim"><span class="cmg-date">31</span></div><div class="cmg-cell"><span class="cmg-date">1</span><span class="cmg-ev sample">Overcoat · sampling</span><span class="cmg-ev prod">Tee · production</span></div><div class="cmg-cell"><span class="cmg-date">2</span></div><div class="cmg-cell"><span class="cmg-date">3</span></div>
+                  <div class="cmg-cell"><span class="cmg-date">4</span></div><div class="cmg-cell"><span class="cmg-date">5</span><span class="cmg-ev sample">Tote · quotes</span></div><div class="cmg-cell"><span class="cmg-date">6</span></div><div class="cmg-cell"><span class="cmg-date">7</span></div><div class="cmg-cell"><span class="cmg-date">8</span></div><div class="cmg-cell"><span class="cmg-date">9</span></div><div class="cmg-cell today"><span class="cmg-date">10</span></div>
+                  <div class="cmg-cell"><span class="cmg-date">11</span><span class="cmg-ev sample">Overcoat · fit v2</span></div><div class="cmg-cell"><span class="cmg-date">12</span><span class="cmg-ev pay">Deposit</span></div><div class="cmg-cell"><span class="cmg-date">13</span></div><div class="cmg-cell"><span class="cmg-date">14</span><span class="cmg-ev pay">$8,400 due</span></div><div class="cmg-cell closed"><span class="cmg-date">15</span><span class="cmg-ev closed-lab">Atelier closed</span></div><div class="cmg-cell closed"><span class="cmg-date">16</span></div><div class="cmg-cell closed"><span class="cmg-date">17</span></div>
+                  <div class="cmg-cell closed"><span class="cmg-date">18</span><span class="cmg-ev qc">Tee · QC</span></div><div class="cmg-cell closed"><span class="cmg-date">19</span></div><div class="cmg-cell closed"><span class="cmg-date">20</span></div><div class="cmg-cell closed"><span class="cmg-date">21</span></div><div class="cmg-cell closed"><span class="cmg-date">22</span><span class="cmg-ev closed-lab">Reopens</span></div><div class="cmg-cell"><span class="cmg-date">23</span></div><div class="cmg-cell"><span class="cmg-date">24</span><span class="cmg-ev shoot">FW shoot</span></div>
+                  <div class="cmg-cell"><span class="cmg-date">25</span><span class="cmg-ev shoot">FW shoot</span></div><div class="cmg-cell"><span class="cmg-date">26</span><span class="cmg-ev prod">Overcoat · ship</span></div><div class="cmg-cell"><span class="cmg-date">27</span></div><div class="cmg-cell"><span class="cmg-date">28</span></div><div class="cmg-cell"><span class="cmg-date">29</span></div><div class="cmg-cell"><span class="cmg-date">30</span></div><div class="cmg-cell"><span class="cmg-date">31</span></div>
+                  <div class="cmg-cell"><span class="cmg-date">1</span><span class="cmg-ev drop">Overcoat DROP</span></div><div class="cmg-cell dim"><span class="cmg-date">2</span></div><div class="cmg-cell dim"><span class="cmg-date">3</span></div><div class="cmg-cell dim"><span class="cmg-date">4</span></div><div class="cmg-cell dim"><span class="cmg-date">5</span></div><div class="cmg-cell dim"><span class="cmg-date">6</span></div><div class="cmg-cell dim"><span class="cmg-date">7</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FINANCES ============ -->
+      <section class="page" data-page="finances">
+        <div class="page-w">
+          <div class="pg-bar"><div><h2 class="pg-h">Finances</h2><div class="pg-sub">FW26 season · you pay every factory directly — Clewa never holds your money</div></div><button class="x-btn" data-toast="Exported finances.xlsx"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export to Excel</button></div>
+          <div class="fin-kpis">
+            <div class="fin-kpi"><div class="fk-num">$61,400</div><div class="fk-label">Committed this season</div><div class="fk-sub">across 3 orders</div></div>
+            <div class="fin-kpi"><div class="fk-num">$23,400</div><div class="fk-label">Paid to date</div><div class="fk-sub up">▲ on schedule</div></div>
+            <div class="fin-kpi"><div class="fk-num">$38,000</div><div class="fk-label">Outstanding</div><div class="fk-sub warn">$8.4k due in 7 days</div></div>
+            <div class="fin-kpi"><div class="fk-num">64%</div><div class="fk-label">Blended margin</div><div class="fk-sub up">target 60%</div></div>
+          </div>
+          <div class="fin-grid">
+            <div class="fin-panel">
+              <div class="fin-phead"><h4>Margin by order</h4><span class="fp-tag">landed vs retail</span></div>
+              <div class="fin-pbody">
+                <div class="mbar"><div class="mbar-top"><span class="mbar-name">Wool Overcoat <span class="mb-sub">$59 / $185</span></span><span class="mbar-pct">68%</span></div><div class="mbar-track"><div class="mbar-fill good" style="width:68%"></div></div></div>
+                <div class="mbar"><div class="mbar-top"><span class="mbar-name">Organic Tee <span class="mb-sub">$9.10 / $32</span></span><span class="mbar-pct">72%</span></div><div class="mbar-track"><div class="mbar-fill good" style="width:72%"></div></div></div>
+                <div class="mbar"><div class="mbar-top"><span class="mbar-name">Canvas Tote <span class="mb-sub">$14.20 / $38</span></span><span class="mbar-pct">63%</span></div><div class="mbar-track"><div class="mbar-fill good" style="width:63%"></div></div></div>
+                <div class="mbar"><div class="mbar-top"><span class="mbar-name">Silk Scarf <span class="mb-sub">$21 / $48</span></span><span class="mbar-pct">56%</span></div><div class="mbar-track"><div class="mbar-fill tight" style="width:56%"></div></div></div>
+                <p class="fin-note">Silk Scarf is below target — Costing AI suggests $54 retail or a 12% volume discount.</p>
+              </div>
+            </div>
+            <div class="fin-panel">
+              <div class="fin-phead"><h4>Cash out · next 60 days</h4></div>
+              <div class="fin-pbody">
+                <div class="pay-row"><span class="py-dot paid"></span><div><div class="py-main">Deposit · Organic Tee</div><div class="py-sub">Paid Jul 30</div></div><span class="py-amt">$8,400</span></div>
+                <div class="pay-row"><span class="py-dot sched"></span><div><div class="py-main">Deposit · Wool Overcoat</div><div class="py-sub">Aug 14</div></div><span class="py-amt">$8,400</span></div>
+                <div class="pay-row"><span class="py-dot gated"></span><div><div class="py-main">Balance · Organic Tee</div><div class="py-sub">Due after QC pass</div></div><span class="py-amt">$19,600</span></div>
+                <div class="pay-row"><span class="py-dot sched"></span><div><div class="py-main">Deposit · Canvas Tote</div><div class="py-sub">On PO signing</div></div><span class="py-amt">$3,400</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fin-panel" style="margin-top:14px">
+            <div class="fin-phead"><h4>Multi-currency · FX locked at PO</h4><span class="fp-tag">your real cost, in USD</span></div>
+            <div class="fx-head"><span>Order · factory currency</span><span class="r">Rate at PO</span><span class="r">Rate today</span><span class="r">Your cost (USD)</span><span>Exposure</span></div>
+            <div class="fx-row">
+              <div class="fx-name">Wool Overcoat<div class="fx-sub">€15,360 · EUR</div></div>
+              <span class="fx-num">1.085</span><span class="fx-num">1.072</span><span class="fx-num"><b>$18,880</b></span>
+              <span class="fx-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Locked · protected</span>
+            </div>
+            <div class="fx-row">
+              <div class="fx-name">Organic Tee<div class="fx-sub">₫… · USD-quoted</div></div>
+              <span class="fx-num">—</span><span class="fx-num">—</span><span class="fx-num"><b>$28,000</b></span>
+              <span class="fx-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>No FX risk</span>
+            </div>
+            <div class="fx-row">
+              <div class="fx-name">Canvas Tote<div class="fx-sub">₺… · TRY · quoting</div></div>
+              <span class="fx-num">unlocked</span><span class="fx-num">live</span><span class="fx-num"><b>~$11,360</b></span>
+              <span class="fx-lock drift">Locks at PO</span>
+            </div>
+            <p class="fin-note" style="padding:0 20px 16px">The €/$ rate moved 1.2% since you signed the Overcoat — because Clewa locked the rate at PO, your cost didn't. No surprise on the final invoice.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INVENTORY ============ -->
+      <section class="page" data-page="inventory">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Inventory</h2><div class="pg-sub">Finished goods, components &amp; materials — one consolidated count</div></div>
+            <div class="dv-tools">
+              <span class="inv-sync"><span class="is-dot"></span>Synced with <b>Shopify</b> · 2 min ago</span>
+              <button class="x-btn" type="button" data-toast="Exported inventory.xlsx — 3 sheets: finished, components, consumption"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button>
+              <button class="x-btn ghost" type="button" data-toast="Guided cycle count scheduled — both sides notified">Start a count</button>
+            </div>
+          </div>
+
+          <div class="inv-kpis">
+            <div class="inv-kpi"><div class="ik-num">4,120</div><div class="ik-label">Finished units on hand</div></div>
+            <div class="inv-kpi"><div class="ik-num">11,840</div><div class="ik-label">Components in stock</div></div>
+            <div class="inv-kpi"><div class="ik-num">2,620</div><div class="ik-label">Units in production</div></div>
+            <div class="inv-kpi warn"><div class="ik-num">3</div><div class="ik-label">Reorder signals</div></div>
+          </div>
+
+          <!-- CONNECTED STORE · the Shopify loop -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div>
+                <div class="ibx-kick">Connected store · how the loop works</div>
+                <div class="ibx-sub">Your store reports what's selling; Clewa counts back the lead time and drafts the reorder before you'd notice. Production flows back as “on the way.”</div>
+              </div>
+              <div class="store-id">
+                <span class="store-mark">S</span>
+                <div>
+                  <div class="store-name">maison-ardent.myshopify.com</div>
+                  <div class="store-sub">Connected · read-only: products, orders, inventory · revoke anytime</div>
+                </div>
+                <button class="x-btn" type="button" data-toast="Synced — 4 SKUs updated, 42 sales pulled, 2 restock dates pushed to Shopify">Sync now</button>
+              </div>
+            </div>
+            <div class="loop">
+              <div class="loop-step" data-toast="From Shopify: 42 units of Tee — Black sold this week, by size">
+                <div class="ls-k">From your store</div>
+                <div class="ls-t">42 sold this week</div>
+                <div class="ls-s">Tee — Black · pulled by size, hourly</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step" data-toast="On hand ÷ weekly sell-through = cover. 118 ÷ 42 ≈ 2.8 weeks">
+                <div class="ls-k">Clewa computes</div>
+                <div class="ls-t">~3 weeks of cover</div>
+                <div class="ls-s">118 on hand ÷ 42/wk — by size, not just total</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step hot" data-toast="Trigger: cover (3 wks) is inside the 6-week lead time at Lotus Knit">
+                <div class="ls-k">Trigger fires</div>
+                <div class="ls-t">Reorder now</div>
+                <div class="ls-s">6-wk lead at Lotus — waiting = 3 dark weeks</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step" data-go="po">
+                <div class="ls-k">Clewa drafts</div>
+                <div class="ls-t">PO · 1,200 units</div>
+                <div class="ls-s">Size curve corrected — M +8% · open draft →</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step" data-toast="Pushed to Shopify: COAT-CML shows 320 incoming, restock Sep 1 — your store can take pre-orders against it">
+                <div class="ls-k">Back to your store</div>
+                <div class="ls-t">“On the way”</div>
+                <div class="ls-s">Incoming units + restock dates push back</div>
+              </div>
+            </div>
+            <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt"><b>Nothing orders itself.</b> The loop stops at a drafted PO — you review, you send, you pay the factory directly. Auto-reorder just means the draft is waiting before you knew you needed it.</span></div>
+          </div>
+
+          <!-- VIEW SWITCH -->
+          <div class="inv-switch">
+            <div class="ivs-seg">
+              <button class="ivs-btn on" data-iv-go="grid" type="button">The grid</button>
+              <button class="ivs-btn" data-iv-go="overview" type="button">Overview</button>
+            </div>
+            <div class="ivs-note">A spreadsheet, but intelligent — or the same numbers as cards.</div>
+          </div>
+
+          <!-- ============ THE INTELLIGENT GRID ============ -->
+          <div class="inv-view" data-iv="grid">
+            <div class="ibx-card grid-card" id="ig-root">
+              <div class="ig-head">
+                <div>
+                  <div class="ibx-kick">The grid · spreadsheet, but intelligent</div>
+                  <div class="ig-lede">Edit any white cell — cover, reorder point and status recompute the instant you hit Enter.</div>
+                </div>
+                <div class="ig-tabs">
+                  <button class="ig-tab on" data-ds="finished" type="button">Finished goods</button>
+                  <button class="ig-tab" data-ds="components" type="button">Components &amp; trims</button>
+                </div>
+              </div>
+
+              <div class="ig-fbar">
+                <span class="igf-ref">—</span>
+                <span class="igf-eq">ƒ<span class="dot">x</span></span>
+                <span class="igf-val">Select a cell to see how it is calculated.</span>
+              </div>
+
+              <div class="ig-tools">
+                <button class="ig-tbtn" data-act="filldown" type="button"><span class="igt-ic">⤓</span>Fill down</button>
+                <button class="ig-tbtn" data-act="reset" type="button"><span class="igt-ic">↺</span>Reset</button>
+                <span class="ig-spacer"></span>
+                <span class="ig-legend">
+                  <span class="igl-item"><span class="igl-sw edit"></span>you edit</span>
+                  <span class="igl-item"><span class="igl-sw calc"></span>Clewa computes</span>
+                  <span class="igl-item"><span class="igl-sw link"></span>from orders</span>
+                </span>
+                <button class="x-btn" data-act="export" type="button"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button>
+              </div>
+
+              <div class="ig-grid" id="ig-grid">
+                <div class="ig-scroll">
+                  <table class="ig-table"><thead id="ig-thead"></thead><tbody id="ig-tbody"></tbody><tfoot id="ig-tfoot"></tfoot></table>
+                </div>
+              </div>
+
+              <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt" id="ig-insight">—</span><button class="dm-btn primary" type="button" id="ig-applybtn" data-act="apply">Draft reorders</button></div>
+            </div>
+          </div>
+
+          <!-- ============ OVERVIEW (cards) ============ -->
+          <div class="inv-view off" data-iv="overview">
+
+          <!-- LIVE BOM CONSUMPTION -->
+          <div class="ibx-card">
+            <div class="ibx-head">
+              <div>
+                <div class="ibx-kick">Live consumption · from the BOM</div>
+                <div class="ibx-title">Wool Overcoat — Order #2491</div>
+                <div class="ibx-bom">BOM v4 · per unit: <b>1.9m wool</b> · <b>4 buttons</b> · <b>1 zipper</b> · <b>1 size label</b> · <b>1 hangtag</b></div>
+              </div>
+              <div class="ibx-prog">
+                <div class="ip-top"><span class="ipt-n">120 <span class="ipt-of">/ 320 units sewn</span></span><span class="ipt-pct">38%</span></div>
+                <div class="ip-bar"><div class="ip-fill" style="width:38%"></div></div>
+                <div class="ip-cap">Reported by Atelier Norte · updates the counts below automatically</div>
+              </div>
+            </div>
+            <div class="ibx-table">
+              <div class="ibx-thead"><span>Component</span><span>Per unit</span><span>Consumed</span><span>Remaining at factory</span><span>Run status</span></div>
+              <div class="ibx-row"><span class="ib-name">340gsm boiled wool</span><span class="ib-per">1.9 m</span><span class="ib-used">−228 m</span><span class="ib-left">382 m</span><span class="ib-st ok">Covers the run</span></div>
+              <div class="ibx-row"><span class="ib-name">Horn buttons · 22mm</span><span class="ib-per">4</span><span class="ib-used">−498</span><span class="ib-left">782</span><span class="ib-st warn">18 short · wastage 4.2%</span></div>
+              <div class="ibx-row"><span class="ib-name">YKK zipper · brass</span><span class="ib-per">1</span><span class="ib-used">−120</span><span class="ib-left">204</span><span class="ib-st ok">Covers the run</span></div>
+              <div class="ibx-row"><span class="ib-name">Woven size labels</span><span class="ib-per">1</span><span class="ib-used">−120</span><span class="ib-left">1,440</span><span class="ib-st ok">Covers next run too</span></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Buttons are running 4.2% wastage against 3% planned.</b> At this rate the run comes up <span class="iv-strong">18 buttons short</span> around unit 290. Order 200 now (3-week lead) and production never notices.</span><button class="dm-btn primary" type="button" data-toast="Component PO drafted — 200 horn buttons, supplier pre-filled">Order buttons</button></div>
+          </div>
+
+          <!-- COMPONENTS & MATERIALS -->
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Components &amp; materials</div><div class="ibx-sub">Allocated = reserved by open production orders. Free = available to plan with.</div></div></div>
+            <div class="ibx-table cmp5">
+              <div class="ibx-thead"><span>Item</span><span>Location</span><span>Allocated</span><span>Free</span><span>Status</span></div>
+              <div class="ibx-row"><span class="ib-name">Horn buttons · 22mm</span><span class="ib-loc">Atelier Norte</span><span class="ib-used">1,280</span><span class="ib-left">220</span><span class="ib-st warn">Below reorder point</span></div>
+              <div class="ibx-row"><span class="ib-name">340gsm boiled wool · lot 7A</span><span class="ib-loc">Atelier Norte</span><span class="ib-used">610 m</span><span class="ib-left">210 m</span><span class="ib-st warn">Below next run</span></div>
+              <div class="ibx-row"><span class="ib-name">Woven size labels</span><span class="ib-loc">Warehouse · Lisbon</span><span class="ib-used">960</span><span class="ib-left">1,440</span><span class="ib-st ok">Healthy</span></div>
+              <div class="ibx-row"><span class="ib-name">Brand stickers + hangtags</span><span class="ib-loc">Warehouse · Lisbon</span><span class="ib-used">320</span><span class="ib-left">580</span><span class="ib-st ok">Healthy</span></div>
+              <div class="ibx-row"><span class="ib-name">Organic jersey · GOTS</span><span class="ib-loc">Lotus Knit</span><span class="ib-used">2,850 m</span><span class="ib-left">150 m</span><span class="ib-st ok">Run ends before stock</span></div>
+            </div>
+          </div>
+
+          <!-- FINISHED GOODS -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">Finished goods · synced with Shopify</div><div class="ibx-sub">Sell-through pulls from your store; incoming production pushes back as inventory on the way.</div></div>
+            </div>
+            <div class="inv-panel" style="border:0;border-radius:0">
+              <div class="inv-phead"><span>Product</span><span>On hand</span><span>Sell-through</span><span>Status</span></div>
+              <div class="inv-row"><div class="inv-prod"><span class="ip-sw"></span><div><div class="ip-name">Organic Tee — Black</div><div class="ip-sku">TEE-BLK · Shopify</div></div></div><div class="inv-stock"><span class="ist-num">180</span><div class="ist-bar"><div class="ist-fill low" style="width:12%"></div></div></div><div class="inv-sell"><b>~3 weeks</b> to stockout · 42/wk</div><span class="inv-status reorder">Reorder now</span></div>
+              <div class="inv-row"><div class="inv-prod"><span class="ip-sw"></span><div><div class="ip-name">Canvas Tote — Natural</div><div class="ip-sku">TOTE-NAT · Shopify</div></div></div><div class="inv-stock"><span class="ist-num">95</span><div class="ist-bar"><div class="ist-fill low" style="width:18%"></div></div></div><div class="inv-sell"><b>~5 weeks</b> to stockout · 19/wk</div><span class="inv-status reorder">Reorder soon</span></div>
+              <div class="inv-row"><div class="inv-prod"><span class="ip-sw"></span><div><div class="ip-name">Wool Overcoat — Camel</div><div class="ip-sku">COAT-CML · incoming</div></div></div><div class="inv-stock"><span class="ist-num">0</span><div class="ist-bar"><div class="ist-fill" style="width:0%"></div></div></div><div class="inv-sell"><b>320 units</b> land Sep 1 · shown in Shopify as incoming</div><span class="inv-status incoming">Incoming · Sep 1</span></div>
+              <div class="inv-row"><div class="inv-prod"><span class="ip-sw"></span><div><div class="ip-name">Organic Tee — Ecru</div><div class="ip-sku">TEE-ECR · Shopify</div></div></div><div class="inv-stock"><span class="ist-num">1,240</span><div class="ist-bar"><div class="ist-fill" style="width:74%"></div></div></div><div class="inv-sell"><b>~6 months</b> of cover · 48/wk</div><span class="inv-status ok">Healthy</span></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Tee — Black sells out in ~3 weeks; a reorder takes 6 at Lotus Knit.</b> Clewa pre-filled the PO from the last run — and it already checked the jersey, labels and stickers cover it.</span><button class="dm-btn primary" type="button" data-go="po">Start reorder</button></div>
+          </div>
+
+          <!-- WIP TRACKER -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">Work in progress · live from the floor</div><div class="ibx-sub">Each order's units as they move through cutting, sewing, finishing and packing — updated by the factory, visible to you both.</div></div>
+              <span class="inv-sync"><span class="is-dot"></span>Atelier &amp; Lotus reporting</span>
+            </div>
+            <div class="wip-row">
+              <div class="wip-name">Organic Tee — Core<div class="wn-sub">Lotus Knit · 1,500u</div></div>
+              <div class="wip-stages">
+                <div class="wip-stg done"><div class="ws-lab">Cut</div><div class="ws-n">1,500</div></div>
+                <div class="wip-stg active"><div class="ws-lab">Sewn</div><div class="ws-n">1,120</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">Finished</div><div class="ws-n">640</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">QC'd</div><div class="ws-n">200</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">Packed</div><div class="ws-n">0</div></div>
+              </div>
+            </div>
+            <div class="wip-row">
+              <div class="wip-name">Wool Overcoat — FW<div class="wn-sub">Atelier Norte · 320u</div></div>
+              <div class="wip-stages">
+                <div class="wip-stg active"><div class="ws-lab">Cut</div><div class="ws-n">85</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">Sewn</div><div class="ws-n">0</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">Finished</div><div class="ws-n">0</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">QC'd</div><div class="ws-n">0</div></div>
+                <div class="wip-stg idle"><div class="ws-lab">Packed</div><div class="ws-n">0</div></div>
+              </div>
+            </div>
+            <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt"><b>Tee finishing is pacing 12% behind sewing.</b> At this rate packing finishes Aug 24 — two days past plan. Clewa flagged it to Lan; she's adding a finisher tomorrow.</span><button class="dm-btn" type="button" data-toast="Opened — message thread with Lan">View thread</button></div>
+          </div>
+
+          <!-- SIZE-CURVE MATRIX -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">Size curve · stock by size</div><div class="ibx-sub">The number under each figure is weekly sell-through. Clewa watches the curve, not just the total.</div></div>
+              <button class="x-btn" type="button" data-toast="Exported size-curve.xlsx — on-hand & sell-through by size"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button>
+            </div>
+            <div class="sz-wrap">
+              <table class="sz-grid">
+                <thead><tr><th class="prod">Product</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th class="tot">Total</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div class="sz-prod">Organic Tee — Black<div class="szp-sub">42 / wk · selling fast</div></div></td>
+                    <td class="sz-cell"><span class="sz-chip"><span class="szc-n">30</span><span class="szc-w">5/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip"><span class="szc-n">42</span><span class="szc-w">9/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip out"><span class="szc-n">6</span><span class="szc-w">12/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip"><span class="szc-n">38</span><span class="szc-w">9/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">40</span><span class="szc-w">5/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">24</span><span class="szc-w">2/wk</span></span></td>
+                    <td class="sz-tot">180</td>
+                  </tr>
+                  <tr>
+                    <td><div class="sz-prod">Organic Tee — Ecru<div class="szp-sub">48 / wk · healthy</div></div></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">180</span><span class="szc-w">6/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">240</span><span class="szc-w">11/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">210</span><span class="szc-w">14/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">230</span><span class="szc-w">11/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip heal"><span class="szc-n">240</span><span class="szc-w">5/wk</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">140</span><span class="szc-w">1/wk</span></span></td>
+                    <td class="sz-tot">1,240</td>
+                  </tr>
+                  <tr>
+                    <td><div class="sz-prod">Wool Overcoat — Camel<div class="szp-sub">incoming · lands Sep 1</div></div></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">20</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">60</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">90</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">80</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">50</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-cell"><span class="sz-chip dead"><span class="szc-n">20</span><span class="szc-w">plan</span></span></td>
+                    <td class="sz-tot">320</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Size M outsells your stock every season — you under-buy it by ~8%.</b> Black M is effectively out while XXL sits. The reorder has been re-curved to 32% M, and Clewa suggests trimming XXL by 15%.</span><button class="dm-btn primary" type="button" data-toast="Reorder re-curved — M weighted up, XXL down">Apply the curve</button></div>
+          </div>
+
+          <!-- ALLOCATION GUARDRAILS -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">Allocation guardrails · no double-booking</div><div class="ibx-sub">Materials reserve to an order the moment its PO is signed. Clewa won't let the same lot be promised twice.</div></div>
+            </div>
+            <div class="alloc-head"><span>Material · lot</span><span class="r">On hand</span><span class="r">Reserved</span><span class="r">Free</span><span>Status</span></div>
+            <div class="alloc-row">
+              <div class="alloc-name">Boiled wool · lot 7A<div class="an-sub">held for Overcoat #2491</div></div>
+              <span class="alloc-num">820 m</span><span class="alloc-num">605 m</span><span class="alloc-num free">215 m</span>
+              <span class="alloc-pill ok">Reserved ✓</span>
+            </div>
+            <div class="alloc-row">
+              <div class="alloc-name">Organic jersey · GOTS<div class="an-sub">Tee #2488 + reorder draft</div></div>
+              <span class="alloc-num">1,400 m</span><span class="alloc-num">1,400 m</span><span class="alloc-num low">0 m free</span>
+              <span class="alloc-pill block">Fully committed</span>
+            </div>
+            <div class="alloc-row">
+              <div class="alloc-name">Horn buttons · 18mm<div class="an-sub">shared across 2 styles</div></div>
+              <span class="alloc-num">1,478</span><span class="alloc-num">1,460</span><span class="alloc-num low">18</span>
+              <span class="alloc-pill block">Short — reorder</span>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>You tried to add the same jersey lot to the Tee reorder — it's already fully reserved.</b> Clewa blocked the double-commit before it became a shortage mid-run. Order more jersey, or pull the reorder date back.</span><button class="dm-btn primary" type="button" data-toast="Jersey reorder drafted — 800m, GOTS, Lotus Knit">Order more jersey</button></div>
+          </div>
+
+          <!-- DEADSTOCK / AGING -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">Deadstock &amp; aging · capital sitting still</div><div class="ibx-sub">MOQ overbuys and leftovers, aged by how long they've sat. Clewa nudges you to use it up before you buy more.</div></div>
+              <span class="ibx-bom"><b>$4,180</b> tied up</span>
+            </div>
+            <div class="dead-grid">
+              <div class="dead-card warn">
+                <div class="dead-age">Aging · 8 months</div>
+                <div class="dead-name">Ivory silk twill · 140 m</div>
+                <div class="dead-sub">leftover from SS26 scarves · MOQ overbuy</div>
+                <div class="dead-val">$2,240<span class="dv-cap">tied up</span></div>
+                <div class="dead-act"><button class="dm-btn" type="button" data-toast="Added to SS27 plan — silk slip dress uses this lot">Use in SS27</button></div>
+              </div>
+              <div class="dead-card warn">
+                <div class="dead-age">Aging · 5 months</div>
+                <div class="dead-name">Gold zip pulls · 1,100</div>
+                <div class="dead-sub">over-ordered for FW25 · never used</div>
+                <div class="dead-val">$990<span class="dv-cap">tied up</span></div>
+                <div class="dead-act"><button class="dm-btn" type="button" data-toast="Flagged for Resort 26 totes">Reuse on Resort</button></div>
+              </div>
+              <div class="dead-card">
+                <div class="dead-age">Watch · 3 months</div>
+                <div class="dead-name">Care labels · 2,600</div>
+                <div class="dead-sub">generic · fits any core style</div>
+                <div class="dead-val">$950<span class="dv-cap">tied up</span></div>
+                <div class="dead-act"><button class="dm-btn" type="button" data-toast="Will draw from this stock on next core run">Use on core</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GUIDED DUAL-ACCOUNTABILITY COUNT -->
+          <div class="ibx-card">
+            <div class="cc-head2">
+              <div><div class="ibx-kick">Guided cycle count · both sides counting</div><div class="ibx-title" style="font-size:17px">August consignment count</div><div class="ibx-sub">You count Lisbon, Atelier counts their floor — Clewa walks each side through it and reconciles against the record.</div></div>
+              <button class="x-btn" type="button" data-toast="Count sheet generated — count-sheet.xlsx, one tab per location"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Generate sheet</button>
+            </div>
+            <div class="cc-steps">
+              <div class="cc-step done"><span class="ccs-n">✓</span>Scope set</div><span class="ccs-arrow">→</span>
+              <div class="cc-step done"><span class="ccs-n">✓</span>You counted</div><span class="ccs-arrow">→</span>
+              <div class="cc-step done"><span class="ccs-n">✓</span>Atelier counted</div><span class="ccs-arrow">→</span>
+              <div class="cc-step on"><span class="ccs-n">4</span>Reconcile variances</div><span class="ccs-arrow">→</span>
+              <div class="cc-step"><span class="ccs-n">5</span>Lock &amp; adjust</div>
+            </div>
+            <div class="cc-two">
+              <div class="cc-side">
+                <div class="ccsd-who"><span class="ccsd-av">M</span>You · Lisbon warehouse<span class="ccsd-tag">counted 14:02</span></div>
+                <div class="ccsd-stat">Counted <b>3 of 3</b> lines · labels, hangtags, stickers. Blind count — you didn't see the system figure first.</div>
+              </div>
+              <div class="cc-side">
+                <div class="ccsd-who"><span class="ccsd-av fac">A</span>Atelier Norte · floor<span class="ccsd-tag">counted 09:48 WEST</span></div>
+                <div class="ccsd-stat">Marco counted <b>2 of 2</b> consignment lines · buttons, wool lot 7A. Photos attached to each.</div>
+              </div>
+            </div>
+            <div class="cc-recon">
+              <div class="cc-rhead"><span>Item · location</span><span class="r">Counted</span><span class="r">Expected</span><span class="r">Variance</span><span class="r">Resolution</span></div>
+              <div class="cc-rrow"><span class="ccr-name">Woven size labels · Lisbon</span><span class="ccr-num">2,400</span><span class="ccr-num">2,400</span><span class="ccr-var match">match</span><span class="ccr-var match" style="font-weight:400;color:var(--ink-3)">—</span></div>
+              <div class="cc-rrow flag"><span class="ccr-name">Hangtags · Lisbon</span><span class="ccr-num">900</span><span class="ccr-num">920</span><span class="ccr-var off">−20</span><span class="ccr-var off" style="font-weight:500">shrinkage</span></div>
+              <div class="cc-rrow flag"><span class="ccr-name">Horn buttons · Atelier</span><span class="ccr-num">1,478</span><span class="ccr-num">1,500</span><span class="ccr-var off">−22</span><span class="ccr-var off" style="font-weight:500">= wastage gap</span></div>
+              <div class="cc-rrow"><span class="ccr-name">Wool lot 7A · Atelier</span><span class="ccr-num">818 m</span><span class="ccr-num">820 m</span><span class="ccr-var match">−2m · ok</span><span class="ccr-var match" style="font-weight:400;color:var(--ink-3)">tolerance</span></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Two variances need a shared decision.</b> The 22 missing buttons match the wastage Clewa already flagged — accepting it auto-adjusts the BOM consumption. Both you and Atelier sign the reconciled count, so the number is agreed, not disputed.</span><button class="dm-btn primary" type="button" data-toast="Reconciled count signed by both — stock adjusted, BOM updated">Accept &amp; sign</button></div>
+          </div>
+          </div><!-- /inv-view overview -->
+        </div>
+      </section>
+
+      <!-- ============ INTELLIGENCE ============ -->
+      <section class="page" data-page="intel">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Intelligence</h2><div class="pg-sub">Your sourcing director — watching every order, every date, every number</div></div>
+            <div class="dv-tools"><span class="inv-sync"><span class="is-dot"></span>Last sweep · <b>6:00 this morning</b></span></div>
+          </div>
+
+          <div class="ix-brief">
+            <div class="ixb-head">
+              <span class="ixb-mark">C</span>
+              <div>
+                <div class="ixb-kick">The morning briefing · Thursday, Aug 13</div>
+                <div class="ixb-line">One thing is urgent, one needs a decision this week, and the rest is running clean.</div>
+              </div>
+            </div>
+            <div class="ixb-items">
+              <div class="ixi urgent">
+                <span class="ixi-tag">Urgent</span>
+                <div class="ixi-body">
+                  <div class="ixi-what">The Overcoat fit sign-off is the only thing between you and the Sep 1 drop.</div>
+                  <div class="ixi-why">Atelier closes Friday for the August break. Approve today and production starts the morning they reopen — wait past tomorrow and you lose 8 days, not 2.</div>
+                  <div class="ixi-act"><button class="dm-btn primary" type="button" data-go="order">Review sample</button><span class="ixi-conf">Confidence: high · based on Atelier's calendar + 7 past orders</span></div>
+                </div>
+              </div>
+              <div class="ixi">
+                <span class="ixi-tag warn">This week</span>
+                <div class="ixi-body">
+                  <div class="ixi-what">Button wastage says the Overcoat run comes up ~18 short.</div>
+                  <div class="ixi-why">4.2% against 3% planned. A 200-unit component order today (3-week lead) arrives before unit 290 — production never notices.</div>
+                  <div class="ixi-act"><button class="dm-btn" type="button" data-toast="Component PO drafted — 200 horn buttons">Draft the order</button></div>
+                </div>
+              </div>
+              <div class="ixi">
+                <span class="ixi-tag ok">Running clean</span>
+                <div class="ixi-body">
+                  <div class="ixi-what">Organic Tee is pacing 2 days ahead. QC is booked, the balance is gated, trims are covered.</div>
+                  <div class="ixi-why">Nothing to do — this is what on-track looks like.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ix-grid">
+            <div class="ix-card">
+              <div class="hx-chead"><span class="hc-title">Readiness gate · Canvas Tote</span><span class="hc-sub">nothing starts incomplete</span></div>
+              <div class="ixr-body">
+                <p class="ixr-cap">Production cannot be booked until every gate clears. This is how a BOM never goes missing.</p>
+                <div class="ixr-item done"><span class="ixr-c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="ixr-what">Tech pack complete</div><div class="ixr-sub">22/22 required fields · v3 locked</div></div></div>
+                <div class="ixr-item done"><span class="ixr-c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="ixr-what">BOM complete &amp; priced</div><div class="ixr-sub">9 components · all sourced · no TBDs</div></div></div>
+                <div class="ixr-item warn"><span class="ixr-c">4/9</span><div><div class="ixr-what">Factory line-by-line confirmation</div><div class="ixr-sub">Deniz has confirmed 4 of 9 spec lines · nudged this morning, in Turkish</div></div><button class="dm-btn" type="button" data-toast="Nudge sent — unconfirmed lines highlighted for Deniz">Nudge</button></div>
+                <div class="ixr-item idle"><span class="ixr-c">·</span><div><div class="ixr-what">Components allocated</div><div class="ixr-sub">Unlocks when canvas + webbing are reserved</div></div></div>
+                <div class="ixr-item idle"><span class="ixr-c">·</span><div><div class="ixr-what">Safe-to-pay check</div><div class="ixr-sub">Final check before you pay the deposit — you pay direct</div></div></div>
+              </div>
+            </div>
+
+            <div class="ix-col">
+              <div class="ix-card">
+                <div class="hx-chead"><span class="hc-title">Anomaly watch</span><span class="hc-sub">numbers that don't match the record</span></div>
+                <div class="ixa-item"><span class="ixa-dot"></span><div class="ixa-txt"><b>Atelier's deposit invoice reads €5,950 — the record says €5,664.</b> The difference is an unagreed 5% "materials surcharge." Flagged before safe-to-pay; a drafted reply asks them to reissue.</div><button class="dm-btn" type="button" data-toast="Reply sent — invoice reissue requested, in Portuguese">Send reply</button></div>
+                <div class="ixa-item ok"><span class="ixa-dot ok"></span><div class="ixa-txt"><b>Lotus Knit's QC photos match the approved sample</b> — stitch density and label placement verified against the record. No action.</div></div>
+              </div>
+              <div class="ix-card">
+                <div class="hx-chead"><span class="hc-title">Patterns · from your history</span><span class="hc-sub">judgment, accumulated</span></div>
+                <div class="ixp-item"><span class="ixp-n">01</span><div class="ixp-txt">Atelier Norte runs <b>94% on-time on outerwear</b> but slipped twice on anything with hardware — give them the coat, not the belt.</div></div>
+                <div class="ixp-item"><span class="ixp-n">02</span><div class="ixp-txt">Your fit rounds average <b>2.3 per style</b>. Styles where the tech pack locked before inquiry averaged 1.5 — locking specs early saves you ~11 days.</div></div>
+                <div class="ixp-item"><span class="ixp-n">03</span><div class="ixp-txt">You consistently under-order size <b>M by ~8%</b> against sell-through. The Tee reorder PO has been adjusted to match.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PLANNING ============ -->
+      <section class="page" data-page="planning">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Planning</h2><div class="pg-sub">Decide what next season should be — the line, the budget and the design pipeline. Timing lives in Calendar; reorders in Inventory.</div></div>
+            <div class="dv-tools">
+              <button class="x-btn" type="button" data-toast="Exported plan.xlsx — order-by dates, lead times, projected spend"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button>
+              <button class="x-btn ghost" type="button" data-go="po">+ Plan a style</button>
+            </div>
+          </div>
+
+          <!-- SEASON ROADMAP -->
+          <div class="plan-road">
+            <div class="road-col">
+              <div class="road-top"><div class="road-ph">Shipping</div><div class="road-name">FW26</div><div class="road-win">drops Sep–Oct</div></div>
+              <div class="road-body">
+                <div class="road-stat"><span>Styles</span><b>3</b></div>
+                <div class="road-stat"><span>Committed</span><b>$61k</b></div>
+                <div class="road-bar"><div class="road-fill done" style="width:82%"></div></div>
+              </div>
+            </div>
+            <div class="road-col now">
+              <div class="road-top"><div class="road-ph">In development</div><div class="road-name">Resort 26</div><div class="road-win">drops Nov–Dec</div></div>
+              <div class="road-body">
+                <div class="road-stat"><span>Styles</span><b>5</b></div>
+                <div class="road-stat"><span>To place</span><b>2 now</b></div>
+                <div class="road-bar"><div class="road-fill" style="width:46%"></div></div>
+              </div>
+            </div>
+            <div class="road-col">
+              <div class="road-top"><div class="road-ph">Concept</div><div class="road-name">SS27</div><div class="road-win">drops Feb–Mar</div></div>
+              <div class="road-body">
+                <div class="road-stat"><span>Styles</span><b>8 ideas</b></div>
+                <div class="road-stat"><span>Carryover</span><b>4 repeats</b></div>
+                <div class="road-bar"><div class="road-fill" style="width:18%"></div></div>
+              </div>
+            </div>
+            <div class="road-col">
+              <div class="road-top"><div class="road-ph">Always-on</div><div class="road-name">Core</div><div class="road-win">never out of stock</div></div>
+              <div class="road-body">
+                <div class="road-stat"><span>Styles</span><b>6</b></div>
+                <div class="road-stat"><span>Auto-reorder</span><b>on</b></div>
+                <div class="road-bar"><div class="road-fill" style="width:64%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPEN TO BUY -->
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Open-to-buy · Resort 26 budget</div><div class="ibx-sub">Your season budget and how much is still free to commit — the financial frame before you place anything.</div></div><span class="ibx-bom"><b>$29k</b> still open</span></div>
+            <div class="otb-bar"><i class="spent" style="width:26%"></i><i class="committed" style="width:42%"></i><i class="open" style="width:32%"></i></div>
+            <div class="otb-legend">
+              <span class="ol"><span class="ol-sw" style="background:var(--thread)"></span>Spent <b>$23k</b></span>
+              <span class="ol"><span class="ol-sw" style="background:var(--thread-dim)"></span>Committed <b>$38k</b></span>
+              <span class="ol"><span class="ol-sw" style="background:#C2D1BD"></span>Open to buy <b>$29k</b> of $90k</span>
+            </div>
+          </div>
+
+          <!-- THE LINE PLAN -->
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">The line plan · Resort 26</div><div class="ibx-sub">The shape of the collection — newness vs. carryover, price tier and the margin each style needs to earn its slot.</div></div>
+              <button class="x-btn ghost" type="button" data-go="po">+ Add a style</button>
+            </div>
+            <div class="ibx-table">
+              <div class="ibx-thead" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr"><span>Style</span><span>Type</span><span>Tier</span><span>Target margin</span><span>Decision</span></div>
+              <div class="ibx-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr"><span class="ib-name">Wool Overcoat</span><span><span class="lp-tag carry">Carryover</span></span><span class="ib-loc">Better · $185</span><span class="ib-per">68%</span><span class="ib-st ok">In · proven seller</span></div>
+              <div class="ibx-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr"><span class="ib-name">Boiled-wool Scarf</span><span><span class="lp-tag new">New</span></span><span class="ib-loc">Good · $48</span><span class="ib-per">62%</span><span class="ib-st ok">In · uses silk deadstock</span></div>
+              <div class="ibx-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr"><span class="ib-name">Knit Beanie</span><span><span class="lp-tag new">New</span></span><span class="ib-loc">Good · $38</span><span class="ib-per">66%</span><span class="ib-st ok">In · low-risk add</span></div>
+              <div class="ibx-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr"><span class="ib-name">Cashmere Cardigan</span><span><span class="lp-tag new">New</span></span><span class="ib-loc">Best · $320</span><span class="ib-per">54%</span><span class="ib-st warn">Review · margin under target</span></div>
+            </div>
+            <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt"><b>Your mix is 75% newness — high for a Resort drop.</b> Carryover sells with no sampling risk and protects margin. The Cardigan at 54% drags the blended number; lift it to $360 or move it to a higher tier to clear your 60% floor.</span><button class="dm-btn" type="button" data-go="finances">Check the math</button></div>
+          </div>
+
+          <!-- DESIGN PIPELINE -->
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Design pipeline</div><div class="ibx-sub">Where each idea sits on its way to production. When a style is ready, it hands off to the tech-pack builder.</div></div></div>
+            <div class="pipe">
+              <div class="pipe-col">
+                <div class="pipe-h">Concept <span class="ph-n">3</span></div>
+                <div class="pipe-card"><div class="pc-t">Quilted Liner</div><div class="pc-sub">mood only</div></div>
+                <div class="pipe-card"><div class="pc-t">Wide Trouser</div><div class="pc-sub">sketch</div></div>
+                <div class="pipe-card"><div class="pc-t">Silk Shirt</div><div class="pc-sub">idea</div></div>
+              </div>
+              <div class="pipe-col">
+                <div class="pipe-h">In design <span class="ph-n">2</span></div>
+                <div class="pipe-card"><div class="pc-t">Cashmere Cardigan</div><div class="pc-sub">1st pattern</div></div>
+                <div class="pipe-card"><div class="pc-t">Knit Beanie</div><div class="pc-sub">colorways</div></div>
+              </div>
+              <div class="pipe-col">
+                <div class="pipe-h">Tech pack <span class="ph-n">1</span></div>
+                <div class="pipe-card" data-go="techpack"><div class="pc-t">Boiled-wool Peacoat — SS</div><div class="pc-sub" id="tpPipeSub">82% · 2 gaps — open the builder</div></div>
+                <div class="pipe-card ghost">drag here when specced</div>
+              </div>
+              <div class="pipe-col">
+                <div class="pipe-h">Ready to source <span class="ph-n">1</span></div>
+                <div class="pipe-card"><div class="pc-t">Wool Overcoat</div><div class="pc-sub">carryover · spec locked</div></div>
+                <div class="pipe-card ghost">hands off to a PO</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROJECTED SPEND -->
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Projected spend · next 4 months</div><div class="ibx-sub">Deposits land when you place — so you can see the cash before you commit.</div></div></div>
+            <div class="cal-grid" style="border:0">
+              <div class="cal-months" style="grid-template-columns:120px repeat(4,1fr)"><div class="cm-cell">Collection</div><div class="cm-cell">Oct</div><div class="cm-cell">Nov</div><div class="cm-cell">Dec</div><div class="cm-cell">Jan</div></div>
+              <div class="cal-row" style="grid-template-columns:120px 1fr"><div class="cr-label"><div class="cr-name">Resort 26</div><div class="cr-fac">2 styles</div></div><div class="cal-track"><div class="cal-bar b-prod" style="left:2%;width:26%">$14k deposits</div><div class="cal-bar b-ship" style="left:30%;width:20%">$22k balance</div></div></div>
+              <div class="cal-row" style="grid-template-columns:120px 1fr"><div class="cr-label"><div class="cr-name">Core repeats</div><div class="cr-fac">rolling</div></div><div class="cal-track"><div class="cal-bar b-sample" style="left:6%;width:18%">$9k</div><div class="cal-bar b-sample" style="left:52%;width:18%">$9k</div></div></div>
+              <div class="cal-row" style="grid-template-columns:120px 1fr"><div class="cr-label"><div class="cr-name">SS27</div><div class="cr-fac">sampling</div></div><div class="cal-track"><div class="cal-bar b-quote" style="left:60%;width:22%">$4k samples</div></div></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">C</span><span class="iv-txt"><b>November is heavy — about $40k goes out.</b> Clewa suggests moving the Core tee reorder to early December to smooth cashflow; it still lands before stockout.</span><button class="dm-btn" type="button" data-toast="Tee reorder shifted to Dec 2 — still safe">Shift to December</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INBOX ============ -->
+      <section class="page" data-page="inbox">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Inbox</h2><div class="pg-sub">Every factory message — translated, parsed, and filed on the right order. Your factory keeps using email; you keep the record.</div></div>
+            <div class="dv-tools"><span class="inv-sync"><span class="is-dot"></span>Bridged · <b>po-2491@in.clewa.com</b></span></div>
+          </div>
+          <div class="chan-grid">
+            <div class="chan">
+              <div class="chan-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h11M8 12h11M8 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></div>
+              <div class="chan-name">Paste it in</div>
+              <div class="chan-tag">No connection</div>
+              <div class="chan-desc">Copy any email or WhatsApp message and drop it in. Clewa reads the quote, terms and dates onto the order. Nothing to authorize.</div>
+            </div>
+            <div class="chan reco">
+              <div class="chan-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6M3 7v10h18V7M3 7l9-4 9 4"/></svg></div>
+              <div class="chan-name">Forward or CC an address</div>
+              <div class="chan-tag">Recommended · works with any inbox</div>
+              <div class="chan-desc">Each order gets its own address. Forward a thread or CC it on a reply — it lands on the order, translated. No inbox access.</div>
+              <div class="chan-addr"><span>po-2491@in.clewa.com</span><span class="ca-copy" data-toast="Address copied">Copy</span></div>
+            </div>
+            <div class="chan">
+              <div class="chan-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9M21 3l-9 9"/></svg></div>
+              <div class="chan-name">Connect your inbox</div>
+              <div class="chan-tag">Optional</div>
+              <div class="chan-desc">Want it automatic? Connect Gmail or Outlook and factory threads flow in on their own. Fully optional — most brands never do.</div>
+              <div class="chan-addr" style="border-style:solid;justify-content:center"><span class="ca-copy" data-toast="Connection is optional — paste or forwarding works without it">Connect (optional) →</span></div>
+            </div>
+          </div>
+
+          <div class="inbox-grid">
+            <div class="inbox-list">
+              <div class="inbox-litem on">
+                <span class="il-av fac">M</span>
+                <div><div class="il-who">Marco · Atelier Norte</div><div class="il-snip">Revised quote &amp; timing — 320 units at €48, six weeks from PP approval…</div><span class="il-tag">Order #2491</span></div>
+                <div class="il-meta"><div class="il-time">08:14</div><div class="il-unread"></div></div>
+              </div>
+              <div class="inbox-litem">
+                <span class="il-av fac">L</span>
+                <div><div class="il-who">Lan · Lotus Knit</div><div class="il-snip">Production photos line 2 attached. Stitch density confirmed to spec.</div><span class="il-tag">Order #2488</span></div>
+                <div class="il-meta"><div class="il-time">02:14</div><div class="il-unread"></div></div>
+              </div>
+              <div class="inbox-litem">
+                <span class="il-av fac">D</span>
+                <div><div class="il-who">Deniz · Ende Studio</div><div class="il-snip">Sending the canvas quote tomorrow, need final dimensions for the gusset.</div><span class="il-tag">Order #2495</span></div>
+                <div class="il-meta"><div class="il-time">Yest</div></div>
+              </div>
+              <div class="inbox-litem">
+                <span class="il-av">C</span>
+                <div><div class="il-who">Clewa</div><div class="il-snip">Drafted the QC checklist for Aug 18 — review when ready.</div><span class="il-tag">Order #2488</span></div>
+                <div class="il-meta"><div class="il-time">Yest</div></div>
+              </div>
+            </div>
+            <div class="inbox-detail">
+              <div class="idt-head">
+                <div class="idt-from"><span class="idf-av">M</span><div><div class="idf-name">Marco Pereira · Atelier Norte</div><div class="idf-sub">to you · forwarded to po-2491@in.clewa.com</div></div></div>
+                <span class="idt-orderchip">Filed on Order #2491</span>
+              </div>
+              <div class="idt-body">
+                <div class="tl">Translated from Portuguese · view original</div>
+                Hi Mara, thanks for the call. We can do the <span class="hl">320 units at €48/unit FOB Porto</span>. Lead time is <span class="hl">six weeks from PP approval</span>. We'd need <span class="hl">30% deposit</span> to book the yarn, balance on inspection. Earliest ship is <span class="hl">August 26</span>. Best, Marco
+              </div>
+              <div class="idt-parse">
+                <div class="idp-h"><span class="idp-c">C</span>Clewa read these into the order</div>
+                <div class="idt-fields">
+                  <div class="idt-field"><span class="idf-k">Unit price</span><span class="idf-v">€48 · FOB Porto</span><span class="idf-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div>
+                  <div class="idt-field"><span class="idf-k">Lead time</span><span class="idf-v">6 wks from PP</span><span class="idf-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div>
+                  <div class="idt-field"><span class="idf-k">Payment</span><span class="idf-v">30% deposit</span><span class="idf-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div>
+                  <div class="idt-field"><span class="idf-k">Ship by</span><span class="idf-v">August 26</span><span class="idf-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div>
+                </div>
+              </div>
+              <div class="idt-reply">
+                <div class="idr-h"><span>Clewa drafted a reply</span><span class="idr-lang">sends in Portuguese</span></div>
+                <div class="idr-body">Thanks Marco. €48 FOB works. Before we book, please confirm the bulk wool matches the approved 340gsm and the button color on the tech pack. I'll send the 30% deposit once the PP sample is signed off this week.</div>
+                <div class="idr-foot"><button class="dm-btn primary" type="button" data-toast="Reply sent in Portuguese — logged to the record">Send reply</button><button class="dm-btn" type="button" data-toast="Saved to draft">Edit</button><button class="dm-btn" type="button" data-go="po">Turn into PO</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ QUALITY ============ -->
+      <section class="page" data-page="quality">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Quality control</h2><div class="pg-sub">One inspection, both sides looking at it. The factory self-checks, you verify, and nothing — or no payment — moves until it passes.</div></div>
+            <div class="dv-tools"><button class="x-btn" type="button" data-toast="Exported QC report.xlsx + photo pack"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export report</button></div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="qc-banner">
+              <div><div class="qcb-kick">In-line inspection · AQL 2.5</div><div class="qcb-h">Organic Tee — Core · Order #2488</div><div class="qcb-sub">Lotus Knit · 1,500 units · inspected against the approved sample &amp; the record</div></div>
+              <div class="qc-result"><div class="qcr-v">PASS</div><div class="qcr-l">balance safe to pay on sign</div></div>
+            </div>
+            <div class="qc-watchers">
+              <div class="qc-watch"><span class="qcw-av fac">L</span>Lan · Lotus Knit <span style="color:var(--ink-3)">self-inspected</span></div>
+              <span class="qc-watch qcw-sep">·</span>
+              <div class="qc-watch"><span class="qcw-av">M</span>You <span style="color:var(--ink-3)">verifying</span></div>
+              <span class="qc-watch qcw-sep">·</span>
+              <div class="qc-watch"><span style="color:var(--ink-3)">Both see the same checklist, photos and result — live.</span></div>
+            </div>
+            <div class="ibx-table qc-checks">
+              <div class="ibx-thead"><span>Checkpoint · against spec</span><span>Finding</span><span>Photo</span><span>Result</span></div>
+              <div class="ibx-row"><span class="ib-name">Body length · 71cm ±1</span><span class="ib-loc">70.5–71.4cm</span><span><span class="qc-photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg></span></span><span class="qc-pf pass">Pass</span></div>
+              <div class="ibx-row"><span class="ib-name">Stitch density · 12/inch</span><span class="ib-loc">12/inch confirmed</span><span><span class="qc-photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg></span></span><span class="qc-pf pass">Pass</span></div>
+              <div class="ibx-row"><span class="ib-name">Colour vs lab dip</span><span class="ib-loc">Grade 4–5 · within tol.</span><span><span class="qc-photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg></span></span><span class="qc-pf pass">Pass</span></div>
+              <div class="ibx-row"><span class="ib-name">Care &amp; size labels</span><span class="ib-loc">Correct placement</span><span><span class="qc-photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg></span></span><span class="qc-pf pass">Pass</span></div>
+              <div class="ibx-row"><span class="ib-name">Loose threads / finishing</span><span class="ib-loc">4 minor · within AQL</span><span><span class="qc-photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg></span></span><span class="qc-pf fail">4 minor</span></div>
+            </div>
+            <div class="qc-aql">
+              <div class="qc-aqlc"><div class="qa-n">200</div><div class="qa-l">Units sampled</div></div>
+              <div class="qc-aqlc"><div class="qa-n ok">0 / 5</div><div class="qa-l">Major defects (allowed)</div></div>
+              <div class="qc-aqlc"><div class="qa-n ok">4 / 10</div><div class="qa-l">Minor defects (allowed)</div></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">C</span><span class="iv-txt"><b>Passes AQL 2.5 — 0 majors, 4 minors against 10 allowed.</b> Signing clears the $19,600 balance as safe to pay — you pay Lotus directly, on your agreed terms. Because both sides inspected the same checklist, there's nothing to dispute later. Clewa never holds or moves your money.</span><button class="dm-btn primary" type="button" data-toast="QC signed by both · $19,600 cleared — you pay Lotus directly">Approve &amp; mark safe to pay</button></div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Returns &amp; RMA · closing the quality loop</div><div class="ibx-sub">Customer returns tagged by reason flow back to the factory's scorecard — so quality problems get priced into who you trust next time.</div></div></div>
+            <div class="ret-kpis">
+              <div class="fin-kpi"><div class="fk-num">2.4%</div><div class="fk-label">Return rate · FW26</div><div class="fk-sub up">▼ below 3.5% benchmark</div></div>
+              <div class="fin-kpi"><div class="fk-num">Sizing</div><div class="fk-label">Top reason · 41%</div><div class="fk-sub">not a defect</div></div>
+              <div class="fin-kpi"><div class="fk-num">0.7%</div><div class="fk-label">Quality-defect returns</div><div class="fk-sub warn">routed to factories</div></div>
+            </div>
+            <div class="fin-pbody" style="padding:8px 20px 16px">
+              <div class="mbar"><div class="mbar-top"><span class="mbar-name">Sizing / fit <span class="mb-sub">grade the M up next run</span></span><span class="mbar-pct">41%</span></div><div class="mbar-track"><div class="mbar-fill" style="width:41%"></div></div></div>
+              <div class="mbar"><div class="mbar-top"><span class="mbar-name">Changed mind <span class="mb-sub">no action</span></span><span class="mbar-pct">34%</span></div><div class="mbar-track"><div class="mbar-fill" style="width:34%"></div></div></div>
+              <div class="mbar"><div class="mbar-top"><span class="mbar-name">Stitching defect <span class="mb-sub">→ Lotus Knit scorecard</span></span><span class="mbar-pct">15%</span></div><div class="mbar-track"><div class="mbar-fill tight" style="width:15%"></div></div></div>
+              <div class="mbar"><div class="mbar-top"><span class="mbar-name">Colour off <span class="mb-sub">→ dye-lot note on record</span></span><span class="mbar-pct">10%</span></div><div class="mbar-track"><div class="mbar-fill tight" style="width:10%"></div></div></div>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Stitching defects on the Tee drove 15% of returns — logged to Lotus Knit's scorecard.</b> Still an A−, but Clewa will weigh it on your next knit sourcing decision. Most returns are sizing, not quality — so the fix is grading, not a new factory.</span><button class="dm-btn" type="button" data-go="contacts">View scorecard</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SAMPLES ============ -->
+      <section class="page" data-page="samples">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Samples</h2><div class="pg-sub">Every round, measured against the spec — so you approve with a tape measure, not a feeling</div></div>
+            <div class="dv-tools"><button class="x-btn" type="button" data-toast="Exported samples.xlsx — rounds, measurements, decisions"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button></div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">The sample ladder · what each round is for</div><div class="ibx-sub">You never pay for bulk you haven't seen proven. Each rung de-risks the next — skip one and you find out at 320 units instead of 1.</div></div></div>
+            <div class="loop" style="padding-top:14px;">
+              <div class="loop-step" data-toast="Proto: the first rough make — proves the design works at all. Fit and fabric can still be wrong.">
+                <div class="ls-k">1 · Proto</div><div class="ls-t">Does the design work?</div><div class="ls-s">Rough make, any fabric</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step hot" data-toast="Fit sample: correct fabric and measurements — this is where the Overcoat is now, round 2.">
+                <div class="ls-k">2 · Fit</div><div class="ls-t">Does it fit a body?</div><div class="ls-s">Overcoat is here · round 2</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step" data-toast="PP (pre-production): final fabric, trims and labels — the exact garment, made once. Your sign-off unlocks bulk.">
+                <div class="ls-k">3 · PP</div><div class="ls-t">The exact garment, once</div><div class="ls-s">Sign-off unlocks bulk cutting</div>
+              </div>
+              <span class="loop-arr">→</span>
+              <div class="loop-step" data-toast="TOP (top of production): pulled from the first units off the line — proves bulk matches what you approved. QC measures against it.">
+                <div class="ls-k">4 · TOP</div><div class="ls-t">Does bulk match?</div><div class="ls-s">Pulled off the line · QC's yardstick</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim">
+              <div><div class="ibx-kick">In review · Wool Overcoat — fit sample, round 2</div><div class="ibx-sub">Arrived Monday by DHL. Measure, compare, decide — every decision lands on the record, signed by both sides.</div></div>
+              <span class="mcard-seal" style="color:var(--thread);border-color:var(--thread-dim);background:rgba(140,106,27,0.06)">Your move · 2 days of runway</span>
+            </div>
+            <div class="smp-grid">
+              <div>
+                <div class="tp-art" style="grid-template-columns:repeat(3,1fr);padding:14px 18px 6px;">
+                  <div class="tp-slot filled" data-toast="Photo review: pin a comment to any point on the image"><div class="ts-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg><span class="ts-name">Front · on form</span></div></div>
+                  <div class="tp-slot filled" data-toast="Photo review: pin a comment to any point on the image"><div class="ts-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg><span class="ts-name">Back · on form</span></div></div>
+                  <div class="tp-slot filled" data-toast="Comment #2 is pinned here — collar roll"><div class="ts-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg><span class="ts-name">Collar detail · 📌 #2</span></div></div>
+                </div>
+                <div class="smp-comments">
+                  <div class="smc"><span class="smc-pin">#1</span><div><b>You · sleeve length:</b> Came up short against the spec — see the measure below. Recut or regrade?</div></div>
+                  <div class="smc them"><span class="smc-pin">M</span><div><b>Marco:</b> Sleeve panel was cut from the old marker — recutting at no cost. Confirm the collar roll and round 3 ships Wednesday.<span class="tr-note">translated from Portuguese</span></div></div>
+                  <div class="smc"><span class="smc-pin">#2</span><div><b>You · collar roll:</b> Rolls slightly at the back neck — acceptable on camel, but flag for the press step in bulk.</div></div>
+                </div>
+              </div>
+              <div class="smp-side">
+                <div class="smp-pomhead">Measured vs the spec <span>tape doesn't argue</span></div>
+                <div class="pom">
+                  <div class="pom-r h"><span>POM</span><span>Spec</span><span>Sample</span><span>±</span><span></span></div>
+                  <div class="pom-r"><span>Chest</span><span>58.0</span><span>58.5</span><span>1.0</span><span class="pom-ok">pass</span></div>
+                  <div class="pom-r fail"><span>Sleeve</span><span>64.0</span><span>62.5</span><span>1.0</span><span class="pom-no">−1.5</span></div>
+                  <div class="pom-r"><span>Body length</span><span>71.0</span><span>71.4</span><span>1.0</span><span class="pom-ok">pass</span></div>
+                  <div class="pom-r"><span>Shoulder</span><span>47.5</span><span>47.2</span><span>0.8</span><span class="pom-ok">pass</span></div>
+                  <div class="pom-note">17 of 18 POMs in tolerance · the sleeve miss is comment #1, already answered</div>
+                </div>
+                <div class="smp-acts">
+                  <button class="dm-btn primary" type="button" data-toast="Approved r2 with one condition — sleeve +1.5cm recut, logged on the record, signed by both. Cutting unlocked for Monday.">Approve · sleeve fix on the record</button>
+                  <button class="dm-btn" type="button" data-toast="Round 3 requested — both comments attached, sent in Portuguese">Request round 3</button>
+                </div>
+                <div class="smp-why">Approving “with a condition” writes the sleeve fix into the record — if bulk arrives at 62.5 again, it's a documented breach, not a debate.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">All samples</div><div class="ibx-sub">Where every style stands — including the couriers carrying them</div></div></div>
+            <div class="ibx-table cmp5">
+              <div class="ibx-thead"><span>Style</span><span>Round</span><span>Where it is</span><span>Next</span><span>Status</span></div>
+              <div class="ibx-row"><span class="ib-name">Wool Overcoat — FW</span><span class="ib-loc">Fit · r2</span><span class="ib-used">With you · arrived Mon</span><span class="ib-left">Your decision</span><span><span class="bo-pill risk">In review</span></span></div>
+              <div class="ibx-row"><span class="ib-name">Canvas Tote</span><span class="ib-loc">Proto · r1</span><span class="ib-used">DHL · in transit</span><span class="ib-left">Arrives Thu</span><span><span class="bo-pill idle">In transit</span></span></div>
+              <div class="ibx-row"><span class="ib-name">Organic Tee — Core</span><span class="ib-loc">TOP</span><span class="ib-used">Approved Jul 28</span><span class="ib-left">QC measures against it</span><span><span class="bo-pill ok">Gold seal</span></span></div>
+              <div class="ibx-row" data-go="techpack" style="cursor:pointer;"><span class="ib-name">Boiled-wool Peacoat — SS</span><span class="ib-loc">—</span><span class="ib-used">Not started</span><span class="ib-left">Finish the tech pack first →</span><span><span class="bo-pill draft">Waiting</span></span></div>
+            </div>
+            <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt"><b>The approved sample becomes the standard.</b> QC on Aug 18 measures bulk against the Tee's gold-seal TOP — not against memory. That's what “matches the approved sample” means in your contract.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ MESSAGES ============ -->
+      <section class="page" data-page="messages">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Messages</h2><div class="pg-sub">Chat with any factory in your language — they read and reply in theirs. Every message translated both ways, kept on the order.</div></div>
+          </div>
+          <div class="chat-grid">
+            <div class="chat-list">
+              <div class="chat-litem on">
+                <span class="chat-av">M</span>
+                <div><div class="chat-li-name">Marco · Atelier Norte</div><div class="chat-li-snip">Confirmo, mesma lã 340gsm…</div></div>
+                <div class="chat-li-meta"><div class="chat-li-time">09:42</div><div class="chat-li-unread">2</div></div>
+              </div>
+              <div class="chat-litem">
+                <span class="chat-av">L</span>
+                <div><div class="chat-li-name">Lan · Lotus Knit</div><div class="chat-li-snip">Photos line 2 sent ✓</div></div>
+                <div class="chat-li-meta"><div class="chat-li-time">02:14</div><div class="chat-li-unread">1</div></div>
+              </div>
+              <div class="chat-litem">
+                <span class="chat-av">D</span>
+                <div><div class="chat-li-name">Deniz · Ende Studio</div><div class="chat-li-snip">Numuneyi yarın gönderiyorum</div></div>
+                <div class="chat-li-meta"><div class="chat-li-time">Yest</div></div>
+              </div>
+              <div class="chat-litem">
+                <span class="chat-av k">G</span>
+                <div><div class="chat-li-name">Giulia · Seta Mills</div><div class="chat-li-snip">Buongiorno Mara, per il Resort…</div></div>
+                <div class="chat-li-meta"><div class="chat-li-time">Mon</div></div>
+              </div>
+            </div>
+            <div class="chat-main">
+              <div class="chat-top">
+                <div class="ct-who"><span class="chat-av">M</span><div><div class="ct-name">Marco Pereira · Atelier Norte</div><div class="ct-sub">Porto · types in Portuguese · online</div></div></div>
+                <button class="chat-xlate" type="button" onclick="var s=document.body.classList.toggle('show-orig'); this.querySelector('.cx-state').textContent=s?'Showing original':'Translation on';" title="Show original language alongside translations"><span class="cx-sw"></span><span class="cx-state">Translation on</span></button>
+              </div>
+              <div class="chat-body">
+                <div class="chat-day">Today</div>
+                <div class="msg them">
+                  <div class="msg-bubble">Good morning Mara. The fit sample shipped yesterday, tracking attached.<div class="msg-orig">Bom dia Mara. A amostra de prova seguiu ontem, segue o rastreio.</div></div>
+                  <div class="msg-meta">Marco · 09:20 · <span class="mm-x">translated from Portuguese</span></div>
+                </div>
+                <div class="msg me">
+                  <div class="msg-bubble">Thanks Marco. Before you cut — is the bulk wool the same 340gsm as the approved sample?<div class="msg-orig">Obrigada Marco. Antes de cortar — a lã do volume é o mesmo 340gsm da amostra aprovada?</div></div>
+                  <div class="msg-meta"><span class="mm-x">sent in Portuguese</span> · 09:38 · read</div>
+                </div>
+                <div class="msg them">
+                  <div class="msg-bubble">Confirmed, same 340gsm — batch is logged against your order. We start cutting Monday once you sign off the fit.<div class="msg-orig">Confirmo, mesma lã 340gsm — o lote está registado no seu pedido. Começamos a cortar segunda assim que aprovar a prova.</div></div>
+                  <div class="msg-meta">Marco · 09:42 · <span class="mm-x">translated from Portuguese</span></div>
+                </div>
+                <div class="msg them">
+                  <div class="msg-bubble">One question — confirm the horn button colour before we order trims?<div class="msg-orig">Uma questão — confirma a cor do botão de chifre antes de encomendarmos os aviamentos?</div></div>
+                  <div class="msg-meta">Marco · 09:42 · <span class="mm-x">translated from Portuguese</span></div>
+                </div>
+              </div>
+              <div class="chat-compose">
+                <div class="chat-inwrap">
+                  <input type="text" placeholder="Write in English — Marco reads it in Portuguese" />
+                  <button class="chat-send" type="button" data-toast="Sent · delivered in Portuguese, logged to Order #2491"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+                </div>
+                <div class="chat-cnote"><span class="cc-x">⇄</span>You type in English · Marco receives Portuguese · both originals saved to the order record.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TECH PACK BUILDER ============ -->
+      <section class="page" data-page="techpack">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Tech pack builder</h2><div class="pg-sub">Build a complete spec before you ever send it out. Clewa checks for the gaps factories quietly guess on — so nothing comes back wrong.</div><div class="tp-tpl">Started from the <b>Outerwear template</b> — the 26 fields a coat factory needs, already listed. Fabric reuses the 340gsm wool Atelier Norte already holds. <span class="tpl-more" data-toast="Templates: Tee · Knit · Denim · Outerwear · Bags &amp; accessories">Other templates</span></div></div>
+            <div class="dv-tools">
+              <button class="x-btn" type="button" data-toast="Exported tech-pack.pdf — factory-ready"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span>Export PDF</button>
+              <button class="x-btn ghost" type="button" id="tpSend" data-go="orders">Send to factory</button>
+            </div>
+          </div>
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Artwork, sketches &amp; references</div><div class="ibx-sub">Drop in your CAD, flats, prints and reference photos — they travel with the spec so the factory makes exactly what you drew. No CAD? A clear photo and a note is enough to start.</div></div></div>
+            <div class="tp-art">
+              <div class="tp-slot filled"><div class="ts-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18l7-4 7 4V3z"/></svg><span class="ts-name">Front flat.ai</span></div></div>
+              <div class="tp-slot filled"><div class="ts-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4"/></svg><span class="ts-name">Lining ref.jpg</span></div></div>
+              <div class="tp-slot" data-toast="Upload a flat or CAD — it files itself to this tech pack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="ts-lab">Add CAD / flat</span></div>
+              <div class="tp-slot" data-toast="Upload a reference photo — stitch details, hardware, anything the factory should copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="ts-lab">Add reference</span></div>
+            </div>
+          </div>
+          <div class="tp-grid">
+            <div class="ibx-card" style="margin:0">
+              <div class="tp-sec">
+                <div class="tp-sec-h"><span class="tps-t"><span class="tps-c done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Garment details</span><span class="tps-n">4 of 4</span></div>
+                <div class="tps-why">The basics a factory reads first — get these right and every quote you receive is for the same garment.</div>
+                <div class="tp-fields">
+                  <div class="tp-f"><label>Style name</label><div class="tpv">Boiled-wool Peacoat — SS</div></div>
+                  <div class="tp-f"><label>Category</label><div class="tpv">Outerwear · tailored</div></div>
+                  <div class="tp-f"><label>Colorway</label><div class="tpv">Camel</div></div>
+                  <div class="tp-f"><label>Fit</label><div class="tpv">Regular · relaxed shoulder</div></div>
+                </div>
+              </div>
+              <div class="tp-sec">
+                <div class="tp-sec-h"><span class="tps-t"><span class="tps-c warn" id="tpc-materials">!</span>Materials &amp; BOM</span><span class="tps-n" id="tpn-materials">3 of 4 · 1 gap</span></div>
+                <div class="tps-why">Every component, named and counted. “Wool” isn’t a spec — “340gsm boiled wool ±5%” is, and it’s what makes QC enforceable later.</div>
+                <div class="tp-fields">
+                  <div class="tp-f"><label>Main fabric</label><div class="tpv">340gsm boiled wool · ±5%</div></div>
+                  <div class="tp-f"><label>Lining</label><div class="tpv miss" data-gap="lining" role="button" tabindex="0">Not specified<span class="fixc">Fix this</span></div></div>
+                  <div class="tp-f full tp-helper" data-helper="lining" hidden>
+                    <div class="tph-x"><b>What’s a lining, and why do factories stop here?</b> The inner fabric your arm slides through. Leave it blank and the factory either guesses (wrong hand-feel, returns) or pauses to ask — adding a sampling round. Pick one and Clewa writes the spec line for you:</div>
+                    <button class="tph-opt" type="button" data-fill="Cupro twill · 90gsm · tonal" data-gap="lining"><span class="tpo-t">Cupro twill, 90gsm <span class="tpo-tag">Clewa suggests</span></span><span class="tpo-s">Breathable, the standard under tailored wool — what comparable coats use</span></button>
+                    <button class="tph-opt" type="button" data-fill="Acetate twill · 80gsm · tonal" data-gap="lining"><span class="tpo-t">Acetate twill, 80gsm</span><span class="tpo-s">Crisper hand, friendlier cost — fine for a first run</span></button>
+                    <button class="tph-opt" type="button" data-fill="Quilted lining · 120gsm · to discuss" data-gap="lining"><span class="tpo-t">Quilted, 120gsm</span><span class="tpo-s">For a warmer winter version — adds cost and bulk</span></button>
+                  </div>
+                  <div class="tp-f"><label>Buttons</label><div class="tpv">18mm horn · 6 + 2 spare</div></div>
+                  <div class="tp-f"><label>Thread</label><div class="tpv">Tex 40 · tonal</div></div>
+                </div>
+              </div>
+              <div class="tp-sec">
+                <div class="tp-sec-h"><span class="tps-t"><span class="tps-c done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Measurements &amp; grading</span><span class="tps-n">full size run</span></div>
+                <div class="tps-why">The ± tolerances are the point — they’re what turns “it feels small” into a measurable pass or fail at QC.</div>
+                <div class="tp-fields">
+                  <div class="tp-f"><label>Size run</label><div class="tpv">XS – XXL</div></div>
+                  <div class="tp-f"><label>Grading</label><div class="tpv">Graded · all POMs</div></div>
+                  <div class="tp-f full"><label>Points of measure</label><div class="tpv">18 POMs with tolerances · body length 71cm ±1</div></div>
+                </div>
+              </div>
+              <div class="tp-sec">
+                <div class="tp-sec-h"><span class="tps-t"><span class="tps-c done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Construction &amp; stitching</span><span class="tps-n">5 of 5</span></div>
+                <div class="tps-why">How it’s actually sewn. This is where “looks the same, falls apart in a month” hides — the template pre-filled sensible defaults for a tailored coat.</div>
+                <div class="tp-fields">
+                  <div class="tp-f"><label>Seams</label><div class="tpv">Lockstitch · 10 SPI · taped shoulders</div></div>
+                  <div class="tp-f"><label>Closure</label><div class="tpv">6-button front · reinforced shanks</div></div>
+                  <div class="tp-f"><label>Pockets</label><div class="tpv">Welt ×2 · lined · bartacked corners</div></div>
+                  <div class="tp-f"><label>Hem &amp; cuffs</label><div class="tpv">Blind-stitched · 4cm hem</div></div>
+                  <div class="tp-f"><label>Interlining</label><div class="tpv">Fusible · chest, collar &amp; lapel</div></div>
+                </div>
+              </div>
+              <div class="tp-sec">
+                <div class="tp-sec-h"><span class="tps-t"><span class="tps-c warn" id="tpc-labels">!</span>Labels &amp; packaging</span><span class="tps-n" id="tpn-labels">3 of 4 · 1 gap</span></div>
+                <div class="tps-why">The unglamorous fields that hold shipments at customs when they’re missing.</div>
+                <div class="tp-fields">
+                  <div class="tp-f"><label>Size label</label><div class="tpv">Woven · centre back neck</div></div>
+                  <div class="tp-f"><label>Care label</label><div class="tpv miss" data-gap="care" role="button" tabindex="0">Content missing<span class="fixc">Fix this</span></div></div>
+                  <div class="tp-f full tp-helper" data-helper="care" hidden>
+                    <div class="tph-x"><b>Care labels are a legal requirement,</b> and customs can hold a shipment without one. Clewa drafted the content from your fabric — 340gsm boiled wool:</div>
+                    <button class="tph-opt" type="button" data-fill="Dry clean only · do not bleach · cool iron · EU + US symbols" data-gap="care"><span class="tpo-t">Dry clean only <span class="tpo-tag">Drafted from your fabric</span></span><span class="tpo-s">The standard for boiled wool · EU + US symbol sets included</span></button>
+                    <button class="tph-opt" type="button" data-fill="Hand wash cold · dry flat · do not bleach · EU + US symbols" data-gap="care"><span class="tpo-t">Hand wash cold</span><span class="tpo-s">Only if the factory confirms the wool is washable — Clewa will add it to their checklist</span></button>
+                  </div>
+                  <div class="tp-f"><label>Hangtag</label><div class="tpv">Kraft · string attach</div></div>
+                  <div class="tp-f"><label>Polybag</label><div class="tpv">Recycled · per unit</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tp-side">
+              <div class="ibx-card" style="margin:0">
+                <div class="tp-meter">
+                  <div class="tp-ring" id="tpRing"><span id="tpRingVal">82%</span></div>
+                  <div class="tpm-lab" id="tpMeterLab"><b>Almost ready.</b> 2 gaps to close before this is factory-safe — click a highlighted field to fix it.</div>
+                </div>
+              </div>
+              <div class="ibx-card ai-surface" style="margin:0">
+                <div class="hx-chead"><span class="hc-title">Clewa's completeness check</span><span class="hc-sub" id="tpGapCount">2 gaps</span></div>
+                <div class="tpfl" id="tpfl-lining"><span class="fl-d warn"></span><div><b>No lining specified.</b> Factories will guess or pause to ask — adding a sampling round. Add it before sending.</div></div>
+                <div class="tpfl" id="tpfl-care"><span class="fl-d warn"></span><div><b>Care label content missing.</b> Required for your destination market; customs can hold a shipment without it.</div></div>
+                <div class="tpfl"><span class="fl-d ok"></span><div><b>Fabric weight + tolerance present.</b> The 340gsm gap that bites at QC is closed.</div></div>
+                <div class="tpfl"><span class="fl-d ok"></span><div><b>Full graded size run.</b> No back-and-forth on measurements.</div></div>
+                <div class="tpfl"><span class="fl-d ok"></span><div><b>Construction fully specified.</b> Seams, closure and interlining — the durability fields — are answered.</div></div>
+              </div>
+              <div class="ibx-card" style="margin:0">
+                <div class="hx-chead"><span class="hc-title">What happens when you send</span></div>
+                <div class="tp-next"><span class="tpn-n">1</span><div>The factory gets it in <b>their language</b>, laid out page by page.</div></div>
+                <div class="tp-next"><span class="tpn-n">2</span><div>They confirm it <b>line by line</b> — no silent guessing, before anything is booked.</div></div>
+                <div class="tp-next"><span class="tpn-n">3</span><div>Confirmed lines lock into <b>the record</b> — what QC and payment check against later.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ASK CLEWA ============ -->
+      <section class="page ai-surface" data-page="ask">
+        <div class="page-w">
+          <div class="ask-wrap">
+            <div class="ask-hero">
+              <div class="ask-mark">C</div>
+              <h2>Ask Clewa</h2>
+              <p>Your production copilot — it knows your orders, factories, costs and calendar. Ask anything.</p>
+              <div class="ask-chips">
+                <span class="ask-chip" data-toast="Asked — answer drafted from your data">Can I afford the Resort order?</span>
+                <span class="ask-chip" data-toast="Asked — answer drafted from your data">What's at risk this week?</span>
+                <span class="ask-chip" data-toast="Asked — answer drafted from your data">Why is the Silk Scarf margin low?</span>
+                <span class="ask-chip" data-toast="Asked — answer drafted from your data">When must I place SS27?</span>
+              </div>
+            </div>
+            <div class="ask-convo">
+              <div class="ask-q">Which factory should I use for the new wool coat?</div>
+              <div class="ask-a">
+                <div class="ask-a-h"><span class="aah-mk">C</span>Clewa</div>
+                <div class="ask-a-body"><b>Atelier Norte</b> is the strongest fit. They run <b>94% on-time on outerwear</b> across your 7 orders with a 1.4% defect rate, and they already hold your 340gsm wool spec. One caution: they've slipped twice on styles with hardware, and they <b>close Aug 15–22</b> for the summer break — so place by early August to protect an autumn drop. Lotus Knit is cheaper but knit-focused; I'd keep them on the Tee.</div>
+                <div class="ask-cites">
+                  <span class="ask-cite" data-go="contacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5"/></svg>Factory scorecards</span>
+                  <span class="ask-cite" data-go="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Factory calendar</span>
+                </div>
+              </div>
+            </div>
+            <div class="ask-bar">
+              <div class="ask-inwrap">
+                <input type="text" placeholder="Ask about your orders, costs, factories, timing…" />
+                <button class="chat-send" type="button" data-toast="Clewa is thinking — answers cite your own data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+              </div>
+              <div class="ask-note">Answers are grounded in your Clewa data and always cite their source. Turn off any time with AI assist.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SEASON CLOSE ============ -->
+      <section class="page" data-page="seasonclose">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Season close</h2><div class="pg-sub">Every season, auto-compiled — what shipped, what it earned, who delivered, and what to carry forward</div></div>
+            <div class="dv-tools">
+              <button class="x-btn" type="button" data-toast="Exported season-close.pdf — ready to share"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span>Export PDF</button>
+              <button class="x-btn ghost" type="button" data-toast="Share link created — read-only, for your team or investors">Share</button>
+            </div>
+          </div>
+          <div class="sc-hero">
+            <div class="sch-kick">FW26 · Sep–Oct · closed</div>
+            <h3>Your strongest season yet — on time and on margin.</h3>
+            <p>3 styles, 3,820 units, all shipped within a week of plan. Blended margin held at 64% against your 60% target, and you didn't miss a drop. The one drag was the Silk Scarf's thin margin — addressed in the carry-forward below.</p>
+          </div>
+          <div class="sc-kpis">
+            <div class="fin-kpi"><div class="fk-num">3,820</div><div class="fk-label">Units shipped</div><div class="fk-sub">across 3 styles</div></div>
+            <div class="fin-kpi"><div class="fk-num">$214k</div><div class="fk-label">Retail value produced</div><div class="fk-sub up">▲ 28% vs SS26</div></div>
+            <div class="fin-kpi"><div class="fk-num">94%</div><div class="fk-label">On-time delivery</div><div class="fk-sub up">▲ 6 pts</div></div>
+            <div class="fin-kpi"><div class="fk-num">64%</div><div class="fk-label">Blended margin</div><div class="fk-sub up">target 60%</div></div>
+          </div>
+          <div class="sc-twocol">
+            <div class="ibx-card" style="margin:0">
+              <div class="hx-chead"><span class="hc-title">What went well</span></div>
+              <div class="sc-li"><span class="scl-d win"></span><div><b>Atelier Norte delivered the Overcoat early.</b> Locking the tech pack before inquiry cut sampling to one round.</div></div>
+              <div class="sc-li"><span class="scl-d win"></span><div><b>The Tee re-curved to size M paid off</b> — sold through 94% in 8 weeks with almost no leftover.</div></div>
+              <div class="sc-li"><span class="scl-d win"></span><div><b>FX locked at PO saved ~$240</b> on the Overcoat when the euro moved against you.</div></div>
+            </div>
+            <div class="ibx-card" style="margin:0">
+              <div class="hx-chead"><span class="hc-title">What slipped</span></div>
+              <div class="sc-li"><span class="scl-d slip"></span><div><b>Silk Scarf margin came in at 56%</b>, under target — priced too low for the silk cost.</div></div>
+              <div class="sc-li"><span class="scl-d slip"></span><div><b>Button wastage ran 4.2% vs 3% planned</b> on the Overcoat — caught mid-run, no stockout, but worth tightening.</div></div>
+              <div class="sc-li"><span class="scl-d slip"></span><div><b>140m of ivory silk became deadstock</b> from an MOQ overbuy — now earmarked for SS27.</div></div>
+            </div>
+          </div>
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Factory performance · this season</div><div class="ibx-sub">Auto-scored from delivery, QC and responsiveness — feeds every future recommendation.</div></div></div>
+            <div class="perf-head"><span>Factory</span><span class="r">On-time</span><span class="r">Defect</span><span class="r">Lead kept</span><span class="r">Grade</span></div>
+            <div class="perf-row"><span class="perf-name">Atelier Norte · Porto</span><span class="perf-num good">100%</span><span class="perf-num good">1.4%</span><span class="perf-num good">+2 days early</span><span class="perf-num good">A</span></div>
+            <div class="perf-row"><span class="perf-name">Lotus Knit · HCMC</span><span class="perf-num good">92%</span><span class="perf-num">2.1%</span><span class="perf-num">on time</span><span class="perf-num good">A−</span></div>
+            <div class="perf-row"><span class="perf-name">Seta Mills · Como</span><span class="perf-num good">98%</span><span class="perf-num good">0.8%</span><span class="perf-num">on time</span><span class="perf-num good">A</span></div>
+          </div>
+          <div class="ibx-alert ai-surface"><span class="iv-ic">C</span><span class="iv-txt"><b>Carry into Resort 26:</b> repeat the Overcoat with Atelier (+20%), reprice the Scarf to $54 retail, draw the ivory silk deadstock into the SS27 slip dress, and order 200 spare buttons up front to cover wastage. Clewa pre-built next season's plan from this.</span><button class="dm-btn primary" type="button" data-go="planning">Open the plan</button></div>
+        </div>
+      </section>
+
+      <!-- ============ TEAM & ROLES ============ -->
+      <section class="page" data-page="team">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Team &amp; roles</h2><div class="pg-sub">Everyone sees their slice — and factories see only their own orders. One workspace, the right view for each person.</div></div>
+            <div class="dv-tools"><button class="x-btn ghost" type="button" data-toast="Invite sent">+ Invite</button></div>
+          </div>
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Avatars</div><div class="ibx-sub">How you and your factories show up across the shared workspace. A clean monogram in a colour you pick — or drop in a photo or logo.</div></div></div>
+            <div class="av-demo">
+              <div class="av-one"><span class="ava c-ink">M</span><div class="av-lab">You</div></div>
+              <div class="av-one"><span class="ava c-gold">A</span><div class="av-lab">Atelier Norte</div></div>
+              <div class="av-one"><span class="ava c-sage">L</span><div class="av-lab">Lotus Knit</div></div>
+              <div class="av-one"><span class="ava c-slate">J</span><div class="av-lab">Jonah · ops</div></div>
+              <div class="av-one"><span class="ava c-plum">S</span><div class="av-lab">Sasha · design</div></div>
+              <div class="av-one"><span class="ava c-clay">D</span><div class="av-lab">Ende Studio</div></div>
+            </div>
+            <div class="av-pick">
+              <span class="ava c-ink av-prev" id="avPrev">M</span>
+              <div>
+                <div class="avp-label">Your colour</div>
+                <div class="av-swatches">
+                  <span class="av-sw on" style="background:#141311" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-ink';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-sw" style="background:#9A7B22" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-gold';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-sw" style="background:#4A6B52" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-sage';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-sw" style="background:#4a6b8a" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-slate';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-sw" style="background:#8a5a86" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-plum';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-sw" style="background:#b06a4f" onclick="var p=document.getElementById('avPrev');p.className='ava av-prev c-clay';document.querySelectorAll('.av-sw').forEach(function(s){s.classList.remove('on')});this.classList.add('on');"></span>
+                  <span class="av-up" data-toast="Upload a photo or logo" title="Upload a photo or logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Your team</div><div class="ibx-sub">Maison Ardent workspace · 3 seats used</div></div></div>
+            <div class="team-row">
+              <span class="team-av">M</span>
+              <div><div class="team-name">Mara Aldous</div><div class="team-email">mara@maisonardent.com</div></div>
+              <span class="team-sees">Everything — orders, money, factories, settings</span>
+              <span class="role-pill owner">Owner</span>
+            </div>
+            <div class="team-row">
+              <span class="team-av">J</span>
+              <div><div class="team-name">Jonah Reyes</div><div class="team-email">jonah@maisonardent.com</div></div>
+              <span class="team-sees">Orders, calendar, QC, inventory — no financials</span>
+              <span class="role-pill">Production</span>
+            </div>
+            <div class="team-row">
+              <span class="team-av">S</span>
+              <div><div class="team-name">Sasha Lume</div><div class="team-email">sasha@maisonardent.com</div></div>
+              <span class="team-sees">Tech packs, samples, the record — design only</span>
+              <span class="role-pill">Design</span>
+            </div>
+          </div>
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Factory access · guests</div><div class="ibx-sub">Invited per order. A factory sees its own orders, messages and QC — never your costs, margins or other factories.</div></div></div>
+            <div class="team-row">
+              <span class="team-av f">A</span>
+              <div><div class="team-name">Marco · Atelier Norte</div><div class="team-email">Order #2491 only</div></div>
+              <span class="team-sees">Their order, the shared record, messages, QC checklist</span>
+              <span class="role-pill guest">Factory guest</span>
+            </div>
+            <div class="team-row">
+              <span class="team-av f">L</span>
+              <div><div class="team-name">Lan · Lotus Knit</div><div class="team-email">Order #2488 only</div></div>
+              <span class="team-sees">Their order, the shared record, messages, QC checklist</span>
+              <span class="role-pill guest">Factory guest</span>
+            </div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>Factories never see your margins, costs, or each other.</b> Atelier can't tell what Lotus charges — and neither sees your retail price. The shared record shows only what's agreed on their order.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SHARED WORKSPACE ============ -->
+      <section class="page" data-page="sharedview">
+        <div class="page-w">
+          <div class="pg-bar">
+            <div><h2 class="pg-h">Shared workspace</h2><div class="pg-sub">The exact same order, open on both screens — so you and your factory are never working from different information.</div></div>
+            <div class="dv-tools"><span class="inv-sync"><span class="is-dot"></span>Atelier Norte · viewing now</span><a class="x-btn ghost" href="factory-view.html" style="text-decoration:none;">Open Marco's phone view →</a></div>
+          </div>
+
+          <div class="shared">
+            <div class="shared-h">
+              <span class="sh-title">Order #2491 · Wool Overcoat · shared with Atelier Norte</span>
+              <span class="sh-live"><span class="shl-dot"></span>Both viewing live · synced 1 min ago</span>
+            </div>
+            <div class="shared-body">
+              <div class="sh-side you">
+                <div class="sh-who"><span class="sh-av">M</span>You · Maison Ardent</div>
+                <div class="sh-state">Reviewing the fit sample</div>
+                <div class="sh-note">Your sign-off is what lets them cut. 2 comments open on round 2.</div>
+              </div>
+              <div class="sh-mid">
+                <div class="shm-lab">Stage</div>
+                <div class="shm-stage">Sampling → Production</div>
+                <div class="shm-ball">Your move</div>
+              </div>
+              <div class="sh-side fac">
+                <div class="sh-who"><span class="sh-av f">M</span>Marco · Atelier Norte</div>
+                <div class="sh-state">Ready to cut on approval</div>
+                <div class="sh-note">Yarn booked, line reserved Monday. Holding for your fit sign-off.</div>
+              </div>
+            </div>
+            <div class="shared-foot">
+              <span>Same status, same dates, same record — updated for both of you the moment either side changes something.</span>
+              <span class="shf-link" data-go="order">Open the order →</span>
+            </div>
+          </div>
+
+          <div class="ibx-card">
+            <div class="ibx-head slim"><div><div class="ibx-kick">Who sees what</div><div class="ibx-sub">Everything about the work itself is shared. Everything about your business stays yours — the factory never sees your costs, margins or other makers.</div></div></div>
+            <div class="vis-head"><span>Information</span><span class="c"><span class="vis-col-lab"><span class="vcl-av you">M</span>You</span></span><span class="c"><span class="vis-col-lab"><span class="vcl-av them">A</span>Atelier</span></span></div>
+            <div class="vis-row"><div>Order status &amp; stage<div class="vr-sub">where things stand</div></div><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span></div>
+            <div class="vis-row"><div>The agreed record &amp; changes</div><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span></div>
+            <div class="vis-row"><div>Messages, photos &amp; QC checklist</div><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span></div>
+            <div class="vis-row"><div>Your landed cost &amp; margin<div class="vr-sub">private to you</div></div><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span><span class="c"><span class="vis-no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span></span></div>
+            <div class="vis-row"><div>Your retail price &amp; other factories<div class="vr-sub">private to you</div></div><span class="c"><span class="vis-yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></span><span class="c"><span class="vis-no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span></span></div>
+            <div class="ibx-alert"><span class="iv-ic">!</span><span class="iv-txt"><b>The boundary is automatic.</b> Atelier sees only their order — not what you paid Lotus Knit, not your markup, not your other styles. No spreadsheet to scrub before you share.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DOCUMENTS ============ -->
+      <section class="page" data-page="documents">
+        <div class="page-w">
+          <div class="pg-bar"><div><h2 class="pg-h">Documents</h2><div class="pg-sub">48 files · versioned &amp; attached to orders</div></div><button class="x-btn" data-toast="Exported file index"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button></div>
+          <div class="dv-window" style="margin-top:0">
+            <div class="dv-cols">
+              <aside class="dv-tree">
+                <div class="dvt-group">Library</div>
+                <div class="dvt-item on"><span class="dvt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>All documents<span class="dvt-count">48</span></div>
+                <div class="dvt-group">By order</div>
+                <div class="dvt-item"><span class="dvt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Wool Overcoat<span class="dvt-count">19</span></div>
+                <div class="dvt-item"><span class="dvt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Organic Tee<span class="dvt-count">15</span></div>
+                <div class="dvt-group">By type</div>
+                <div class="dvt-item"><span class="dvt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h7l4 4v14H7z"/></svg></span>Tech packs<span class="dvt-count">7</span></div>
+                <div class="dvt-item"><span class="dvt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h7l4 4v14H7z"/></svg></span>Invoices &amp; POs<span class="dvt-count">12</span></div>
+              </aside>
+              <div class="dv-list">
+                <div class="dv-listhead"><span>Document</span><span>Type</span><span>Updated</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 13h5M10 16h5"/></svg></span><div><div class="dr-title">Tech Pack — Wool Overcoat FW</div><div class="dr-sub">v4 · 340gsm tolerance</div></div></div><span class="dr-type">Tech pack</span><span class="dr-meta"><b>Aug 5</b><br>by you</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></span><div><div class="dr-title">Purchase Order #2491</div><div class="dr-sub">Signed · $14.20/unit</div></div></div><span class="dr-type">PO</span><span class="dr-meta"><b>Aug 8</b><br>both</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11v8H8l-4 3z"/><path d="M19 9v9l-3-2h-5"/></svg></span><div><div class="dr-title">Quotes — 3 factories</div><div class="dr-sub">normalized · Atelier selected</div></div></div><span class="dr-type">Quote</span><span class="dr-meta"><b>Aug 3</b><br>Clewa</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M15 15l4 4M8 11l2 2 4-4"/></svg></span><div><div class="dr-title">Fit Sample Report — round 2</div><div class="dr-sub">3 comments · awaiting sign-off</div></div></div><span class="dr-type">Inspection</span><span class="dr-meta"><b>Aug 11</b><br>by you</span></div>
+                <div class="doc-row"><div class="dr-name"><span class="dr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg></span><div><div class="dr-title">Commercial Invoice &amp; Packing List</div><div class="dr-sub">Draft · FOB Porto</div></div></div><span class="dr-type">Customs</span><span class="dr-meta"><b>Draft</b></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONTACTS ============ -->
+      <section class="page" data-page="contacts">
+        <div class="page-w">
+          <div class="pg-bar"><div><h2 class="pg-h">Contacts &amp; factories</h2><div class="pg-sub">Your network — with performance built in</div></div><div class="dv-tools"><button class="x-btn" data-toast="Exported contacts.xlsx"><span class="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM10 4v16M4 10h16"/></svg></span>Export</button><button class="btn btn-ghost" data-toast="Add factory — coming soon">+ Add factory</button></div></div>
+          <div class="rolo-grid">
+            <div class="rolo-card"><div class="rolo-top"><div class="rolo-logo">A</div><div class="rolo-id"><div class="rolo-name">Atelier Norte</div><div class="rolo-loc">Porto, Portugal · outerwear</div></div><span class="rolo-star"><span class="rs-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg></span>4.8</span></div><div class="rolo-tags"><span class="rolo-tag">Wool &amp; outerwear</span><span class="rolo-tag">MOQ 150</span><span class="rolo-tag">OEKO-TEX</span></div><div class="rolo-stats"><div class="rolo-stat"><div class="rst-num good">96%</div><div class="rst-lab">On-time</div></div><div class="rolo-stat"><div class="rst-num">7</div><div class="rst-lab">Orders</div></div><div class="rolo-stat"><div class="rst-num good">1.4%</div><div class="rst-lab">Defect</div></div></div><div class="rolo-foot"><div class="rolo-person"><span class="rp-av">M</span><div><div class="rp-name">Marco Pereira</div><div class="rp-role">Production · PT/EN</div></div></div><span class="rolo-msg" data-toast="Opening message…">Message →</span></div></div>
+            <div class="rolo-card"><div class="rolo-top"><div class="rolo-logo">L</div><div class="rolo-id"><div class="rolo-name">Lotus Knit</div><div class="rolo-loc">Ho Chi Minh City · knits</div></div><span class="rolo-star"><span class="rs-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg></span>4.6</span></div><div class="rolo-tags"><span class="rolo-tag">Knits &amp; jersey</span><span class="rolo-tag">MOQ 500</span><span class="rolo-tag">GOTS</span></div><div class="rolo-stats"><div class="rolo-stat"><div class="rst-num good">92%</div><div class="rst-lab">On-time</div></div><div class="rolo-stat"><div class="rst-num">12</div><div class="rst-lab">Orders</div></div><div class="rolo-stat"><div class="rst-num good">2.1%</div><div class="rst-lab">Defect</div></div></div><div class="rolo-foot"><div class="rolo-person"><span class="rp-av">L</span><div><div class="rp-name">Lan Nguyen</div><div class="rp-role">Account · VI/EN</div></div></div><span class="rolo-msg" data-toast="Opening message…">Message →</span></div></div>
+            <div class="rolo-card"><div class="rolo-top"><div class="rolo-logo">E</div><div class="rolo-id"><div class="rolo-name">Ende Studio</div><div class="rolo-loc">Istanbul, Türkiye · accessories</div></div><span class="rolo-star"><span class="rs-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg></span>4.3</span></div><div class="rolo-tags"><span class="rolo-tag">Bags &amp; canvas</span><span class="rolo-tag">MOQ 300</span><span class="rolo-tag">New</span></div><div class="rolo-stats"><div class="rolo-stat"><div class="rst-num">—</div><div class="rst-lab">On-time</div></div><div class="rolo-stat"><div class="rst-num">1</div><div class="rst-lab">Orders</div></div><div class="rolo-stat"><div class="rst-num">—</div><div class="rst-lab">Defect</div></div></div><div class="rolo-foot"><div class="rolo-person"><span class="rp-av">D</span><div><div class="rp-name">Deniz Aydın</div><div class="rp-role">Owner · TR/EN</div></div></div><span class="rolo-msg" data-toast="Opening message…">Message →</span></div></div>
+            <div class="rolo-card"><div class="rolo-top"><div class="rolo-logo">S</div><div class="rolo-id"><div class="rolo-name">Seta Mills</div><div class="rolo-loc">Como, Italy · silk</div></div><span class="rolo-star"><span class="rs-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg></span>4.9</span></div><div class="rolo-tags"><span class="rolo-tag">Silk &amp; scarves</span><span class="rolo-tag">MOQ 200</span><span class="rolo-tag">Mill-direct</span></div><div class="rolo-stats"><div class="rolo-stat"><div class="rst-num good">98%</div><div class="rst-lab">On-time</div></div><div class="rolo-stat"><div class="rst-num">4</div><div class="rst-lab">Orders</div></div><div class="rolo-stat"><div class="rst-num good">0.8%</div><div class="rst-lab">Defect</div></div></div><div class="rolo-foot"><div class="rolo-person"><span class="rp-av">G</span><div><div class="rp-name">Giulia Conti</div><div class="rp-role">Sales · IT/EN</div></div></div><span class="rolo-msg" data-toast="Opening message…">Message →</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PO GENERATOR ============ -->
+      <section class="page" data-page="po">
+        <div class="page-w">
+          <div class="pg-bar"><div><h2 class="pg-h">Purchase order generator</h2><div class="pg-sub">Build it here, export a clean PDF, send it to the factory</div></div></div>
+          <div class="po-wrap">
+            <div class="po-form">
+              <div class="pf-h">Order details</div>
+              <div class="po-fields">
+                <div class="po-field"><label>PO number</label><input id="po-num" value="2491" /></div>
+                <div class="po-field"><label>Product</label><input id="po-product" value="Wool Overcoat — FW" /></div>
+                <div class="po-field"><label>Factory</label><input id="po-factory" value="Atelier Norte" /></div>
+                <div class="po-two">
+                  <div class="po-field"><label>Quantity</label><input id="po-qty" type="number" value="320" /></div>
+                  <div class="po-field"><label>Unit price ($)</label><input id="po-price" type="number" step="0.01" value="59.00" /></div>
+                </div>
+                <div class="po-two">
+                  <div class="po-field"><label>Deposit (%)</label><input id="po-deposit" type="number" value="30" /></div>
+                  <div class="po-field"><label>Incoterm</label><input id="po-incoterm" value="FOB Porto" /></div>
+                </div>
+                <div class="po-field"><label>Ship by</label><input id="po-ship" value="Aug 26, 2026" /></div>
+              </div>
+              <div class="pf-foot">
+                <button class="btn btn-primary" data-toast="PO exported as PDF">Export PDF</button>
+                <button class="btn btn-ghost" data-toast="Sent to Atelier Norte · also emailed">Send to factory</button>
+              </div>
+            </div>
+
+            <div class="po-doc">
+              <div class="po-doc-inner">
+                <div class="pod-top">
+                  <div><div class="pod-brand">Cle<span class="seg">w</span>a</div><div class="pod-co">Maison Ardent · Lisbon &amp; New York</div></div>
+                  <div class="pod-po"><div class="pp-lab">Purchase order</div><div class="pp-num">#<span id="pod-num">2491</span></div><div class="pp-date">Issued Aug 8, 2026</div></div>
+                </div>
+                <div class="pod-parties">
+                  <div class="pod-party"><div class="pd-lab">From</div><div class="pd-name">Maison Ardent</div><div class="pd-line">Rua Garrett 12, Lisbon<br>orders@maisonardent.com</div></div>
+                  <div class="pod-party"><div class="pd-lab">To</div><div class="pd-name" id="pod-factory">Atelier Norte</div><div class="pd-line">Rua das Flores, Porto, Portugal<br>marco@ateliernorte.pt</div></div>
+                </div>
+                <table class="pod-table">
+                  <thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit</th><th class="r">Amount</th></tr></thead>
+                  <tbody>
+                    <tr><td><span id="pod-product">Wool Overcoat — FW</span><div class="td-sub">340gsm boiled wool · per tech pack v4</div></td><td class="r" id="pod-qty">320</td><td class="r pod-money" id="pod-price">$59.00</td><td class="r pod-money" id="pod-line">$18,880.00</td></tr>
+                  </tbody>
+                </table>
+                <div class="pod-totals"><div class="pod-totals-in">
+                  <div class="pod-trow"><span>Subtotal</span><span class="pod-money" id="pod-sub">$18,880.00</span></div>
+                  <div class="pod-trow"><span>Deposit due now</span><span class="pod-money" id="pod-dep">$5,664.00 (30%)</span></div>
+                  <div class="pod-trow"><span>Balance on QC pass</span><span class="pod-money" id="pod-bal">$13,216.00</span></div>
+                  <div class="pod-trow grand"><span>Total</span><span id="pod-grand">$18,880</span></div>
+                </div></div>
+                <div class="pod-terms">
+                  <div class="pod-term"><div class="pt-lab">Payment terms</div><div class="pt-val" id="pod-depterm">30% deposit · 70% on QC pass</div></div>
+                  <div class="pod-term"><div class="pt-lab">Incoterm</div><div class="pt-val" id="pod-incoterm">FOB Porto</div></div>
+                  <div class="pod-term"><div class="pt-lab">Ship by</div><div class="pt-val" id="pod-ship">Aug 26, 2026</div></div>
+                  <div class="pod-term"><div class="pt-lab">QC standard</div><div class="pt-val">AQL 2.5 · major / minor</div></div>
+                </div>
+                <div class="pod-sign">
+                  <div class="ps-line">Maison Ardent — authorized signature</div>
+                  <div class="ps-line">Atelier Norte — accepted</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="t-c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="t-msg">Done</span></div>
+
+<div class="cz-scrim" id="czScrim" onclick="document.getElementById('czPanel').classList.remove('open');this.classList.remove('open');"></div>
+<aside class="cz-panel" id="czPanel" aria-label="Customize workspace">
+  <div class="cz-head">
+    <h3>Customize your workspace</h3>
+    <span class="cz-x" onclick="document.getElementById('czPanel').classList.remove('open');document.getElementById('czScrim').classList.remove('open');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+  </div>
+  <div class="cz-intro">Show only what you use. Hide the sections and tiles you don't — your choices are remembered on this device.</div>
+  <div class="cz-body">
+    <div class="cz-sec">Sidebar sections</div>
+    <div class="cz-row">Make &amp; plan<span class="cz-sw on" data-cz="nav" data-name="Make &amp; plan"></span></div>
+    <div class="cz-row">Track<span class="cz-sw on" data-cz="nav" data-name="Track"></span></div>
+    <div class="cz-row">Intelligence<span class="cz-sw on" data-cz="nav" data-name="Intelligence"></span></div>
+    <div class="cz-row">Library<span class="cz-sw on" data-cz="nav" data-name="Library"></span></div>
+    <div class="cz-sec">Home tiles</div>
+    <div class="cz-row">Shared with factory<span class="cz-sw on" data-cz="tile" data-key="shared"></span></div>
+    <div class="cz-row">Money<span class="cz-sw on" data-cz="tile" data-key="money"></span></div>
+    <div class="cz-row">This week<span class="cz-sw on" data-cz="tile" data-key="week"></span></div>
+    <div class="cz-row">While you slept<span class="cz-sw on" data-cz="tile" data-key="feed"></span></div>
+    <div class="cz-row">Inventory signals<span class="cz-sw on" data-cz="tile" data-key="inv"></span></div>
+  </div>
+</aside>
+
+<script>
+/* customize panel — toggle nav sections + home tiles, persisted */
+(function () {
+  function navGroup(name) {
+    var secs = document.querySelectorAll('.side-nav .side-sec');
+    var header = null;
+    secs.forEach(function (s) { if (s.textContent.trim() === name) header = s; });
+    if (!header) return [];
+    var els = [header], n = header.nextElementSibling;
+    while (n && !n.classList.contains('side-sec')) { els.push(n); n = n.nextElementSibling; }
+    return els;
+  }
+  function applyNav(name, show) {
+    navGroup(name).forEach(function (el) { el.style.display = show ? '' : 'none'; });
+  }
+  function applyTile(key, show) {
+    document.body.classList.toggle('hide-' + key, !show);
+  }
+  // restore
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('clewa-cz') || '{}'); } catch (e) {}
+  document.querySelectorAll('.cz-sw').forEach(function (sw) {
+    var kind = sw.getAttribute('data-cz');
+    var id = kind + ':' + (sw.getAttribute('data-name') || sw.getAttribute('data-key'));
+    if (saved[id] === false) {
+      sw.classList.remove('on');
+      if (kind === 'nav') applyNav(sw.getAttribute('data-name'), false);
+      else applyTile(sw.getAttribute('data-key'), false);
+    }
+    sw.addEventListener('click', function () {
+      var on = !sw.classList.contains('on');
+      sw.classList.toggle('on', on);
+      if (kind === 'nav') applyNav(sw.getAttribute('data-name'), on);
+      else applyTile(sw.getAttribute('data-key'), on);
+      saved[id] = on;
+      try { localStorage.setItem('clewa-cz', JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+
+<script src="app.js"></script>
+<script src="inv-grid.js"></script>
+<script>
+/* inventory view switch — grid ⇄ overview */
+(function () {
+  var seg = document.querySelector('.inv-switch');
+  if (!seg) return;
+  seg.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-iv-go]'); if (!b) return;
+    var v = b.getAttribute('data-iv-go');
+    seg.querySelectorAll('.ivs-btn').forEach(function (x) { x.classList.toggle('on', x === b); });
+    document.querySelectorAll('.inv-view').forEach(function (p) {
+      p.classList.toggle('off', p.getAttribute('data-iv') !== v);
+    });
+  });
+})();
+</script>
+<script>
+/* backward planner — recompute milestone dates from the launch date */
+(function () {
+  var planner = document.getElementById('bplanner');
+  if (!planner) return;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt(d) { return months[d.getMonth()] + ' ' + d.getDate(); }
+  function recompute(str) {
+    var launch = new Date(str + 'T00:00:00');
+    if (isNaN(launch)) return;
+    planner.querySelectorAll('.bp-when').forEach(function (el) {
+      var wk = parseInt(el.getAttribute('data-wk'), 10) || 0;
+      var d = new Date(launch); d.setDate(d.getDate() - wk * 7);
+      el.textContent = fmt(d);
+    });
+    var po = planner.querySelector('.bp-node.key .bp-when');
+    var ob = document.getElementById('bp-orderby');
+    if (po && ob) ob.textContent = po.textContent;
+  }
+  planner.addEventListener('click', function (e) {
+    var p = e.target.closest('.bp-preset'); if (!p) return;
+    planner.querySelectorAll('.bp-preset').forEach(function (x) { x.classList.toggle('on', x === p); });
+    var dt = p.getAttribute('data-date');
+    var input = document.getElementById('bp-dateinput'); if (input) input.value = dt;
+    recompute(dt);
+  });
+  var input = document.getElementById('bp-dateinput');
+  if (input) input.addEventListener('change', function () {
+    planner.querySelectorAll('.bp-preset').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-date') === input.value); });
+    recompute(input.value);
+  });
+  recompute('2026-11-20');
+})();
+</script>
+</body>
+</html>

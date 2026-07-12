@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/pricing.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clewa — Pricing" />
+<meta property="og:description" content="Your first order is free — run it end to end before you pay a cent. Simple plans after that, priced by what you make, not seats. Clewa never holds your money." />
+<title>Clewa — Pricing</title>
+<meta name="description" content="Your first order is free — run it end to end before you pay a cent. Simple plans after that, priced by what you make, not seats." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+a:hover{color:inherit;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;transform:translateY(-1px);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.on{color:var(--ink);border-bottom:1px solid var(--gold);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+.mnav a .ar{color:var(--gold);}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+/* hero */
+.shero{padding:clamp(54px,8vh,92px) 0 clamp(36px,5vh,56px);text-align:center;}
+.shero h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.6vw,66px);line-height:1.04;letter-spacing:-0.03em;max-width:20ch;margin:22px auto 0;}
+.shero h1 em{font-style:italic;color:var(--gold);}
+.shero p{font-size:clamp(16px,1.9vw,20px);color:var(--ink-2);max-width:38em;margin:22px auto 0;line-height:1.55;}
+
+/* tiers */
+.bill-wrap{text-align:center;margin-top:clamp(22px,3.5vh,34px);}
+.bill-toggle{display:inline-flex;padding:4px;gap:3px;border:1px solid var(--hair-2);border-radius:999px;background:var(--paper);}
+.bill-toggle button{font-family:inherit;font-size:13.5px;font-weight:500;color:var(--ink-3);background:none;border:0;border-radius:999px;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:color .2s;}
+.bill-toggle button.on{background:var(--ink);color:#fff;}
+.bill-toggle .chip{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:var(--gold-bg);border-radius:999px;padding:2px 8px;}
+.bill-toggle button.on .chip{color:var(--gold-2);background:rgba(201,162,78,0.22);}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:clamp(20px,3vh,30px);align-items:stretch;}
+.tier{position:relative;border:1px solid var(--hair);border-radius:16px;padding:26px 22px;background:var(--paper);display:flex;flex-direction:column;}
+.tier.feat{border-color:var(--gold-2);box-shadow:0 34px 80px -54px rgba(154,123,34,0.55);}
+.tier .badge{position:absolute;top:-12px;left:24px;font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;background:var(--gold);color:#fff;border-radius:999px;padding:4px 12px;}
+.tn{font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);}
+.tp{font-family:var(--serif);font-weight:300;font-size:clamp(30px,2.6vw,40px);letter-spacing:-0.02em;margin-top:12px;line-height:1;}
+.bn{font-size:12px;color:var(--ink-3);margin-top:7px;min-height:15px;}
+.tp small{font-family:var(--sans);font-size:14px;color:var(--ink-3);letter-spacing:0;}
+.td{font-size:14px;color:var(--ink-2);margin-top:10px;line-height:1.5;}
+.tf{list-style:none;margin:20px 0 24px;border-top:1px solid var(--hair);display:flex;flex-direction:column;}
+.tf li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--hair);font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+.tf .c{flex-shrink:0;width:16px;height:16px;border-radius:50%;background:var(--sage-bg);border:1px solid var(--sage-line);color:var(--sage);display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.tf .c svg{width:9px;height:9px;}
+.tier .btn{margin-top:auto;width:100%;}
+.custody{text-align:center;font-size:13.5px;color:var(--ink-3);margin-top:22px;}
+.custody b{color:var(--ink-2);font-weight:600;}
+@media(max-width:1080px){.tiers{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.tiers{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto;}}
+
+/* comparison */
+.cmp-sec{padding:clamp(52px,8vh,88px) 0 0;}
+.sec-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em;margin-top:16px;}
+.sec-head h2 em{font-style:italic;color:var(--gold);}
+.sec-head p{font-size:15.5px;color:var(--ink-2);max-width:44em;margin-top:12px;}
+.cmp{margin-top:28px;border:1px solid var(--hair);border-radius:14px;}
+.cmp-row.h{background:var(--paper-2);position:sticky;top:64px;z-index:5;border-radius:13px 13px 0 0;box-shadow:0 1px 0 var(--hair);}
+.cmp-row:last-child{border-radius:0 0 13px 13px;}
+.cmp-row:first-child{border-radius:13px 13px 0 0;}
+.cmp-row{display:grid;grid-template-columns:1fr 140px 140px 140px;border-top:1px solid var(--hair);background:var(--paper);}
+.cmp-row:first-child{border-top:0;}
+.cmp-row > div{padding:11px 18px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;}
+.cmp-row > div:nth-child(n+2){justify-content:center;text-align:center;}
+.cmp-row.h{background:var(--paper-2);}
+.cmp-row.h > div{font-size:11.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);padding:13px 18px;}
+.cmp-row.h > div:first-child{font-family:var(--serif);font-size:15px;font-weight:400;letter-spacing:-0.01em;text-transform:none;color:var(--ink);}
+.cmp-row.g > div{background:var(--paper-2);font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);padding:10px 18px;}
+.cmp-row.g .note{font-weight:400;letter-spacing:0;text-transform:none;font-size:12.5px;color:var(--ink-3);margin-left:10px;font-style:italic;font-family:var(--serif);}
+.cmp .pip{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
+.cmp .pip.y{background:var(--sage-bg);border:1px solid var(--sage-line);color:var(--sage);}
+.cmp .pip.n{background:var(--paper-2);border:1px solid var(--hair-2);color:var(--hair-2);}
+.cmp .pip svg{width:10px;height:10px;}
+.cmp .txt{font-size:12.5px;color:var(--ink-2);}
+.cmp-note{margin-top:14px;font-size:13.5px;color:var(--ink-3);line-height:1.6;}
+.cmp-note b{color:var(--ink-2);font-weight:600;}
+.cmp-note a{color:var(--gold);}
+@media(max-width:760px){
+  .cmp-row{grid-template-columns:1fr 62px 62px 62px;}
+  .cmp-row > div{padding:10px 10px;font-size:12.5px;}
+  .cmp-row.h > div{padding:12px 10px;font-size:10px;}
+  .cmp-row.g .note{display:none;}
+  .cmp .txt{font-size:10.5px;}
+}
+
+/* sourcing band */
+.band{margin-top:clamp(56px,9vh,96px);background:var(--dark);color:var(--on-dark);padding:clamp(44px,7vh,72px) 0;}
+.band-in{display:grid;grid-template-columns:1.1fr 0.9fr;gap:clamp(28px,5vw,64px);align-items:center;}
+.band .ey{color:var(--on-dark-2);}
+.band h2{font-family:var(--serif);font-weight:300;font-size:clamp(26px,3.6vw,42px);line-height:1.08;letter-spacing:-0.02em;margin-top:16px;}
+.band h2 em{font-style:italic;color:var(--gold-2);}
+.band p{font-size:15.5px;color:var(--on-dark-2);margin-top:14px;max-width:36em;line-height:1.6;}
+.band .btn{background:transparent;color:var(--on-dark);border-color:rgba(255,255,255,0.22);}
+.band .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+.band-cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;}
+.band-fee{border:1px solid rgba(255,255,255,0.14);border-radius:16px;padding:26px;background:var(--dark-2);}
+.band-fee .lab{font-size:11.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--on-dark-2);}
+.band-fee .fig{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3vw,38px);letter-spacing:-0.02em;margin-top:10px;line-height:1.15;}
+.band-fee .fig small{font-family:var(--sans);font-size:13.5px;color:var(--on-dark-2);letter-spacing:0;display:block;margin-top:6px;font-weight:400;}
+.band-fee ul{list-style:none;margin-top:18px;border-top:1px solid rgba(255,255,255,0.12);}
+.band-fee li{padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:var(--on-dark-2);display:flex;gap:9px;align-items:flex-start;}
+.band-fee li .c{flex-shrink:0;width:15px;height:15px;border-radius:50%;border:1px solid rgba(201,162,78,0.5);color:var(--gold-2);display:flex;align-items:center;justify-content:center;margin-top:3px;}
+.band-fee li .c svg{width:8px;height:8px;}
+@media(max-width:820px){.band-in{grid-template-columns:1fr;}}
+
+/* billing questions */
+.qa{padding:clamp(48px,7vh,80px) 0 0;}
+.qa-list{margin-top:26px;border-top:1px solid var(--hair);}
+.qa-item{border-bottom:1px solid var(--hair);}
+.qa-item summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:20px 0;font-family:var(--serif);font-weight:400;font-size:clamp(17px,2vw,21px);letter-spacing:-0.01em;}
+.qa-item summary::-webkit-details-marker{display:none;}
+.qa-item summary .pl{font-family:var(--serif);font-style:italic;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.qa-item[open] summary .pl{transform:rotate(45deg);}
+.qa-item .qa-a{padding:0 0 22px;font-size:15px;color:var(--ink-2);line-height:1.65;max-width:46em;}
+.qa-item .qa-a b{font-weight:600;}
+.qa-item .qa-a a{color:var(--gold);}
+
+/* cta */
+.cta{margin-top:clamp(56px,9vh,100px);text-align:center;background:var(--dark);color:var(--on-dark);padding:clamp(56px,9vh,96px) 0;}
+.cta h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.6vw,56px);line-height:1.02;letter-spacing:-0.03em;}
+.cta h2 em{font-style:italic;color:var(--gold-2);}
+.cta p{font-size:17px;color:var(--on-dark-2);max-width:34em;margin:18px auto 0;}
+.cta-b{display:flex;gap:13px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+.cta .btn{background:transparent;color:var(--on-dark);border-color:rgba(255,255,255,0.22);}
+.cta .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+/* footer */
+.foot{background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="features.html">Features</a>
+      <a href="tour.html">Interactive tour</a>
+      <a href="security.html">Security &amp; trust</a>
+      <a class="on" href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="tour.html">Interactive tour</a>
+    <a href="factory-view.html">What your factory sees</a>
+    <a href="security.html">Security &amp; trust</a>
+    <a href="about.html">About</a>
+    <a href="app.html">Live demo</a>
+    <a href="start.html">Start free <span class="ar">→</span></a>
+  </nav>
+</header>
+
+<section class="shero">
+  <div class="wrap">
+    <div class="ey" style="justify-content:center;"><span class="d"></span>Pricing</div>
+    <h1>Your first order is free. <em>Then it scales with what you make.</em></h1>
+    <p>Run one complete production order through Clewa — every protection, every feature — before you pay a cent. After that, four plans priced by the depth you use — never by seats.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="bill-wrap rv"><div class="bill-toggle" id="billToggle" role="group" aria-label="Billing period"><button type="button" class="on" data-bill="m">Monthly</button><button type="button" data-bill="a">Annual <span class="chip">2 months free</span></button></div></div>
+    <div class="tiers">
+
+      <div class="tier rv">
+        <div class="tn">First order</div>
+        <div class="tp">Free</div>
+        <div class="bn">&nbsp;</div>
+        <div class="td">See the whole thing work, end to end — no card, no clock.</div>
+        <ul class="tf">
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>One full order, every feature</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Guided mode, glossary &amp; AI assist</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Bring your own factory — they join free</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>The Record, safe-to-pay &amp; shared QC</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Export everything to Excel</li>
+        </ul>
+        <a class="btn" href="start.html">Start free</a>
+      </div>
+
+      <div class="tier rv">
+        <div class="tn">Atelier</div>
+        <div class="tp"><span class="amt" data-m="$59" data-a="$49">$59</span><small>/mo</small></div>
+        <div class="bn" data-m="billed monthly" data-a="billed annually">billed monthly</div>
+        <div class="td">For brands running regular production.</div>
+        <ul class="tf">
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Unlimited orders &amp; factories</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Multi-order dashboard, calendar &amp; finances</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Specialist AI at every station</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Documents vault &amp; factory rolodex</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Excel export everywhere</li>
+        </ul>
+        <a class="btn" href="start.html">Start free trial</a>
+      </div>
+
+      <div class="tier feat rv">
+        <div class="badge">Recommended</div>
+        <div class="tn">Maison</div>
+        <div class="tp"><span class="amt" data-m="$199" data-a="$165">$199</span><small>/mo</small></div>
+        <div class="bn" data-m="billed monthly" data-a="billed annually">billed monthly</div>
+        <div class="td">For the brand running its whole operation here.</div>
+        <ul class="tf">
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Everything in Atelier</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Inventory: BOM consumption, WIP &amp; size curves</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Shopify sync &amp; reorder alerts</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Season planning &amp; close</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Morning briefing, anomaly watch &amp; patterns</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Factory scorecards, team seats &amp; roles</li>
+        </ul>
+        <a class="btn gold" href="start.html">Start free trial</a>
+      </div>
+
+      <div class="tier rv">
+        <div class="tn">House</div>
+        <div class="tp">Custom</div>
+        <div class="bn">&nbsp;</div>
+        <div class="td">For established labels &amp; teams.</div>
+        <ul class="tf">
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Everything in Atelier</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Priority support &amp; onboarding</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>A direct line to the team</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Priority scheduling for Clewa Sourcing</li>
+        </ul>
+        <a class="btn" href="contact.html">Contact us</a>
+      </div>
+
+    </div>
+    <p class="custody">Every plan keeps your money in your hands — <b>Clewa never holds or moves funds.</b> Wondering if your factory will actually use it? <a href="index.html#faq" style="color:var(--gold);">The honest FAQ →</a></p>
+  </div>
+</section>
+
+<section class="cmp-sec">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="ey"><span class="d"></span>The honest breakdown</div>
+      <h2>What each plan <em>unlocks.</em></h2>
+      <p>The short version: the free order is the whole product, for one order. Atelier runs production day to day. Maison adds the depth — inventory, planning, and the intelligence that compounds across orders. House adds us.</p>
+    </div>
+
+    <div class="cmp rv">
+      <div class="cmp-row h"><div>&nbsp;</div><div>First order</div><div>Atelier</div><div>Maison</div></div>
+
+      <div class="cmp-row g"><div style="grid-column:1/-1;">Run production</div></div>
+      <div class="cmp-row"><div>Production orders</div><div class="txt">One, complete</div><div class="txt">Unlimited</div><div class="txt">Unlimited</div></div>
+      <div class="cmp-row"><div>Factories on your account</div><div class="txt">One</div><div class="txt">Unlimited</div><div class="txt">Unlimited</div></div>
+      <div class="cmp-row"><div>The guided 12-station journey</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Tech-pack builder &amp; completeness check</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Backward-planned calendar &amp; holiday awareness</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>PO generator, translated chat &amp; email bridge</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+
+      <div class="cmp-row g"><div style="grid-column:1/-1;">Protection <span class="note">if it keeps you from getting burned, it's in every plan — including the free one</span></div></div>
+      <div class="cmp-row"><div>The Record — dual sign-off &amp; change history</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Safe-to-pay gate</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>FX locked at PO</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Factory line-by-line acknowledgment</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Shared QC inspection before payment</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+
+      <div class="cmp-row g"><div style="grid-column:1/-1;">Run the operation</div></div>
+      <div class="cmp-row"><div>Multi-order dashboard &amp; calendar</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Finances &amp; cash-out schedule</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Component inventory, BOM consumption &amp; WIP</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Size curves, deadstock &amp; aging</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Shopify sync &amp; reorder triggers</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Season planning, open-to-buy &amp; season close</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Documents vault, versioned</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+
+      <div class="cmp-row g"><div style="grid-column:1/-1;">Intelligence</div></div>
+      <div class="cmp-row"><div>Guided mode &amp; plain-language glossary</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Specialist AI at every station</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Morning briefing &amp; anomaly watch</div><div><span class="txt">Your one order</span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Cross-order patterns &amp; factory scorecards</div><div><span class="txt">Needs history</span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>AI-off switch — full system of record without it</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+
+      <div class="cmp-row g"><div style="grid-column:1/-1;">Team &amp; support</div></div>
+      <div class="cmp-row"><div>Factory guest access, in their language</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Team seats &amp; roles (design, ops, finance)</div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+      <div class="cmp-row"><div>Excel export everywhere — your data is yours</div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div><div><span class="pip y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></div></div>
+    </div>
+    <p class="cmp-note rv"><b>House</b> is everything in Maison, plus priority support &amp; onboarding, a direct line to the team, and priority scheduling for Clewa Sourcing — on custom terms. <a href="contact.html">Talk to us →</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap band-in">
+    <div class="rv">
+      <div class="ey"><span class="d"></span>Clewa Sourcing · a professional service</div>
+      <h2>Don't have the right factory yet? <em>We'll source it.</em></h2>
+      <p>Separate from the software: a senior-led engagement that finds, audits, negotiates and onboards a factory built for your product — then hands you a production-ready partner inside Clewa.</p>
+      <div class="band-cta">
+        <a class="btn gold" href="sourcing.html">How the engagement works <span class="ar">→</span></a>
+        <a class="btn" href="contact.html">Request a sourcing call</a>
+      </div>
+    </div>
+    <div class="band-fee rv">
+      <div class="lab">The terms, upfront</div>
+      <div class="fig">From $7,500 retainer <small>per product category + 6–8% of production placed</small></div>
+      <ul>
+        <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Transparent fees only — never a markup on your unit price</li>
+        <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Never a commission from factories — we work for you alone</li>
+        <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Senior people on every engagement — capacity-limited by design</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="qa">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="ey"><span class="d"></span>Billing, plainly</div>
+      <h2>The questions people <em>actually ask.</em></h2>
+    </div>
+    <div class="qa-list rv">
+      <details class="qa-item" open>
+        <summary>When does the free order end?<span class="pl">+</span></summary>
+        <div class="qa-a">When you close it — there's no clock. Run the order at your pace, from tech pack to delivery. When it's done, pick a plan to keep going, or <b>export everything to Excel and walk away</b> with your data.</div>
+      </details>
+      <details class="qa-item">
+        <summary>Does my factory have to pay?<span class="pl">+</span></summary>
+        <div class="qa-a">Never. Factories join by one link, work in their own language, and pay nothing — on every plan. If they had to pay, they wouldn't join, and the shared record only works when both sides are on it.</div>
+      </details>
+      <details class="qa-item">
+        <summary>Why isn't it priced per seat?<span class="pl">+</span></summary>
+        <div class="qa-a">Because the value scales with production, not headcount. Invite your whole team — design, ops, finance — without doing math about who's worth a login. Plans differ by <b>depth</b>: one order, the day-to-day, or the whole operation. Annual billing takes two months off.</div>
+      </details>
+      <details class="qa-item">
+        <summary>Does Clewa take a cut of my production?<span class="pl">+</span></summary>
+        <div class="qa-a">No. No transaction fee, no percentage of order value, no markup, and we <b>never hold or move your money</b> — you pay your factory directly. The subscription is the whole business model. (Clewa Sourcing is separate, optional, and priced transparently above.)</div>
+      </details>
+      <details class="qa-item">
+        <summary>Can I turn the AI off and still get my money's worth?<span class="pl">+</span></summary>
+        <div class="qa-a">Yes. With AI off, Clewa is still the full system of record — the timeline, the Record, safe-to-pay, inventory, exports. The intelligence is a layer on top, never a dependency, and never priced as a hostage.</div>
+      </details>
+      <details class="qa-item">
+        <summary>What happens to my data if I cancel?<span class="pl">+</span></summary>
+        <div class="qa-a">You take it with you. Every order, cost sheet, message thread and document exports to Excel or PDF, anytime — while subscribed or on the way out. Read the full posture on <a href="security.html">Security &amp; trust</a>.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="rv">
+      <h2>Follow the <em>thread.</em></h2>
+      <p>Run your next order in one calm place — the first one's on us.</p>
+      <div class="cta-b">
+        <a class="btn gold" href="start.html">Start free — no card <span class="ar">→</span></a>
+        <a class="btn" href="tour.html">Explore the interactive tour</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function revealAll(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in');});}
+  if(!('IntersectionObserver' in window)){revealAll();}
+  else{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+  }
+  setTimeout(revealAll,1200);
+  var bt=document.getElementById('billToggle');
+  if(bt){bt.addEventListener('click',function(e){
+    var btn=e.target.closest('button');if(!btn)return;
+    bt.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    btn.classList.add('on');
+    var k=btn.getAttribute('data-bill');
+    document.querySelectorAll('.amt').forEach(function(el){el.textContent=el.getAttribute('data-'+k);});
+    document.querySelectorAll('.bn[data-m]').forEach(function(el){el.textContent=el.getAttribute('data-'+k);});
+  });}
+  var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');
+  if(n&&b){
+    b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});
+    document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});
+  }
+})();
+</script>
+</body>
+</html>

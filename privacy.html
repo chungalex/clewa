@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/privacy.html" />
+<title>Clewa — Privacy policy</title>
+<meta name="description" content="What Clewa collects, why, and what we will never do with it — in plain language, with the legal detail alongside." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:900px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav .wrap{max-width:1140px;}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+.lhero{padding:clamp(48px,7vh,80px) 0 clamp(28px,4vh,44px);border-bottom:1px solid var(--hair);}
+.lhero h1{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.03em;margin-top:20px;}
+.lhero h1 em{font-style:italic;color:var(--gold);}
+.lhero .meta{margin-top:16px;font-size:13.5px;color:var(--ink-3);}
+.lhero .lede{margin-top:18px;font-size:16.5px;color:var(--ink-2);max-width:42em;line-height:1.6;}
+
+.legal{padding:clamp(10px,2vh,20px) 0 0;}
+.lsec{padding:clamp(26px,4vh,38px) 0;border-bottom:1px solid var(--hair);}
+.lsec h2{font-family:var(--serif);font-weight:400;font-size:clamp(20px,2.4vw,26px);letter-spacing:-0.01em;display:flex;gap:14px;align-items:baseline;}
+.lsec h2 .n{font-family:var(--serif);font-style:italic;font-weight:300;color:var(--gold);font-size:0.9em;}
+.lsec p{font-size:15px;color:var(--ink-2);line-height:1.7;margin-top:12px;max-width:46em;}
+.lsec ul{margin:12px 0 0 18px;max-width:46em;}
+.lsec li{font-size:15px;color:var(--ink-2);line-height:1.7;margin-top:6px;}
+.lsec b{font-weight:600;color:var(--ink);}
+.lsec a{color:var(--gold);}
+.plain{margin-top:16px;border-left:2px solid var(--gold-2);background:var(--gold-bg);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--ink-2);max-width:46em;}
+.plain b{font-weight:600;}
+.plain .pl-lab{font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px;}
+
+.foot{margin-top:clamp(48px,7vh,72px);background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;}
+.foot .wrap{max-width:1140px;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="features.html">Features</a>
+      <a href="tour.html">Interactive tour</a>
+      <a href="security.html">Security &amp; trust</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="tour.html">Interactive tour</a>
+    <a href="factory-view.html">What your factory sees</a>
+    <a href="security.html">Security &amp; trust</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="app.html">Live demo</a>
+  </nav>
+</header>
+
+<section class="lhero">
+  <div class="wrap">
+    <div class="ey"><span class="d"></span>Legal</div>
+    <h1>Privacy <em>policy.</em></h1>
+    <div class="meta">Effective July 11, 2026 · Questions to <a href="mailto:hello@clewa.com" style="color:var(--gold);">hello@clewa.com</a></div>
+    <p class="lede">Your costs, margins, designs and factory relationships are your competitive edge. This policy explains what we collect to run Clewa, what we do with it, and what we will never do with it — with a plain-language summary beside each section.</p>
+  </div>
+</section>
+
+<div class="legal wrap">
+
+  <section class="lsec">
+    <h2><span class="n">01</span>What we collect</h2>
+    <p>We collect what's needed to operate your workspace, and nothing speculative:</p>
+    <ul>
+      <li><b>Account information</b> — name, email address, brand name, password (stored hashed), and billing details processed by our payment provider.</li>
+      <li><b>Workspace content</b> — the material you and your invited collaborators put into Clewa: tech packs, orders, costs, messages, documents, inventory records and contacts.</li>
+      <li><b>Integration data</b> — data from services you explicitly connect (for example Shopify or email forwarding), limited to the scopes you grant.</li>
+      <li><b>Usage and device data</b> — log data such as IP address, browser type and pages viewed, used for security and to keep the service working.</li>
+    </ul>
+    <div class="plain"><span class="pl-lab">In plain language</span>We collect what you give us to run your production, plus the basic technical logs any service needs. We don't buy data about you or scrape data from elsewhere.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">02</span>How we use it</h2>
+    <ul>
+      <li>To provide, maintain and secure the service — including translation of messages you send through Clewa and the AI features described in section 04.</li>
+      <li>To process subscription payments.</li>
+      <li>To communicate with you about your account, security and material changes to the service.</li>
+      <li>To understand aggregate product usage so we can improve Clewa.</li>
+    </ul>
+    <div class="plain"><span class="pl-lab">In plain language</span>Your data is used to run your workspace — not to build advertising profiles, and not to be sold. Ever.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">03</span>What we never do</h2>
+    <ul>
+      <li><b>We never sell your data</b>, or share it with advertisers or data brokers.</li>
+      <li><b>We never show your costs, margins or terms to your factory</b> — or to any other brand. Factory guests see only the order they're invited to.</li>
+      <li><b>We never use one customer's private data to advise another.</b> Cross-order intelligence runs within your own workspace.</li>
+      <li><b>We never hold or move your money</b>, so we never collect the banking credentials a payments custodian would need.</li>
+    </ul>
+    <div class="plain"><span class="pl-lab">In plain language</span>The boundaries the product enforces are the same ones this policy promises.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">04</span>AI features</h2>
+    <p>Clewa's intelligence features (briefings, drafting, anomaly checks, Ask Clewa) process your workspace content to produce answers for you. AI processing is performed under contracts that prohibit our model providers from training on your content. You can switch AI features off entirely; Clewa remains a full system of record without them.</p>
+    <div class="plain"><span class="pl-lab">In plain language</span>The AI reads your data to help you, doesn't train on it, and has an off switch.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">05</span>Who we share it with</h2>
+    <p>Only the subprocessors needed to run the service — hosting, payment processing, email delivery, translation and AI processing — each bound by data-protection agreements. We share data with the collaborators <b>you</b> invite (your team, your factory guests) according to the roles you set. We disclose data to authorities only where legally required, and we tell you when we're allowed to.</p>
+    <div class="plain"><span class="pl-lab">In plain language</span>A short list of service providers, the people you invite, and no one else.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">06</span>Security</h2>
+    <p>Data is encrypted in transit (TLS) and at rest (AES-256). Access is role-scoped and logged, integrations use least-privilege revocable tokens, and every change in your workspace carries an audit trail. The full posture is described on <a href="security.html">Security &amp; trust</a>.</p>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">07</span>Retention &amp; export</h2>
+    <p>We keep your data while your account is active. You can export every order, cost sheet, message thread and document to Excel or PDF at any time, on every plan. If you close your account, we delete your workspace content within 30 days, except where the law requires longer retention (for example, billing records).</p>
+    <div class="plain"><span class="pl-lab">In plain language</span>Your data is yours to take, and leaves when you do.</div>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">08</span>Your rights</h2>
+    <p>Depending on where you live (including under GDPR and similar laws), you may have the right to access, correct, export, restrict or delete your personal data, and to object to certain processing. Write to <a href="mailto:hello@clewa.com">hello@clewa.com</a> and a human will handle it — you don't need to cite the statute.</p>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">09</span>Cookies</h2>
+    <p>We use essential cookies to keep you signed in and the service secure, and privacy-respecting analytics to understand aggregate usage. We don't use advertising cookies or cross-site trackers.</p>
+  </section>
+
+  <section class="lsec">
+    <h2><span class="n">10</span>Changes &amp; contact</h2>
+    <p>If we change this policy in a way that matters, we'll tell you by email before it takes effect — no silent edits. Questions, requests or complaints: <a href="mailto:hello@clewa.com">hello@clewa.com</a>.</p>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');if(n&&b){b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});}})();
+</script>
+</body>
+</html>

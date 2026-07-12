@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/contact.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clewa — Contact" />
+<meta property="og:description" content="Write to hello@clewa.com — someone who has placed a PO writes back." />
+<title>Clewa — Contact</title>
+<meta name="description" content="Write to hello@clewa.com — someone who has placed a PO writes back." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+a:hover{color:inherit;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;transform:translateY(-1px);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.on{color:var(--ink);border-bottom:1px solid var(--gold);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+.mnav a .ar{color:var(--gold);}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+/* hero */
+.shero{padding:clamp(54px,8vh,92px) 0 clamp(36px,5vh,56px);text-align:center;}
+.shero h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.6vw,66px);line-height:1.04;letter-spacing:-0.03em;max-width:20ch;margin:22px auto 0;}
+.shero h1 em{font-style:italic;color:var(--gold);}
+.shero p{font-size:clamp(16px,1.9vw,20px);color:var(--ink-2);max-width:36em;margin:22px auto 0;line-height:1.55;}
+.shero p a{color:var(--gold);border-bottom:1px solid rgba(154,123,34,0.35);}
+
+/* contact grid */
+.con{padding:clamp(20px,4vh,44px) 0 0;}
+.con-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:start;}
+.paths{display:flex;flex-direction:column;gap:14px;}
+.path{border:1px solid var(--hair);border-radius:16px;padding:24px;background:var(--paper-2);}
+.path .lab{font-size:11.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);}
+.path h3{font-family:var(--serif);font-weight:300;font-size:clamp(20px,2.4vw,26px);letter-spacing:-0.01em;margin-top:8px;}
+.path h3 em{font-style:italic;color:var(--gold);}
+.path p{font-size:14px;color:var(--ink-2);line-height:1.6;margin-top:8px;}
+.path .mail{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;font-weight:500;color:var(--gold);}
+.promise{border:1px solid var(--hair);border-radius:16px;padding:20px 24px;font-size:13.5px;color:var(--ink-3);line-height:1.6;}
+.promise b{color:var(--ink-2);font-weight:600;}
+
+/* form */
+.form-card{border:1px solid var(--hair);border-radius:16px;background:var(--paper);box-shadow:0 34px 80px -58px rgba(20,19,17,0.5);padding:clamp(24px,3vw,34px);}
+.form-card .fh{font-family:var(--serif);font-weight:300;font-size:clamp(21px,2.4vw,27px);letter-spacing:-0.01em;}
+.form-card .fs{font-size:13.5px;color:var(--ink-3);margin-top:6px;}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
+.f-field{display:flex;flex-direction:column;gap:6px;}
+.f-field.full{grid-column:1 / -1;}
+.f-field label{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);}
+.f-field input,.f-field select,.f-field textarea{font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--hair-2);border-radius:10px;padding:12px 14px;outline:none;transition:border-color .2s;}
+.f-field input:focus,.f-field select:focus,.f-field textarea:focus{border-color:var(--gold-2);}
+.f-field textarea{min-height:110px;resize:vertical;line-height:1.5;}
+.f-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;flex-wrap:wrap;}
+.f-foot .hint{font-size:12.5px;color:var(--ink-3);}
+.f-sent{display:none;margin-top:16px;border:1px solid var(--sage-line);background:var(--sage-bg);color:var(--sage);border-radius:10px;padding:12px 16px;font-size:14px;}
+.form-card.sent .f-sent{display:block;}
+@media(max-width:860px){.con-grid{grid-template-columns:1fr;}.f-grid{grid-template-columns:1fr;}}
+
+/* footer */
+.foot{margin-top:clamp(56px,9vh,100px);background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="features.html">Features</a>
+      <a href="tour.html">Interactive tour</a>
+      <a href="security.html">Security &amp; trust</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="tour.html">Interactive tour</a>
+    <a href="factory-view.html">What your factory sees</a>
+    <a href="security.html">Security &amp; trust</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="app.html">Live demo</a>
+  </nav>
+</header>
+
+<section class="shero">
+  <div class="wrap">
+    <div class="ey" style="justify-content:center;"><span class="d"></span>Contact</div>
+    <h1>Write to us. <em>A human writes back.</em></h1>
+    <p>No chatbots, no ticket numbers. Everything lands at <a href="mailto:hello@clewa.com">hello@clewa.com</a> and is answered by someone who has placed a PO.</p>
+  </div>
+</section>
+
+<section class="con">
+  <div class="wrap con-grid">
+    <div class="rv">
+      <div class="paths">
+        <div class="path">
+          <div class="lab">About the product</div>
+          <h3>Questions, plans <em>or a walkthrough</em></h3>
+          <p>Pricing, the House plan, whether Clewa fits how you produce — or a guided tour of the demo with your questions along the way.</p>
+          <a class="mail" href="mailto:hello@clewa.com?subject=Clewa%20%E2%80%94%20product%20question">hello@clewa.com <span class="ar">→</span></a>
+        </div>
+        <div class="path">
+          <div class="lab">Clewa Sourcing</div>
+          <h3>Request a <em>sourcing call</em></h3>
+          <p>Tell us what you're making, your quantities and your timeline — and get an honest read on whether we're the right way to find your factory. <a href="sourcing.html" style="color:var(--gold);">How the engagement works →</a></p>
+          <a class="mail" href="mailto:hello@clewa.com?subject=Sourcing%20call%20request">hello@clewa.com <span class="ar">→</span></a>
+        </div>
+        <div class="promise">
+          <b>One inbox, on purpose.</b> The team is small — the people who design the product take the sourcing calls and answer support. If it's urgent about a live order, say so in the subject line and it goes to the top.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card rv" id="formCard">
+      <div class="fh">Or start here — it opens your email.</div>
+      <div class="fs">Nothing is stored on this page; the button composes a message to hello@clewa.com in your own mail app.</div>
+      <form id="conForm" class="f-grid">
+        <div class="f-field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" />
+        </div>
+        <div class="f-field">
+          <label for="cf-brand">Brand</label>
+          <input id="cf-brand" name="brand" type="text" autocomplete="organization" />
+        </div>
+        <div class="f-field full">
+          <label for="cf-topic">What's this about?</label>
+          <select id="cf-topic" name="topic">
+            <option>The product — questions or a walkthrough</option>
+            <option>Pricing or the House plan</option>
+            <option>Clewa Sourcing — request a call</option>
+            <option>Security, data or legal</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="f-field full">
+          <label for="cf-msg">Your message</label>
+          <textarea id="cf-msg" name="message" placeholder="What are you making, and what would you like to know?"></textarea>
+        </div>
+      </form>
+      <div class="f-foot">
+        <span class="hint">Or just email <a href="mailto:hello@clewa.com" style="color:var(--gold);">hello@clewa.com</a> directly.</span>
+        <button class="btn gold" type="button" id="conSend">Compose the email <span class="ar">→</span></button>
+      </div>
+      <div class="f-sent">Your mail app should be open with everything filled in. If not, write to hello@clewa.com.</div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function revealAll(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in');});}
+  if(!('IntersectionObserver' in window)){revealAll();}
+  else{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+  }
+  setTimeout(revealAll,1200);
+  var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');
+  if(n&&b){
+    b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});
+    document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});
+  }
+  var send=document.getElementById('conSend');
+  if(send){send.addEventListener('click',function(){
+    var v=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+    var topic=v('cf-topic')||'Hello';
+    var subject='Clewa — '+topic;
+    var body='Name: '+v('cf-name')+'\nBrand: '+v('cf-brand')+'\n\n'+v('cf-msg');
+    window.location.href='mailto:hello@clewa.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    document.getElementById('formCard').classList.add('sent');
+  });}
+})();
+</script>
+</body>
+</html>

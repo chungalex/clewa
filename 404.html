@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta name="robots" content="noindex" />
+<title>Clewa — Page not found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;--gold:#9A7B22;--gold-2:#C9A24E;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+a:hover{color:var(--gold);}
+.brand{font-family:var(--serif);font-size:26px;letter-spacing:-0.01em;position:fixed;top:22px;left:32px;}
+.brand .w{color:var(--gold);}
+.thread{width:min(420px,80vw);height:110px;margin-bottom:8px;}
+.thread path{fill:none;stroke:var(--gold);stroke-width:1.5;opacity:0.55;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 2.4s cubic-bezier(.2,.7,.2,1) forwards .2s;}
+.thread .end{fill:var(--gold);opacity:0;animation:pop .4s ease forwards 2.3s;}
+@keyframes draw{to{stroke-dashoffset:130;}}
+@keyframes pop{to{opacity:0.8;}}
+@media(prefers-reduced-motion:reduce){.thread path{animation:none;stroke-dashoffset:130;}.thread .end{animation:none;opacity:0.8;}}
+.ey{font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-0.03em;margin-top:16px;}
+h1 em{font-style:italic;color:var(--gold);}
+p{font-size:17px;color:var(--ink-2);max-width:34em;margin-top:18px;line-height:1.6;}
+.btns{display:flex;gap:13px;justify-content:center;margin-top:32px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);transition:all .2s;}
+.btn:hover{border-color:var(--ink-3);color:var(--ink);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);color:#fff;}
+.lost-links{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;margin-top:28px;font-size:13.5px;}
+.lost-links a{color:var(--ink-2);}
+.base{position:fixed;bottom:22px;left:0;right:0;font-size:12.5px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+<a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+
+<svg class="thread" viewBox="0 0 420 110" aria-hidden="true">
+  <path d="M 8 60 C 60 10, 110 108, 165 55 C 205 18, 235 95, 285 60 C 320 36, 345 70, 372 58" />
+  <circle class="end" cx="384" cy="56" r="4" />
+</svg>
+
+<div class="ey">404 · Page not found</div>
+<h1>You've lost <em>the thread.</em></h1>
+<p>This page doesn't exist — a wrong turn in the labyrinth. Follow the thread back to somewhere real.</p>
+<div class="btns">
+  <a class="btn gold" href="index.html">Back to the start →</a>
+  <a class="btn" href="app.html">Open the live demo</a>
+</div>
+<nav class="lost-links">
+  <a href="features.html">Features</a>
+  <a href="tour.html">Interactive tour</a>
+  <a href="security.html">Security &amp; trust</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<div class="base">Any country · any language · one thread</div>
+</body>
+</html>

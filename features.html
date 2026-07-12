@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#16130D" />
+<meta property="og:image" content="https://clewa.io/og-image.png" />
+<meta property="og:url" content="https://clewa.io/features.html" />
+<meta name="description" content="Make & plan, track, communicate, intelligence, library — all sixteen tabs of Clewa explained in depth, one thread through your whole operation." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clewa — Every feature, explained" />
+<meta property="og:description" content="Make & plan, track, communicate, intelligence, library — all sixteen tabs of Clewa explained in depth, one thread through your whole operation." />
+<title>Clewa — Every feature, explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#FFFFFF;--paper-2:#F7F5F1;--paper-3:#F0EDE6;
+  --ink:#141311;--ink-2:#3E3C37;--ink-3:#5F5D56;
+  --hair:#E6E3DD;--hair-2:#D9D5CC;
+  --gold:#9A7B22;--gold-2:#C9A24E;--gold-bg:rgba(154,123,34,0.08);
+  --dark:#16130D;--dark-2:#262019;--on-dark:#F4F1EA;--on-dark-2:#A8A092;
+  --sage:#4A6B52;--sage-bg:#ECF1EA;--sage-line:#C2D1BD;
+  --serif:"Newsreader",Georgia,serif;--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px;}
+::selection{background:var(--gold);color:#fff;}
+.ey{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);}
+.ey .d{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14.5px;font-weight:500;border-radius:10px;padding:13px 22px;border:1px solid var(--hair-2);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.pri:hover{background:#000;transform:translateY(-1px);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.gold:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn .ar{transition:transform .2s;}.btn:hover .ar{transform:translateX(3px);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-0.01em;}
+.brand .w{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:14px;color:var(--ink-2);}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{display:flex;align-items:center;gap:12px;}
+.nav-cta .si{font-size:14px;color:var(--ink-2);}
+@media(max-width:900px){.nav-links{display:none;}}
+
+/* hero */
+.fhero{padding:clamp(54px,8vh,92px) 0 clamp(34px,5vh,52px);text-align:center;}
+.fhero h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.6vw,66px);line-height:1.04;letter-spacing:-0.03em;max-width:18ch;margin:22px auto 0;}
+.fhero h1 em{font-style:italic;color:var(--gold);}
+.fhero p{font-size:clamp(16px,1.9vw,20px);color:var(--ink-2);max-width:40em;margin:22px auto 0;line-height:1.55;}
+.fhero-cta{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+
+/* jump bar */
+.jump{position:sticky;top:64px;z-index:40;background:rgba(247,245,241,0.92);backdrop-filter:blur(12px);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);}
+.jump-in{display:flex;gap:8px;padding:12px 0;overflow-x:auto;}
+.jump a{flex-shrink:0;font-size:13px;color:var(--ink-2);border:1px solid var(--hair-2);border-radius:999px;padding:7px 14px;background:var(--paper);white-space:nowrap;transition:all .2s;}
+.jump a:hover{border-color:var(--ink);color:var(--ink);}
+
+/* group */
+.group{padding:clamp(48px,7vh,80px) 0 0;}
+.group-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--hair);padding-bottom:18px;}
+.group-num{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--gold);}
+.group-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em;}
+.group-head .gd{font-size:14.5px;color:var(--ink-3);margin-left:auto;max-width:34em;}
+
+/* feature cards */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;}
+.fcard{border:1px solid var(--hair);border-radius:16px;padding:26px;background:var(--paper);transition:border-color .2s,box-shadow .2s,transform .2s;}
+.fcard:hover{border-color:var(--hair-2);box-shadow:0 24px 50px -38px rgba(20,19,17,0.4);transform:translateY(-2px);}
+.fcard-top{display:flex;align-items:center;gap:13px;margin-bottom:14px;}
+.fic{width:42px;height:42px;border-radius:11px;background:var(--paper-2);border:1px solid var(--hair);color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fic svg{width:21px;height:21px;}
+.fcard h3{font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-0.01em;}
+.fcard .tab{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);margin-top:2px;}
+.fcard .lead{font-size:14.5px;color:var(--ink-2);line-height:1.55;}
+.fcard ul{list-style:none;margin-top:15px;display:flex;flex-direction:column;gap:9px;}
+.fcard li{display:grid;grid-template-columns:17px 1fr;gap:10px;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+.fcard li .c{width:17px;height:17px;border-radius:50%;background:var(--sage-bg);border:1px solid var(--sage-line);display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.fcard li .c svg{width:10px;height:10px;color:var(--sage);}
+.fcard .star{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(154,123,34,0.25);border-radius:999px;padding:3px 9px;margin-left:auto;}
+.fcard .star svg{width:11px;height:11px;}
+.fcard-top .htxt{flex:1;}
+@media(max-width:820px){.fgrid{grid-template-columns:1fr;}.group-head .gd{margin-left:0;}}
+
+/* feature strip (essentials) */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px;}
+.st{border:1px solid var(--hair);border-radius:14px;padding:22px;background:var(--paper);}
+.st .si{width:28px;height:28px;color:var(--gold);margin-bottom:12px;}
+.st .si svg{width:100%;height:100%;}
+.st h4{font-family:var(--serif);font-weight:400;font-size:17px;letter-spacing:-0.01em;margin-bottom:6px;}
+.st p{font-size:13px;color:var(--ink-3);line-height:1.5;}
+@media(max-width:860px){.strip{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.strip{grid-template-columns:1fr;}}
+
+/* invite band */.invite{padding:clamp(48px,7vh,80px) 0;border-top:1px solid var(--hair);}
+.invite-card{background:var(--paper-2);border:1px solid var(--hair);border-radius:18px;padding:clamp(28px,4vw,48px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(34px,5vw,64px);align-items:center;}
+.invite-card h2{font-family:var(--serif);font-weight:300;font-size:clamp(26px,3.6vw,40px);line-height:1.08;letter-spacing:-0.02em;margin-top:14px;}
+.invite-card h2 em{font-style:italic;color:var(--gold);}
+.invite-card p{font-size:15.5px;color:var(--ink-2);margin-top:14px;line-height:1.6;}
+.invite-steps{display:flex;flex-direction:column;gap:0;}
+.istep{display:grid;grid-template-columns:34px 1fr;gap:15px;padding:16px 0;border-top:1px solid var(--hair);align-items:start;}
+.istep:first-child{border-top:0;}
+.istep .in{width:30px;height:30px;border-radius:50%;background:var(--paper);border:1px solid var(--hair-2);font-family:var(--serif);font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--gold);}
+.istep h4{font-size:14.5px;font-weight:600;margin-bottom:3px;}
+.istep p{font-size:13.5px;color:var(--ink-3);margin:0;line-height:1.5;}
+@media(max-width:820px){.invite-card{grid-template-columns:1fr;gap:28px;}}
+
+/* cta */
+.cta{margin-top:clamp(56px,9vh,100px);text-align:center;background:var(--dark);color:var(--on-dark);padding:clamp(56px,9vh,96px) 0;}
+.cta h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.6vw,56px);line-height:1.02;letter-spacing:-0.03em;}
+.cta h2 em{font-style:italic;color:var(--gold-2);}
+.cta p{font-size:17px;color:var(--on-dark-2);max-width:34em;margin:18px auto 0;}
+.cta-b{display:flex;gap:13px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+.cta .btn{background:transparent;color:var(--on-dark);border-color:rgba(255,255,255,0.22);}
+.cta .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+.foot{background:var(--paper-2);border-top:1px solid var(--hair);padding:40px 0;text-align:center;}
+.foot .brand{margin-bottom:10px;}
+.foot p{font-size:13px;color:var(--ink-3);}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);}
+.rv.in{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+
+/* go-live: mobile menu + shared footer */
+.nav-burger{display:none;width:40px;height:40px;border:1px solid var(--hair-2);border-radius:9px;background:var(--paper);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;}
+.nav-burger span{display:block;width:16px;height:1.6px;background:var(--ink);transition:transform .22s,opacity .22s;}
+.nav.m-open .nav-burger span:nth-child(1){transform:translateY(5.6px) rotate(45deg);}
+.nav.m-open .nav-burger span:nth-child(2){opacity:0;}
+.nav.m-open .nav-burger span:nth-child(3){transform:translateY(-5.6px) rotate(-45deg);}
+.mnav{display:none;border-top:1px solid var(--hair);background:var(--paper);}
+.nav.m-open .mnav{display:block;}
+.mnav a{display:block;padding:14px 32px;font-size:17px;color:var(--ink);border-bottom:1px solid var(--hair);font-family:var(--serif);letter-spacing:-0.01em;}
+.mnav a:last-child{border-bottom:0;}
+.mnav a .ar{color:var(--gold);}
+@media(max-width:900px){.nav-links{display:none;}.nav-burger{display:flex;}.nav-cta .signin,.nav-cta .si{display:none;}}
+@media(min-width:901px){.mnav{display:none !important;}}
+
+.foot{text-align:left;}
+.foot-grid{display:flex;justify-content:space-between;gap:28px 40px;flex-wrap:wrap;align-items:flex-start;}
+.foot-grid .foot-tag{font-size:13.5px;color:var(--ink-3);max-width:30em;margin-top:8px;line-height:1.55;}
+.foot-links{display:flex;gap:10px 24px;flex-wrap:wrap;padding-top:8px;}
+.foot-links a{font-size:13.5px;color:var(--ink-2);}
+.foot-links a:hover{color:var(--ink);}
+.foot-base a{color:var(--ink-2);}
+.foot-base a:hover{color:var(--ink);}
+.foot-base{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:26px;padding-top:18px;font-size:12.5px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">Cle<span class="w">w</span>a</a>
+    <nav class="nav-links">
+      <a href="#make">Make &amp; plan</a><a href="#track">Track</a><a href="#intel">Intelligence</a>
+      <a href="security.html">Security</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="app.html">Live demo</a>
+    </nav>
+    <div class="nav-cta"><a class="si" href="app.html">Sign in</a><a class="btn pri" href="start.html">Start free <span class="ar">→</span></a></div>
+    <button class="nav-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mnav">
+    <a href="index.html">Home</a>
+    <a href="tour.html">Interactive tour</a>
+    <a href="security.html">Security & trust</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="app.html">Live demo</a>
+    <a href="start.html">Start free <span class="ar">→</span></a>
+  </nav>
+</header>
+
+<section class="fhero">
+  <div class="wrap">
+    <div class="ey" style="justify-content:center;"><span class="d"></span>Every feature, explained</div>
+    <h1>One tab for every part of <em>making your product.</em></h1>
+    <p>Clewa is organized the way production actually works — plan and make, track what's happening, talk to your factory, let the intelligence watch your back, and keep the whole record. Here's exactly what lives in each.</p>
+    <div class="fhero-cta">
+      <a class="btn gold" href="app.html">Open the live demo <span class="ar">→</span></a>
+      <a class="btn" href="tour.html">Try the interactive tour</a>
+    </div>
+  </div>
+</section>
+
+<nav class="jump">
+  <div class="wrap jump-in">
+    <a href="#make">Make &amp; plan</a>
+    <a href="#track">Track</a>
+    <a href="#talk">Communicate</a>
+    <a href="#intel">Intelligence</a>
+    <a href="#library">Library</a>
+  </div>
+</nav>
+
+<!-- GROUP 1: MAKE & PLAN -->
+<section class="group" id="make">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">01</span><h2>Make &amp; plan</h2><span class="gd">Define the product, price it, place the order, and decide what to make next.</span></div>
+    <div class="fgrid">
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h3"/></svg></span><div class="htxt"><h3>Tech-pack builder</h3><div class="tab">Tab · Tech packs</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">Half of all production mistakes start with a spec the factory had to guess at. Build it complete here, and a live check catches the gaps <b>before</b> they cost you a sampling round.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Garment details, BOM, measurements, labels &amp; packaging</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Completeness score + AI gap warnings ("no lining → extra round")</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Artwork, CAD &amp; reference image slots that travel with the spec</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h10"/></svg></span><div class="htxt"><h3>Orders</h3><div class="tab">Tab · Orders</div></div></div>
+        <p class="lead">When specs live in email and prices in WhatsApp, nobody's sure what was actually agreed. Here every order keeps its whole story in one place — so the truth is never in doubt.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Stage tracker per order; tabs for Overview, Record, Samples, Messages, Docs</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><b>The Record</b> — locked specs/price/terms, dual sign-off, change history</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Change orders that re-version the record and need both sides to re-confirm</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></span><div class="htxt"><h3>PO generator</h3><div class="tab">Tab · PO generator</div></div></div>
+        <p class="lead">The purchase order is the moment it gets real. Build a clean, professional one in minutes, export it, and send it — no fragile spreadsheet, no terms left off.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Live-updating PO document as you fill the form</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Deposit math, incoterms, terms &amp; signature blocks built in</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Export to PDF or send straight to the factory</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6M10 20V10M16 20V4M20 20H3"/></svg></span><div class="htxt"><h3>Planning</h3><div class="tab">Tab · Planning</div></div></div>
+        <p class="lead">The best brands decide what to make on purpose, not by reflex. Plan the line, set the budget, and move ideas from sketch to ready-to-make — all before a cent is committed.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Line plan — newness vs. carryover, price tier, target margin</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Open-to-buy budget — what's committed vs. still free to spend</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Design pipeline + projected spend across the months ahead</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l3 3v15H7z"/><path d="M16 3v4h4M10 12h6M10 16h4"/><circle cx="6" cy="9" r="2"/></svg></span><div class="htxt"><h3>Contract drafting</h3><div class="tab">Tab · Orders</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">Nobody wants to write the manufacturing agreement — so most brands skip it, then have nothing to point to when it goes wrong. Clewa drafts a clear one from your order, so the terms are spelled out before work starts.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Auto-drafted from the agreed record — specs, price, terms, dates, remedies</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Plain-language and bilingual, so you skip the awkward back-and-forth</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>When something slips, it's clear what was agreed and who's covered</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GROUP 2: TRACK -->
+<section class="group" id="track">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">02</span><h2>Track</h2><span class="gd">Time, money, quality and stock — the live state of everything in flight.</span></div>
+    <div class="fgrid">
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span><div class="htxt"><h3>Calendar</h3><div class="tab">Tab · Calendar</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">Miss the date you needed to place the order and the whole season slips. Set your launch and Clewa builds the plan backward — around your factory's holidays — so you always know the real deadline.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Backward planner: set a launch, get the date you must place by</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Timeline + month views; production &amp; campaign lanes together</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Factory closures (Tet, August breaks) + collision alerts</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 7-8M21 7v5M21 7h-5"/></svg></span><div class="htxt"><h3>Finances</h3><div class="tab">Tab · Finances</div></div></div>
+        <p class="lead">Production is where money quietly leaks. See everything you've committed, paid and owe in one view — with the exchange rate locked so the final invoice can't surprise you.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Season KPIs, margin-by-order, cash-out schedule</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Live costing — landed cost &amp; margin per style</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Multi-currency with FX locked at PO; you pay factories directly</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><div class="htxt"><h3>Inventory</h3><div class="tab">Tab · Inventory</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">You can't make 320 coats with buttons for 290 — and you can't sell what you've quietly run out of online. Clewa connects to your store, watches what's selling, and tells you when to reorder while there's still time to make it.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><b>Shopify sync</b> — live sell-through in, incoming production out</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><b>Reorder warnings</b> — "Black tee sells out in ~3 weeks; a reorder takes 6 — start now"</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>BOM auto-deduction + wastage prediction ("short at unit 290")</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Size-curve intelligence, allocation guardrails, deadstock &amp; aging, live WIP &amp; guided counts</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M15 15l4 4M8 11l2 2 4-4"/></svg></span><div class="htxt"><h3>Quality control</h3><div class="tab">Tab · Quality</div></div></div>
+        <p class="lead">The scariest moment is paying for work you haven't seen. Inspect the same checklist as your factory, with photos — and it has to pass before the balance is ever due.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Shared checklist with photos, against the approved sample</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>AQL pass/fail gate; safe-to-pay verification before money moves</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Returns/RMA loop — defect reasons feed factory scorecards</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GROUP 3: COMMUNICATE -->
+<section class="group" id="talk">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">03</span><h2>Communicate</h2><span class="gd">Talk to any factory, in any language — and keep every word on the order.</span></div>
+    <div class="fgrid">
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4"/><path d="M8 11h8M8 14h5"/></svg></span><div class="htxt"><h3>Messages</h3><div class="tab">Tab · Messages</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">Language and time zones turn simple questions into week-long delays. Write in yours, they read in theirs, replies come back translated — and none of it gets lost in a chat thread.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Live two-way translation; originals saved to the record</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>One thread per factory, attached to the right orders</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>No app for them to learn — they keep working how they do</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><div class="htxt"><h3>Inbox</h3><div class="tab">Tab · Inbox</div></div></div>
+        <p class="lead">Your factory isn't going to stop using email — and they don't have to. Forward, paste, or connect, and their messages land on the order, translated and parsed. No inbox handover required.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Three ways in: paste it, forward to an address, or connect</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Quotes, terms &amp; dates read straight onto the order</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>AI-drafted replies in the factory's language</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M16 4a3 3 0 0 1 0 6"/></svg></span><div class="htxt"><h3>Shared workspace</h3><div class="tab">Tab · Shared view</div></div></div>
+        <p class="lead">Most disputes are really just two people looking at different versions. Put you and your factory on one live order — same status, same dates — while your costs stay private.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Live status, dates &amp; "whose move it is"</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>A clear "who sees what" boundary</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Factories never see your costs, margins, or other factories</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M16 4a3 3 0 0 1 0 6M20 19c0-2-1-3.5-3-4.5"/></svg></span><div class="htxt"><h3>Contacts</h3><div class="tab">Tab · Contacts</div></div></div>
+        <p class="lead">It takes years to learn which factory actually delivers. Clewa remembers for you — every maker and contact, with a track record that outlasts any one order or teammate.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>On-time rate, defect rate &amp; orders run, per factory</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Specialty, MOQ, certifications &amp; key contact with languages</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Institutional memory you keep even as your team changes</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INVITE THE FACTORY -->
+<section class="invite" id="invite">
+  <div class="wrap">
+    <div class="invite-card rv">
+      <div>
+        <div class="ey"><span class="d"></span>Getting your factory on</div>
+        <h2>Your factory's on board in <em>under a minute</em> — no app, no setup.</h2>
+        <p>The biggest worry brands have: "my factory will never use new software." They don't have to. You send one link; they click it and see only their order. No account to create, no download, no training — and they keep using email or WhatsApp if they want, because Clewa bridges that too.</p>
+      </div>
+      <div class="invite-steps">
+        <div class="istep"><span class="in">1</span><div><h4>You send one link</h4><p>Invite a factory to an order straight from Clewa — in their language.</p></div></div>
+        <div class="istep"><span class="in">2</span><div><h4>They click — that's it</h4><p>No sign-up, no install. They land on the shared order, translated to their language.</p></div></div>
+        <div class="istep"><span class="in">3</span><div><h4>They see only their order</h4><p>Their specs, dates, messages and QC — never your costs, margins, or other factories.</p></div></div>
+        <div class="istep"><span class="in">4</span><div><h4>Email still works</h4><p>Prefer to reply by email or WhatsApp? It lands on the order anyway, translated.</p></div></div>
+      </div>
+      <div style="margin-top:26px;text-align:center;"><a class="btn" href="factory-view.html">See both phones, live — his side and yours <span class="ar">→</span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- GROUP 4: INTELLIGENCE -->
+<section class="group" id="intel">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">04</span><h2>Intelligence</h2><span class="gd">A production director that watches every order — and switches off whenever you want.</span></div>
+    <div class="fgrid">
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></span><div class="htxt"><h3>Intelligence</h3><div class="tab">Tab · Intelligence</div></div></div>
+        <p class="lead">You can't watch every order every day — Clewa can. It sweeps them overnight and hands you a plain-language briefing: what's urgent, what can wait, what's running fine.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Morning briefing, ranked by what it blocks</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Readiness gate — production can't start until specs/BOM are complete</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Anomaly watch (invoice ≠ record) + patterns from your history</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9M21 3l-9 9"/><circle cx="12" cy="12" r="2.5"/></svg></span><div class="htxt"><h3>Ask Clewa</h3><div class="tab">Tab · Ask Clewa</div></div><span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5L22 9l-5 4.5L18.5 21 12 17.3 5.5 21 7 13.5 2 9l7-0.5z"/></svg>Flagship</span></div>
+        <p class="lead">When you don't know what you don't know, you freeze or overpay. Ask in plain English and get an answer grounded in your own data, with its sources shown — like a veteran sitting beside you.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>"Which factory for the new coat?" → answered from real scorecards</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Every answer cites the data behind it — never a black box</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>One toggle turns all AI off — the system of record works without it</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GROUP 5: LIBRARY -->
+<section class="group" id="library">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">05</span><h2>Library &amp; team</h2><span class="gd">The permanent record, the season's story, and everyone who works on it.</span></div>
+    <div class="fgrid">
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><div class="htxt"><h3>Documents</h3><div class="tab">Tab · Documents</div></div></div>
+        <p class="lead">Specs, POs, invoices, inspection reports — scattered across inboxes and drives, they vanish exactly when you need them. Here it all lives in one place: easy to find, always current, with a full trail of every version.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Organized by order and by type</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Version history so you always have the latest — and the trail</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Export anything to Excel — your data is always yours</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 13h6M9 16h4"/></svg></span><div class="htxt"><h3>Season close</h3><div class="tab">Tab · Season close</div></div></div>
+        <p class="lead">Most brands finish a season and never really learn from it. Clewa compiles the story automatically — what shipped, what it earned, who delivered — so every season sharpens the next.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Units, retail value, on-time &amp; blended margin at a glance</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>What went well / what slipped, plus factory grades</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>The report you'd forward to your team or investors</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M16 4a3 3 0 0 1 0 6M20 19c0-2-1-3.5-3-4.5"/></svg></span><div class="htxt"><h3>Team &amp; roles</h3><div class="tab">Tab · Team</div></div></div>
+        <p class="lead">As you grow, the right people need the right view — and your factories need a way in that doesn't expose your business. Give everyone their slice; keep your numbers yours.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Roles: owner, production, design — each their slice</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Factory guests scoped per order, never your financials</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Custom avatars so the workspace feels like real people</li>
+        </ul>
+      </div>
+
+      <div class="fcard rv">
+        <div class="fcard-top"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 2 3-1 1 3 3 1-1 3 2 2-2 2 1 3-3 1-1 3-3-1-2 2-2-2-3 1-1-3-3-1 1-3-2-2 2-2-1-3 3-1 1-3 3 1z"/></svg></span><div class="htxt"><h3>Ways of working</h3><div class="tab">Everywhere</div></div></div>
+        <p class="lead">First order or your fiftieth, Clewa meets you where you are — teaching every term as you go, or getting out of the way when you already know the drill.</p>
+        <ul>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Guided vs. Pro mode, with plain-language coaching &amp; a glossary</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Customize panel — hide the tabs and tiles you don't use</li>
+          <li><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Bring your own factory, local or overseas — geography is just a setting</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ESSENTIALS -->
+<section class="group" id="essentials">
+  <div class="wrap">
+    <div class="group-head rv"><span class="group-num">06</span><h2>Getting set up &amp; supported</h2><span class="gd">The practical things that make Clewa easy to start and easy to run.</span></div>
+    <div class="strip rv">
+      <div class="st"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></div><h4>Easy onboarding</h4><p>Bring your live orders, factories and styles in fast — paste, upload, or import from a spreadsheet. No blank-slate start.</p></div>
+      <div class="st"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3M16 7h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3M9 12h6"/></svg></div><h4>Integrations</h4><p>Shopify for sell-through, your accounting tools for spend, and Excel export everywhere — your data flows in and out freely.</p></div>
+      <div class="st"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></div><h4>Works on the floor</h4><p>Check QC, approve a sample, or run a count from your phone — wherever you (or your factory) happen to be.</p></div>
+      <div class="st"><div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h4>Real people behind it</h4><p>Built by people who've run production from both sides — with hands-on support and, when you need it, Clewa Sourcing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap rv">
+    <h2>Sixteen tabs. <em>One thread.</em></h2>
+    <p>Every part of making your product, in one calm system. The best way to understand it is to click through it.</p>
+    <div class="cta-b">
+      <a class="btn gold" href="app.html">Open the live demo <span class="ar">→</span></a>
+      <a class="btn" href="tour.html">Try the interactive tour</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Cle<span class="w">w</span>a</div>
+        <p class="foot-tag">The calm place to run production with any factory, in any language — from tech pack to delivery.</p>
+      </div>
+      <nav class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="tour.html">Interactive tour</a>
+        <a class="foot-links-fv" href="factory-view.html">What your factory sees</a>
+        <a href="security.html">Security &amp; trust</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="sourcing.html">Clewa Sourcing</a>
+        <a href="changelog.html">Updates</a>
+        <a href="contact.html">Contact</a>
+        <a href="app.html">Live demo</a>
+      </nav>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Clewa. You keep custody of your funds — Clewa never holds or moves money.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span>
+      <span>Any country · any language · one thread</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function revealAll(){document.querySelectorAll('.rv:not(.in)').forEach(function(el){el.classList.add('in');});}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+    setTimeout(revealAll,1200);
+  } else { revealAll(); }
+})();
+</script>
+<script>
+(function(){
+  var n=document.querySelector('.nav'),b=document.querySelector('.nav-burger');
+  if(!n||!b)return;
+  b.addEventListener('click',function(){var o=n.classList.toggle('m-open');b.setAttribute('aria-expanded',o?'true':'false');});
+  document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('m-open');b.setAttribute('aria-expanded','false');});});
+})();
+</script>
+</body>
+</html>
