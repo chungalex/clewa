@@ -97,12 +97,26 @@ a:hover{color:inherit;}
 
 <script>
 (function(){
+  var SB_URL='https://cxchrwccojvurqcxakyw.supabase.co';
+  var SB_KEY='sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o';
   var f=document.getElementById('startForm');
   if(f){f.addEventListener('submit',function(e){
     e.preventDefault();
     var em=document.getElementById('sf-email');
-    if(em&&em.value){try{localStorage.setItem('clewa-start-email',em.value);}catch(err){}}
-    window.location.href='app.html';
+    var email=em&&em.value?em.value.trim():'';
+    if(!email){return;}
+    try{localStorage.setItem('clewa-start-email',email);}catch(err){}
+    var btn=f.querySelector('button[type="submit"]');
+    if(btn){btn.disabled=true;btn.textContent='One moment…';}
+    var done=false;
+    var go=function(){if(!done){done=true;window.location.href='app.html';}};
+    // never strand the visitor: proceed even if the network hangs
+    setTimeout(go,4000);
+    fetch(SB_URL+'/rest/v1/waitlist',{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({email:email,source:'start-page'})
+    }).catch(function(){}).finally(go);
   });}
 })();
 </script>
