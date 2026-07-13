@@ -109,7 +109,7 @@ a:hover{color:inherit;}
     var btn=f.querySelector('button[type="submit"]');
     if(btn){btn.disabled=true;btn.textContent='One moment…';}
     var done=false;
-    var go=function(){if(!done){done=true;window.location.href='app.html';}};
+    var go=function(){if(!done){done=true;window.location.href='platform/#/auth';}};
     // never strand the visitor: proceed even if the network hangs
     setTimeout(go,4000);
     fetch(SB_URL+'/rest/v1/waitlist',{
