@@ -7,6 +7,7 @@ import Shell from './pages/Shell'
 import Orders from './pages/Orders'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
+import FactoryView from './pages/FactoryView'
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -23,6 +24,15 @@ export default function App() {
   }, [])
 
   if (!ready) return null
+
+  // Factory share-link: works with no account, before any auth gate.
+  if (location.pathname.startsWith('/f/')) {
+    return (
+      <Routes>
+        <Route path="/f/:token" element={<FactoryView />} />
+      </Routes>
+    )
+  }
 
   if (!session) {
     if (location.pathname !== '/auth') return <Navigate to="/auth" replace />

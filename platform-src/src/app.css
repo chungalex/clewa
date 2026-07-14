@@ -146,3 +146,19 @@ a:hover { text-decoration: underline; }
   .side .foot { margin-top: 0; margin-left: auto; }
   .main { padding: 22px 18px; }
 }
+
+/* ---- Factory shared view ---- */
+.fv-wrap { min-height: 100vh; background: var(--paper-2); padding: 28px 18px 40px; display: flex; flex-direction: column; align-items: center; }
+.fv-head { width: 100%; max-width: 720px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.fv-brandmark { font-family: 'Newsreader', Georgia, serif; font-size: 22px; color: var(--ink); }
+.fv-brandmark em { color: var(--thread); font-style: normal; }
+.fv-sub { font-size: 12px; color: var(--ink-3); letter-spacing: 0.02em; }
+.fv-card { width: 100%; max-width: 720px; background: var(--paper); border: 1px solid var(--hair); border-radius: 16px; padding: 26px; }
+.fv-order-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.fv-order-head h1 { font-family: 'Newsreader', Georgia, serif; font-weight: 400; font-size: 26px; }
+.fv-meta { color: var(--ink-3); font-size: 13px; margin-top: 4px; }
+.fv-name { margin-top: 20px; padding: 14px; background: var(--gold-bg); border: 1px solid var(--hair-2); border-radius: 12px; }
+.fv-name label { display: block; font-size: 12px; color: var(--ink-2); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.fv-name input { flex: 1; padding: 9px 12px; border: 1px solid var(--hair-2); border-radius: 9px; background: var(--paper); }
+.fv-done { margin-top: 16px; padding: 12px 14px; background: var(--sage-bg); border: 1px solid var(--sage-line); border-radius: 10px; color: var(--sage); font-size: 13.5px; }
+.fv-foot { margin-top: 18px; font-size: 12px; color: var(--ink-3); text-align: center; max-width: 720px; }
