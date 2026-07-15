@@ -32,11 +32,18 @@ export default function OrderDetail() {
 
   useEffect(() => { load() }, [id])
 
-  // Refresh when the tab regains focus, so factory confirmations appear.
+  // Keep the record live: refresh on focus and poll quietly while the
+  // page is open, so factory confirmations appear without a reload.
   useEffect(() => {
     const onFocus = () => load()
     window.addEventListener('focus', onFocus)
-    return () => window.removeEventListener('focus', onFocus)
+    const tick = setInterval(() => {
+      if (document.visibilityState === 'visible') load()
+    }, 8000)
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      clearInterval(tick)
+    }
   }, [id])
 
   async function createInvite() {

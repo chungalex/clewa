@@ -106,7 +106,9 @@ export default function FactoryView() {
           </form>
         )}
 
-        <div className="section-label" style={{ marginTop: 22 }}>The record — {data.lines.length} lines, {pending.length} awaiting your confirmation</div>
+        <div className="section-label" style={{ marginTop: 22 }}>
+          The record — {data.lines.length} {data.lines.length === 1 ? 'line' : 'lines'}, {pending.length} awaiting your confirmation
+        </div>
         {data.lines.map(l => (
           <div className="rec-line" key={l.id}>
             <span className="rec-cat">{l.category}</span>
