@@ -1,18 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 
 export default function NewOrder() {
   const nav = useNavigate()
   const [name, setName] = useState('')
+  const [qty, setQty] = useState('')
+  const [showDetails, setShowDetails] = useState(false)
   const [factory, setFactory] = useState('')
   const [country, setCountry] = useState('')
-  const [qty, setQty] = useState('')
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('USD')
   const [shipBy, setShipBy] = useState('')
+  const [situation, setSituation] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return
+      supabase.from('profiles').select('factory_situation').eq('id', data.user.id).single()
+        .then(({ data: p }) => setSituation(p?.factory_situation || null))
+    })
+  }, [])
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -46,6 +56,13 @@ export default function NewOrder() {
     nav(`/orders/${data.id}`)
   }
 
+  const factoryHint =
+    situation === 'no_factory'
+      ? "You don't have a factory yet — that's fine. The record you build here becomes your brief when you approach one."
+      : situation === 'in_talks'
+        ? 'Still choosing? Leave the factory blank — you can attach one the moment you decide.'
+        : 'You can invite your factory right after this — they confirm your terms line by line.'
+
   return (
     <>
       <div className="main-head"><h1>New order</h1></div>
@@ -53,37 +70,52 @@ export default function NewOrder() {
         <form onSubmit={submit}>
           <div className="field">
             <label htmlFor="name">What are you making?</label>
-            <input id="name" required value={name} onChange={e => setName(e.target.value)} placeholder="Wool Overcoat — FW26" />
+            <input id="name" required autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Wool Overcoat — FW26" />
+            <p className="field-hint">Just the product and season — this is the only thing you need to start.</p>
           </div>
           <div className="field">
-            <label htmlFor="factory">Factory (leave blank if you don't have one yet)</label>
-            <input id="factory" value={factory} onChange={e => setFactory(e.target.value)} placeholder="Atelier Norte" />
+            <label htmlFor="qty">Roughly how many units? <span className="opt">optional</span></label>
+            <input id="qty" type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} placeholder="320" />
           </div>
-          <div className="field">
-            <label htmlFor="country">Factory country</label>
-            <input id="country" value={country} onChange={e => setCountry(e.target.value)} placeholder="Portugal" />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-            <div className="field">
-              <label htmlFor="qty">Quantity</label>
-              <input id="qty" type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} placeholder="320" />
+
+          {!showDetails ? (
+            <button type="button" className="details-toggle" onClick={() => setShowDetails(true)}>
+              + Add factory & commercial terms <span className="opt">optional — most brands add these as they're negotiated</span>
+            </button>
+          ) : (
+            <div className="details-block">
+              <p className="field-hint" style={{ marginTop: 0 }}>{factoryHint}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="field">
+                  <label htmlFor="factory">Factory</label>
+                  <input id="factory" value={factory} onChange={e => setFactory(e.target.value)} placeholder="Atelier Norte" />
+                </div>
+                <div className="field">
+                  <label htmlFor="country">Country</label>
+                  <input id="country" value={country} onChange={e => setCountry(e.target.value)} placeholder="Portugal" />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="field">
+                  <label htmlFor="price">Agreed unit price</label>
+                  <input id="price" type="number" min="0" step="0.01" value={price} onChange={e => setPrice(e.target.value)} placeholder="59.00" />
+                </div>
+                <div className="field">
+                  <label htmlFor="currency">Currency</label>
+                  <select id="currency" value={currency} onChange={e => setCurrency(e.target.value)}>
+                    {['USD', 'EUR', 'GBP', 'VND', 'CNY', 'TRY'].map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="field">
+                <label htmlFor="shipby">Ship-by date</label>
+                <input id="shipby" type="date" value={shipBy} onChange={e => setShipBy(e.target.value)} />
+                <p className="field-hint">Anything you fill in here goes straight onto the record, signed by you, awaiting your factory's confirmation.</p>
+              </div>
             </div>
-            <div className="field">
-              <label htmlFor="price">Unit price</label>
-              <input id="price" type="number" min="0" step="0.01" value={price} onChange={e => setPrice(e.target.value)} placeholder="59.00" />
-            </div>
-            <div className="field">
-              <label htmlFor="currency">Currency</label>
-              <select id="currency" value={currency} onChange={e => setCurrency(e.target.value)}>
-                {['USD', 'EUR', 'GBP', 'VND', 'CNY', 'TRY'].map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-          </div>
-          <div className="field">
-            <label htmlFor="shipby">Ship-by date</label>
-            <input id="shipby" type="date" value={shipBy} onChange={e => setShipBy(e.target.value)} />
-          </div>
-          <button className="btn gold" type="submit" disabled={busy}>
+          )}
+
+          <button className="btn gold" type="submit" disabled={busy || !name.trim()}>
             {busy ? 'Creating…' : 'Create order →'}
           </button>
           {error && <p className="err-note">{error}</p>}

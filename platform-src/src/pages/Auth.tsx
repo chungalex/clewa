@@ -7,7 +7,6 @@ export default function Auth() {
     try { return localStorage.getItem('clewa-start-email') || '' } catch { return '' }
   })
   const [password, setPassword] = useState('')
-  const [brandName, setBrandName] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -15,16 +14,11 @@ export default function Auth() {
     e.preventDefault()
     setBusy(true)
     setError('')
-    if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp({ email, password })
-      if (error) { setError(error.message); setBusy(false); return }
-      if (data.user && brandName) {
-        await supabase.from('profiles').update({ brand_name: brandName }).eq('id', data.user.id)
-      }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { setError(error.message); setBusy(false); return }
-    }
+    const fn = mode === 'signup'
+      ? supabase.auth.signUp({ email, password })
+      : supabase.auth.signInWithPassword({ email, password })
+    const { error } = await fn
+    if (error) { setError(error.message); setBusy(false); return }
     setBusy(false)
   }
 
@@ -41,12 +35,6 @@ export default function Auth() {
               : 'Pick up where you left off.'}
           </p>
           <form onSubmit={submit}>
-            {mode === 'signup' && (
-              <div className="field">
-                <label htmlFor="brand">Brand name</label>
-                <input id="brand" value={brandName} onChange={e => setBrandName(e.target.value)} placeholder="Maison Ardent" />
-              </div>
-            )}
             <div className="field">
               <label htmlFor="email">Work email</label>
               <input id="email" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@yourbrand.com" autoComplete="email" />
@@ -56,7 +44,7 @@ export default function Auth() {
               <input id="password" type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 8 characters" autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} />
             </div>
             <button className="btn gold" type="submit" disabled={busy} style={{ width: '100%', justifyContent: 'center' }}>
-              {busy ? 'One moment…' : mode === 'signup' ? 'Create your workspace →' : 'Sign in →'}
+              {busy ? 'One moment…' : mode === 'signup' ? 'Create your account →' : 'Sign in →'}
             </button>
             {error && <p className="err-note">{error}</p>}
           </form>
@@ -67,6 +55,9 @@ export default function Auth() {
           ) : (
             <>New to Clewa? <a href="#" onClick={e => { e.preventDefault(); setMode('signup'); setError('') }}>Start free</a></>
           )}
+        </p>
+        <p className="auth-switch" style={{ marginTop: 6 }}>
+          Run a factory? You don't need an account — the brand you work with sends you a link.
         </p>
       </div>
     </div>

@@ -110,6 +110,32 @@ export default function OrderDetail() {
         <span className={`stage-pill ${order.stage}`}>{STAGE_LABELS[order.stage]}</span>
       </div>
 
+      {(() => {
+        const hasLines = lines.length > 0
+        const hasInvite = !!invite
+        const allConfirmed = hasLines && lines.every(l => l.factory_signed_at)
+        if (allConfirmed && hasInvite) return null
+        const steps = [
+          { done: hasLines, title: 'Put your agreement on the Record', sub: 'Specs, price, terms — you write them below, dated and signed by you.' },
+          { done: hasInvite, title: 'Invite your factory', sub: "One link, no account needed on their side. They can't edit your terms — only confirm them." },
+          { done: allConfirmed, title: 'They confirm, line by line', sub: 'Each confirmation is a dated countersignature. When every line is signed by both sides, you have the agreement of record.' },
+        ]
+        return (
+          <div className="card steps-card">
+            <div className="eyebrow">How this works</div>
+            {steps.map((s, i) => (
+              <div className={`step ${s.done ? 'done' : ''}`} key={i}>
+                <span className="step-dot">{s.done ? '✓' : i + 1}</span>
+                <div>
+                  <strong>{s.title}</strong>
+                  <span>{s.sub}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      })()}
+
       <div className="section-label">Stage</div>
       <div className="card" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {STAGES.map((s, i) => (
