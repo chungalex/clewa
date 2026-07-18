@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
+import Samples from '../Samples'
 
 type Invite = {
   id: string
@@ -205,6 +206,14 @@ export default function OrderDetail() {
           />
           <button className="btn primary small" type="submit" disabled={busy || !newLine.trim()}>Add to record</button>
         </form>
+      </div>
+
+      <div className="section-label">Samples</div>
+      <div className="card">
+        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+          The approval ladder — each round is visible to your factory, and an approval condition is written to the record.
+        </p>
+        <Samples mode="brand" orderId={order.id} owner={order.owner} />
       </div>
 
       <div className="section-label">Messages</div>

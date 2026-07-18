@@ -228,3 +228,31 @@ a:hover { text-decoration: underline; }
 .msg-meta { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
 .msgs-input { display: flex; gap: 10px; margin-top: 10px; }
 .msgs-input input { flex: 1; padding: 9px 12px; border: 1px solid var(--hair-2); border-radius: 9px; background: var(--paper); }
+
+/* ---- Samples ---- */
+.sample-row { padding: 12px 0; }
+.sample-row + .sample-row { border-top: 1px solid var(--hair); }
+.sample-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.sample-head strong { font-size: 13.5px; color: var(--ink); }
+.sample-status { font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--hair-2); color: var(--ink-3); }
+.sample-status.approved { background: var(--sage-bg); border-color: var(--sage-line); color: var(--sage); }
+.sample-status.submitted { background: var(--gold-bg); border-color: var(--hair-2); color: var(--thread); }
+.sample-status.changes { background: #f7ebe8; border-color: #ddb8b0; color: #9c3b2f; }
+.sample-note { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+.sample-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.sample-actions input { flex: 1; min-width: 200px; padding: 8px 11px; border: 1px solid var(--hair-2); border-radius: 9px; background: var(--paper); font-size: 13px; }
+
+/* ---- Mobile pass: factories open links on phones ---- */
+@media (max-width: 760px) {
+  .shell { flex-direction: column; }
+  .side { width: 100%; display: flex; align-items: center; gap: 4px; padding: 10px 14px; border-right: none; border-bottom: 1px solid var(--hair); overflow-x: auto; }
+  .side .brand { margin: 0 10px 0 0; font-size: 18px; }
+  .side nav { display: flex; flex-direction: row; gap: 2px; flex: 1; }
+  .side nav a { white-space: nowrap; padding: 7px 10px; font-size: 13px; }
+  .side .foot { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .side .foot div { display: none; }
+  .main { padding: 18px 14px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .main-head { flex-wrap: wrap; gap: 10px; }
+  .fv-card { padding: 18px; }
+}
