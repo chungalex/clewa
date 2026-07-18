@@ -31,8 +31,18 @@ export default function Home() {
   if (orders === null) return null
 
   const active = orders.filter(o => !['delivered', 'closed'].includes(o.stage))
-  const committed = orders.reduce((s, o) => s + (o.quantity && o.unit_price ? o.quantity * Number(o.unit_price) : 0), 0)
-  const commCurrency = orders.find(o => o.quantity && o.unit_price)?.currency || 'USD'
+  // Never sum across currencies — headline the largest, note the rest.
+  const byCurrency = new Map<string, number>()
+  for (const o of orders) {
+    if (o.quantity && o.unit_price) {
+      byCurrency.set(o.currency, (byCurrency.get(o.currency) || 0) + o.quantity * Number(o.unit_price))
+    }
+  }
+  const currencies = [...byCurrency.entries()].sort((a, b) => b[1] - a[1])
+  const [commCurrency, committed] = currencies[0] || ['USD', 0]
+  const otherCommitted = currencies.slice(1)
+    .map(([c, v]) => `${c} ${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`)
+    .join(' · ')
   const unitsInProduction = active.filter(o => ['production', 'qc', 'ship'].includes(o.stage))
     .reduce((s, o) => s + (o.quantity || 0), 0)
   const nextShip = active.filter(o => o.ship_by).sort((a, b) => (a.ship_by! < b.ship_by! ? -1 : 1))[0]
@@ -85,8 +95,8 @@ export default function Home() {
 
       <div className="kpi-row">
         <div className="kpi">
-          <strong>{committed > 0 ? `${commCurrency} ${committed.toLocaleString()}` : '—'}</strong>
-          <span>Committed</span>
+          <strong>{committed > 0 ? `${commCurrency} ${committed.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '—'}</strong>
+          <span>Committed{otherCommitted ? ` · plus ${otherCommitted}` : ''}</span>
         </div>
         <div className="kpi">
           <strong>{active.length}</strong>
