@@ -11,13 +11,18 @@ export default function Shell({ session }: { session: Session }) {
       .then(({ data }) => { if (data?.brand_name) setBrandName(data.brand_name) })
   }, [session.user.id])
 
+  const cls = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '')
+
   return (
     <div className="shell">
       <aside className="side">
         <div className="brand">Cle<em>w</em>a</div>
         <nav>
-          <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>Orders</NavLink>
-          <NavLink to="/orders/new" className={({ isActive }) => (isActive ? 'active' : '')}>+ New order</NavLink>
+          <NavLink to="/" end className={cls}>Home</NavLink>
+          <NavLink to="/orders" className={cls}>Orders</NavLink>
+          <NavLink to="/calendar" className={cls}>Calendar</NavLink>
+          <NavLink to="/finances" className={cls}>Finances</NavLink>
+          <NavLink to="/orders/new" className={cls}>+ New order</NavLink>
         </nav>
         <div className="foot">
           <div>{brandName || session.user.email}</div>

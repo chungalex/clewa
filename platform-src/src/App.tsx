@@ -6,6 +6,9 @@ import Auth from './pages/Auth'
 import Welcome from './pages/Welcome'
 import Shell from './pages/Shell'
 import Orders from './pages/Orders'
+import Home from './pages/Home'
+import Calendar from './pages/Calendar'
+import Finances from './pages/Finances'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -66,7 +69,10 @@ export default function App() {
     <Routes>
       <Route path="/auth" element={<Navigate to="/" replace />} />
       <Route element={<Shell session={session} />}>
-        <Route path="/" element={<Orders />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/finances" element={<Finances />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>

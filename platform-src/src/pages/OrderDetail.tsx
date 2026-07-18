@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
+import Messages from '../Messages'
 
 type Invite = {
   id: string
@@ -204,6 +205,14 @@ export default function OrderDetail() {
           />
           <button className="btn primary small" type="submit" disabled={busy || !newLine.trim()}>Add to record</button>
         </form>
+      </div>
+
+      <div className="section-label">Messages</div>
+      <div className="card">
+        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+          Your factory sees this thread on their order link — one conversation, attached to the order.
+        </p>
+        <Messages mode="brand" orderId={order.id} owner={order.owner} />
       </div>
     </>
   )
