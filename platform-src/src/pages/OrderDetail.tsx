@@ -22,6 +22,7 @@ export default function OrderDetail() {
   const [order, setOrder] = useState<Order | null>(null)
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invite, setInvite] = useState<Invite | null>(null)
+  const [sampleStates, setSampleStates] = useState<string[]>([])
   const [newLine, setNewLine] = useState('')
   const [newCat, setNewCat] = useState<'spec' | 'price' | 'terms'>('spec')
   const [busy, setBusy] = useState(false)
@@ -31,15 +32,17 @@ export default function OrderDetail() {
   const [showHistory, setShowHistory] = useState(false)
 
   async function load() {
-    const [{ data: o }, { data: l }, { data: inv }] = await Promise.all([
+    const [{ data: o }, { data: l }, { data: inv }, { data: smp }] = await Promise.all([
       supabase.from('orders').select('*').eq('id', id).single(),
       supabase.from('record_lines').select('*').eq('order_id', id).order('created_at'),
       supabase.from('order_invites').select('id, token, accepted_at, accepted_by_name, language')
         .eq('order_id', id).is('revoked_at', null).limit(1).maybeSingle(),
+      supabase.from('samples').select('status').eq('order_id', id),
     ])
     setOrder(o as Order)
     setLines((l as RecordLine[]) || [])
     setInvite(inv as Invite | null)
+    setSampleStates(((smp as { status: string }[]) || []).map(x => x.status))
   }
 
   useEffect(() => { load() }, [id])
@@ -307,13 +310,45 @@ export default function OrderDetail() {
         </form>
       </div>
 
-      <div className="section-label">Samples</div>
+      {(() => {
+        const recordSigned = activeLines.length > 0 && activeLines.every(l => l.factory_signed_at)
+        const sampleApproved = sampleStates.includes('approved')
+        const qcReached = STAGES.indexOf(order.stage) >= STAGES.indexOf('qc')
+        const conds = [
+          { ok: recordSigned, title: 'The record is complete and dual-signed', sub: recordSigned ? 'Every line countersigned by the factory.' : 'Lines are still awaiting factory confirmation — nothing is agreed until both sides sign.' },
+          { ok: sampleApproved, title: 'A sample round is approved', sub: sampleApproved ? 'Approval (and any condition) is on the record.' : 'No approved sample yet — paying a balance before an approved sample is where most disputes start.' },
+          { ok: qcReached, title: 'Production has reached QC', sub: qcReached ? 'Final checks are in progress or passed.' : 'Balance payments are safest after QC — the stage tracker above drives this.' },
+        ]
+        const met = conds.filter(c => c.ok).length
+        return (
+          <>
+            <div className="section-label">Payment readiness</div>
+            <div className="card">
+              <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 10 }}>
+                Clewa never holds or moves money — you pay your factory directly. These are the conditions
+                worth verifying before you do. <strong style={{ color: met === 3 ? 'var(--sage)' : 'var(--thread)' }}>{met}/3 verified.</strong>
+              </p>
+              {conds.map((c, i) => (
+                <div className={`step ${c.ok ? 'done' : ''}`} key={i}>
+                  <span className="step-dot">{c.ok ? '✓' : '·'}</span>
+                  <div>
+                    <strong>{c.title}</strong>
+                    <span>{c.sub}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="section-label">Samples</div>
       <div className="card">
         <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           The approval ladder — each round is visible to your factory, and an approval condition is written to the record.
         </p>
         <Samples mode="brand" orderId={order.id} owner={order.owner} />
       </div>
+          </>
+        )
+      })()}
 
       <div className="section-label">Messages</div>
       <div className="card">

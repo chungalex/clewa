@@ -1,6 +1,35 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase, Order, STAGES, STAGE_LABELS } from '../supabase'
+import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
+
+function csvEscape(v: string | number | null | undefined) {
+  const s = String(v ?? '')
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+}
+
+async function exportCsv(orders: Order[]) {
+  const { data } = await supabase.from('record_lines').select('*')
+  const lines = (data as RecordLine[]) || []
+  const rows = [
+    ['order', 'stage', 'factory', 'country', 'quantity', 'unit_price', 'currency', 'ship_by', 'record_category', 'record_content', 'brand_signed', 'factory_signed', 'superseded'].join(','),
+  ]
+  for (const o of orders) {
+    const oLines = lines.filter(l => l.order_id === o.id)
+    if (!oLines.length) {
+      rows.push([o.name, o.stage, o.factory_name, o.factory_country, o.quantity, o.unit_price, o.currency, o.ship_by, '', '', '', '', ''].map(csvEscape).join(','))
+    }
+    for (const l of oLines) {
+      rows.push([o.name, o.stage, o.factory_name, o.factory_country, o.quantity, o.unit_price, o.currency, o.ship_by,
+        l.category, l.content, l.brand_signed_at || '', l.factory_signed_at || '', l.superseded_by ? 'yes' : ''].map(csvEscape).join(','))
+    }
+  }
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `clewa-orders-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[] | null>(null)
@@ -17,7 +46,12 @@ export default function Orders() {
     <>
       <div className="main-head">
         <h1>Orders</h1>
-        <Link to="/orders/new" className="btn primary">+ New order</Link>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {orders.length > 0 && (
+            <button className="btn ghost" onClick={() => exportCsv(orders)}>Export CSV</button>
+          )}
+          <Link to="/orders/new" className="btn primary">+ New order</Link>
+        </div>
       </div>
       {orders.length === 0 ? (
         <div className="card empty">
