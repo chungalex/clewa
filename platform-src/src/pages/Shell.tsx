@@ -17,7 +17,7 @@ export default function Shell({ session }: { session: Session }) {
   return (
     <div className="shell">
       <aside className="side">
-        <div className="brand">Cle<em>w</em>a</div>
+        <a className="brand" href="../" title="Back to clewa site">Cle<em>w</em>a</a>
         <div className="side-new">
           <Link to="/orders/new" className="btn primary">+ New order</Link>
         </div>
@@ -36,9 +36,9 @@ export default function Shell({ session }: { session: Session }) {
         </nav>
         <div className="spacer" />
         <div className="foot">
-          <span className="avatar">{initial}</span>
+          <Link to="/settings" className="avatar" title="Settings">{initial}</Link>
           <span className="who">
-            <div>{brandName || session.user.email}</div>
+            <Link to="/settings" style={{ color: 'inherit' }}><div>{brandName || session.user.email}</div></Link>
             <button onClick={() => supabase.auth.signOut()}>Sign out</button>
           </span>
         </div>

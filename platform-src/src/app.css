@@ -103,7 +103,9 @@ a:hover { text-decoration: underline; }
   padding: 22px 14px 16px; display: flex; flex-direction: column;
   position: sticky; top: 0; height: 100vh;
 }
-.side .brand { font-family: var(--serif); font-size: 25px; letter-spacing: -0.01em; padding: 0 12px 4px; }
+.side .brand { display: block; font-family: var(--serif); font-size: 25px; letter-spacing: -0.01em; padding: 0 12px 4px; color: var(--ink); text-decoration: none; }
+.side .brand:hover { text-decoration: none; }
+.side .foot .avatar:hover { background: var(--thread); text-decoration: none; }
 .side .brand em { color: var(--thread); font-style: normal; }
 .side-new { margin: 16px 0 14px; padding: 0 2px; }
 .side-new .btn { width: 100%; justify-content: center; padding: 12px; font-size: 13.5px; }
