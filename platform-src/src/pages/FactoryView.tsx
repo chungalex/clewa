@@ -4,6 +4,7 @@ import { supabase, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
 import Qc from '../Qc'
+import Quotes from '../Quotes'
 
 type FactoryLine = {
   id: string
@@ -145,6 +146,9 @@ export default function FactoryView() {
         {pending.length === 0 && activeLines.length > 0 && (
           <p className="fv-done">Every line is confirmed by both sides. This is the agreement of record.</p>
         )}
+
+        <div className="section-label" style={{ marginTop: 22 }}>Quotes</div>
+        <Quotes mode="factory" token={token!} />
 
         <div className="section-label" style={{ marginTop: 22 }}>Samples</div>
         <Samples mode="factory" token={token!} />

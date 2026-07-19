@@ -4,6 +4,7 @@ import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
 import Qc, { QcCheck } from '../Qc'
+import Quotes from '../Quotes'
 import Documents from '../Documents'
 
 type Invite = {
@@ -262,6 +263,14 @@ export default function OrderDetail() {
             </p>
           </>
         )}
+      </div>
+
+      <div className="section-label">Quotes</div>
+      <div className="card">
+        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+          The negotiation, kept. Accepting a quote writes the price to the record and updates this order.
+        </p>
+        <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
       </div>
 
       <div className="section-label">The Record</div>
