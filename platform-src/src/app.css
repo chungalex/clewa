@@ -256,3 +256,9 @@ a:hover { text-decoration: underline; }
   .main-head { flex-wrap: wrap; gap: 10px; }
   .fv-card { padding: 18px; }
 }
+
+/* ---- Record versioning & translation chrome ---- */
+.rec-line.superseded { opacity: 0.55; }
+.rec-line.superseded .rec-content { text-decoration: line-through; text-decoration-color: var(--hair-2); }
+.msg-translated { color: var(--thread); font-size: 11px; letter-spacing: 0.03em; }
+.msg-meta a { color: var(--ink-3); }

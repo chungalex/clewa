@@ -25,6 +25,9 @@ export default function Orders() {
           <h2>No orders yet.</h2>
           <p>Create your first production order — name it, add your factory, and Clewa keeps every spec, price and term on the record from day one.</p>
           <Link to="/orders/new" className="btn gold">Start your first order →</Link>
+          <p className="quiet" style={{ marginTop: 14, fontSize: 13 }}>
+            Don't have a factory yet? <a href="../sourcing-apply.html">Clewa Sourcing finds and verifies one for you →</a>
+          </p>
         </div>
       ) : (
         <div className="card" style={{ padding: 0 }}>

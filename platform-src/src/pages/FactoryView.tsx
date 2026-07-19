@@ -10,6 +10,7 @@ type FactoryLine = {
   content: string
   brand_signed_at: string | null
   factory_signed_at: string | null
+  superseded_by?: string | null
 }
 
 type FactoryOrder = {
@@ -75,7 +76,9 @@ export default function FactoryView() {
 
   if (!data) return null
   const o = data.order
-  const pending = data.lines.filter(l => !l.factory_signed_at)
+  const activeLines = data.lines.filter(l => !l.superseded_by)
+  const supersededLines = data.lines.filter(l => l.superseded_by)
+  const pending = activeLines.filter(l => !l.factory_signed_at)
 
   return (
     <div className="fv-wrap">
@@ -109,9 +112,9 @@ export default function FactoryView() {
         )}
 
         <div className="section-label" style={{ marginTop: 22 }}>
-          The record — {data.lines.length} {data.lines.length === 1 ? 'line' : 'lines'}, {pending.length} awaiting your confirmation
+          The record — {activeLines.length} {activeLines.length === 1 ? 'line' : 'lines'}, {pending.length} awaiting your confirmation
         </div>
-        {data.lines.map(l => (
+        {activeLines.map(l => (
           <div className="rec-line" key={l.id}>
             <span className="rec-cat">{l.category}</span>
             <span className="rec-content">{l.content}</span>
@@ -129,11 +132,16 @@ export default function FactoryView() {
             )}
           </div>
         ))}
-        {data.lines.length === 0 && (
+        {activeLines.length === 0 && (
           <p style={{ color: 'var(--ink-3)' }}>The brand hasn't put anything on the record yet.</p>
         )}
+        {supersededLines.length > 0 && (
+          <p className="quiet" style={{ marginTop: 10, fontSize: 12 }}>
+            {supersededLines.length} earlier line{supersededLines.length === 1 ? ' was' : 's were'} revised by the brand — the versions above are current. Your earlier confirmations on old versions stay on file.
+          </p>
+        )}
 
-        {pending.length === 0 && data.lines.length > 0 && (
+        {pending.length === 0 && activeLines.length > 0 && (
           <p className="fv-done">Every line is confirmed by both sides. This is the agreement of record.</p>
         )}
 

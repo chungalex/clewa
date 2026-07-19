@@ -9,6 +9,7 @@ import Orders from './pages/Orders'
 import Home from './pages/Home'
 import Calendar from './pages/Calendar'
 import Finances from './pages/Finances'
+import Sourcing from './pages/Sourcing'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -73,6 +74,7 @@ export default function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/finances" element={<Finances />} />
+        <Route path="/sourcing" element={<Sourcing />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = 'https://cxchrwccojvurqcxakyw.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o'
+export const SUPABASE_URL = 'https://cxchrwccojvurqcxakyw.supabase.co'
+export const SUPABASE_KEY = 'sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, autoRefreshToken: true },
@@ -29,6 +29,7 @@ export type RecordLine = {
   content: string
   brand_signed_at: string | null
   factory_signed_at: string | null
+  superseded_by: string | null
   created_at: string
 }
 

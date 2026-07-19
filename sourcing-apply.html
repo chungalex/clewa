@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clewa Sourcing — Tell us what you're making</title>
+<meta name="description" content="A senior-led sourcing engagement: brief, factory search, verified shortlist, negotiation, onboarding — your first order managed in Clewa." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316130D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' fill='%23C9A24E' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+  :root { --paper:#fff; --paper-2:#F7F5F1; --ink:#141311; --ink-2:#3E3C37; --ink-3:#5F5D56;
+    --hair:#E6E3DD; --hair-2:#D9D5CC; --gold:#9A7B22; --gold-l:#C9A24E; --sage:#4A6B52; --sage-bg:#ECF1EA; --sage-line:#C2D1BD; --err:#9c3b2f; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:var(--paper-2); color:var(--ink); line-height:1.6; }
+  .wrap { max-width:640px; margin:0 auto; padding:36px 20px 60px; }
+  .brand { font-family:'Newsreader',Georgia,serif; font-size:24px; color:var(--ink); text-decoration:none; }
+  .brand em { color:var(--gold-l); font-style:normal; }
+  .eyebrow { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); margin:34px 0 10px; }
+  .eyebrow::before { content:''; display:inline-block; width:6px; height:6px; border-radius:99px; background:var(--gold); margin-right:8px; vertical-align:1px; }
+  h1 { font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(28px,5vw,38px); line-height:1.15; letter-spacing:-0.02em; }
+  .sub { color:var(--ink-2); margin-top:12px; font-size:15px; }
+  .terms { font-size:13px; color:var(--ink-3); margin-top:10px; }
+  form { background:var(--paper); border:1px solid var(--hair); border-radius:16px; padding:26px; margin-top:24px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:560px){ .grid2 { grid-template-columns:1fr; } }
+  .field { margin-bottom:14px; }
+  label { display:block; font-size:12.5px; color:var(--ink-2); margin-bottom:5px; }
+  label .opt { color:var(--ink-3); font-size:11px; text-transform:uppercase; letter-spacing:0.04em; }
+  input, select, textarea { width:100%; padding:10px 12px; border:1px solid var(--hair-2); border-radius:9px; font:inherit; font-size:14px; background:var(--paper); color:var(--ink); }
+  textarea { min-height:80px; resize:vertical; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--gold); }
+  .consent { display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-2); margin:16px 0; }
+  .consent input { width:auto; margin-top:3px; }
+  button { width:100%; padding:13px 22px; border:none; border-radius:10px; background:var(--gold); color:#fff; font-size:15px; font-weight:500; cursor:pointer; }
+  button:disabled { opacity:0.6; cursor:default; }
+  .ok { background:var(--sage-bg); border:1px solid var(--sage-line); color:var(--sage); padding:14px 16px; border-radius:10px; margin-top:14px; font-size:14px; display:none; }
+  .err { background:#f7ebe8; border:1px solid #ddb8b0; color:var(--err); padding:14px 16px; border-radius:10px; margin-top:14px; font-size:14px; display:none; }
+  .hp { position:absolute; left:-9999px; opacity:0; height:0; overflow:hidden; }
+  .back { font-size:13px; color:var(--ink-3); }
+  footer { text-align:center; color:var(--ink-3); font-size:12px; margin-top:28px; }
+  footer a { color:var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="index.html">Cle<em>w</em>a</a>
+  <div class="eyebrow">Clewa Sourcing</div>
+  <h1>Tell us what you're making.<br/>We'll find who should make it.</h1>
+  <p class="sub">A senior-led engagement: we take your brief, search and verify factories, bring you a shortlist with real quotes, negotiate terms, and run your first order inside Clewa.</p>
+  <p class="terms">From $7,500 retainer per category + 6–8% of production placed. Transparent — never a markup, never a factory commission. <a href="sourcing.html">How the engagement works →</a></p>
+
+  <form id="sf">
+    <div class="grid2">
+      <div class="field"><label for="brand_name">Brand name</label><input id="brand_name" required /></div>
+      <div class="field"><label for="contact_name">Your name</label><input id="contact_name" required /></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="email">Email</label><input id="email" type="email" required /></div>
+      <div class="field"><label for="links">Website / Instagram <span class="opt">optional</span></label><input id="links" placeholder="https://" /></div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="product_category">Product category</label>
+        <select id="product_category">
+          <option value="">Choose…</option>
+          <option>T-shirts & jersey</option><option>Knitwear</option><option>Woven shirts</option>
+          <option>Denim</option><option>Outerwear & coats</option><option>Tailoring</option>
+          <option>Activewear</option><option>Swim</option><option>Bags & accessories</option>
+          <option>Footwear</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label for="target_quantity">Target quantity</label><input id="target_quantity" placeholder="e.g. 500 units first run" /></div>
+    </div>
+    <div class="field"><label for="product_description">Describe the product</label><textarea id="product_description" required placeholder="What is it, what's special about it, what should it feel like?"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label for="target_cost">Target unit cost <span class="opt">optional</span></label><input id="target_cost" placeholder="e.g. $12–15" /></div>
+      <div class="field"><label for="target_retail">Target retail price <span class="opt">optional</span></label><input id="target_retail" placeholder="e.g. $60" /></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="target_region">Preferred production region <span class="opt">optional</span></label><input id="target_region" placeholder="e.g. Vietnam, Portugal, no preference" /></div>
+      <div class="field"><label for="target_delivery">Target delivery date <span class="opt">optional</span></label><input id="target_delivery" placeholder="e.g. November 2026" /></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="materials">Materials in mind <span class="opt">optional</span></label><input id="materials" placeholder="e.g. 100% organic cotton 220gsm" /></div>
+      <div class="field"><label for="certifications">Required certifications <span class="opt">optional</span></label><input id="certifications" placeholder="e.g. GOTS, OEKO-TEX" /></div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="dev_stage">Where are you in development?</label>
+        <select id="dev_stage">
+          <option value="">Choose…</option>
+          <option>Just an idea</option><option>Sketches / references</option>
+          <option>Tech pack ready</option><option>Samples exist</option><option>Produced before, switching factory</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="has_produced_before">Produced overseas before?</label>
+        <select id="has_produced_before"><option value="">Choose…</option><option>Never</option><option>Once or twice</option><option>Regularly</option></select>
+      </div>
+    </div>
+    <div class="field"><label for="main_challenges">Biggest challenge right now <span class="opt">optional</span></label><textarea id="main_challenges"></textarea></div>
+    <div class="field">
+      <label for="budget_readiness">Readiness for a paid engagement</label>
+      <select id="budget_readiness">
+        <option value="">Choose…</option>
+        <option>Ready now — budget allocated</option>
+        <option>Within 1–3 months</option>
+        <option>Exploring — tell me more first</option>
+      </select>
+    </div>
+    <div class="hp"><label>Leave this empty<input id="website_hp" tabindex="-1" autocomplete="off" /></label></div>
+    <div class="consent">
+      <input type="checkbox" id="consent" required />
+      <label for="consent" style="margin:0">I agree to be contacted by Clewa about this request. Your brief is private — it's never shown publicly or shared with factories without your go-ahead.</label>
+    </div>
+    <button type="submit" id="sbtn">Request the engagement →</button>
+    <div class="ok" id="ok">Received. You'll hear from us within one business day — check your inbox for <strong>hello@clewa.io</strong>. Meanwhile, <a href="app.html">explore the product demo</a>.</div>
+    <div class="err" id="err">Something went wrong sending your brief. Please try again, or email us directly at hello@clewa.io.</div>
+  </form>
+  <footer>© 2026 Clewa · <a href="privacy.html">Privacy</a> · <a href="index.html">Back to the site</a></footer>
+</div>
+<script>
+(function(){
+  var SB='https://cxchrwccojvurqcxakyw.supabase.co';
+  var KEY='sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o';
+  var f=document.getElementById('sf');
+  var sent=false;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(sent) return;
+    if(document.getElementById('website_hp').value){ return; } // bot honeypot
+    var btn=document.getElementById('sbtn');
+    btn.disabled=true; btn.textContent='Sending…';
+    var v=function(id){ return (document.getElementById(id).value||'').trim()||null; };
+    var payload={
+      brand_name:v('brand_name'), contact_name:v('contact_name'), email:v('email'),
+      links:v('links'), product_category:v('product_category'), product_description:v('product_description'),
+      target_quantity:v('target_quantity'), target_cost:v('target_cost'), target_retail:v('target_retail'),
+      target_region:v('target_region'), certifications:v('certifications'), materials:v('materials'),
+      dev_stage:v('dev_stage'), target_delivery:v('target_delivery'),
+      has_produced_before:v('has_produced_before'), main_challenges:v('main_challenges'),
+      budget_readiness:v('budget_readiness'), consent:document.getElementById('consent').checked
+    };
+    fetch(SB+'/rest/v1/sourcing_requests',{
+      method:'POST',
+      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify(payload)
+    }).then(function(r){
+      if(r.ok){ sent=true; document.getElementById('ok').style.display='block'; document.getElementById('err').style.display='none'; btn.textContent='Sent ✓'; }
+      else { throw new Error('bad status'); }
+    }).catch(function(){
+      document.getElementById('err').style.display='block';
+      btn.disabled=false; btn.textContent='Request the engagement →';
+    });
+  });
+})();
+</script>
+<script src="clewa-beacon.js" defer></script>
+</body>
+</html>
