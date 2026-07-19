@@ -13,6 +13,9 @@ import Sourcing from './pages/Sourcing'
 import Styles from './pages/Styles'
 import NewStyle from './pages/NewStyle'
 import StyleDetail from './pages/StyleDetail'
+import Inventory from './pages/Inventory'
+import Contacts from './pages/Contacts'
+import Intelligence from './pages/Intelligence'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -81,6 +84,9 @@ export default function App() {
         <Route path="/styles" element={<Styles />} />
         <Route path="/styles/new" element={<NewStyle />} />
         <Route path="/styles/:id" element={<StyleDetail />} />
+        <Route path="/inventory" element={<Inventory />} />
+        <Route path="/contacts" element={<Contacts />} />
+        <Route path="/intelligence" element={<Intelligence />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>

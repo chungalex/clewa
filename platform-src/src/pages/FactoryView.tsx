@@ -37,6 +37,9 @@ export default function FactoryView() {
   const [name, setName] = useState('')
   const [named, setNamed] = useState(false)
   const [busy, setBusy] = useState<string | null>(null)
+  const [prodUnits, setProdUnits] = useState('')
+  const [prodNote, setProdNote] = useState('')
+  const [prodReports, setProdReports] = useState<{ units: number; note: string | null; reported_by: string | null; created_at: string }[]>([])
 
   async function load() {
     const { data: d, error } = await supabase.rpc('factory_get_order', { p_token: token })
@@ -44,6 +47,8 @@ export default function FactoryView() {
     const fo = d as FactoryOrder
     setData(fo)
     if (fo.accepted_by_name) { setName(fo.accepted_by_name); setNamed(true) }
+    const { data: pr } = await supabase.rpc('factory_get_production', { p_token: token })
+    setProdReports((pr as typeof prodReports) || [])
   }
 
   useEffect(() => { load() }, [token])
@@ -152,6 +157,31 @@ export default function FactoryView() {
 
         <div className="section-label" style={{ marginTop: 22 }}>Samples</div>
         <Samples mode="factory" token={token!} />
+
+        <div className="section-label" style={{ marginTop: 22 }}>Production progress</div>
+        <p className="quiet" style={{ fontSize: 12, marginBottom: 8 }}>
+          Report units completed — {data.brand} sees it instantly, and their material planning updates automatically.
+        </p>
+        {prodReports.map((r, i) => (
+          <p key={i} style={{ fontSize: 12.5, color: 'var(--ink-2)', margin: '4px 0' }}>
+            {r.units.toLocaleString()} units · {r.created_at.slice(0, 10)}{r.note ? ` · ${r.note}` : ''}
+          </p>
+        ))}
+        <form style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }} onSubmit={async e => {
+          e.preventDefault()
+          const units = parseInt(prodUnits, 10)
+          if (!Number.isFinite(units) || units <= 0) return
+          setBusy('prod')
+          await supabase.rpc('factory_report_production', { p_token: token, p_units: units, p_note: prodNote.trim() })
+          setProdUnits(''); setProdNote(''); setBusy(null); load()
+        }}>
+          <input value={prodUnits} onChange={e => setProdUnits(e.target.value)} placeholder="Units done"
+            style={{ width: 100, padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }} />
+          <input value={prodNote} onChange={e => setProdNote(e.target.value)} placeholder="Note (optional)"
+            style={{ flex: 1, minWidth: 140, padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }} />
+          <button className="btn primary small" type="submit" disabled={!named || busy === 'prod'}
+            title={named ? '' : 'Add your name above first'}>Report progress</button>
+        </form>
 
         <div className="section-label" style={{ marginTop: 22 }}>Quality control</div>
         <p className="quiet" style={{ fontSize: 12, marginBottom: 8 }}>

@@ -27,6 +27,9 @@ export default function Shell({ session }: { session: Session }) {
           <NavLink to="/orders" className={cls}>Orders</NavLink>
           <NavLink to="/calendar" className={cls}>Calendar</NavLink>
           <NavLink to="/finances" className={cls}>Finances</NavLink>
+          <NavLink to="/inventory" className={cls}>Inventory</NavLink>
+          <NavLink to="/contacts" className={cls}>Contacts</NavLink>
+          <NavLink to="/intelligence" className={cls}>Intelligence</NavLink>
           {session.user.email === 'chungalexvo@gmail.com' && (
             <NavLink to="/sourcing" className={cls}>Sourcing</NavLink>
           )}
