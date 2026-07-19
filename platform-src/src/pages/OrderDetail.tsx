@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
+import Qc, { QcCheck } from '../Qc'
+import Documents from '../Documents'
 
 type Invite = {
   id: string
@@ -23,6 +25,8 @@ export default function OrderDetail() {
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invite, setInvite] = useState<Invite | null>(null)
   const [sampleStates, setSampleStates] = useState<string[]>([])
+  const [qcChecks, setQcChecks] = useState<QcCheck[]>([])
+  const [brandName, setBrandName] = useState('')
   const [newLine, setNewLine] = useState('')
   const [newCat, setNewCat] = useState<'spec' | 'price' | 'terms'>('spec')
   const [busy, setBusy] = useState(false)
@@ -32,20 +36,30 @@ export default function OrderDetail() {
   const [showHistory, setShowHistory] = useState(false)
 
   async function load() {
-    const [{ data: o }, { data: l }, { data: inv }, { data: smp }] = await Promise.all([
+    const [{ data: o }, { data: l }, { data: inv }, { data: smp }, { data: qc }] = await Promise.all([
       supabase.from('orders').select('*').eq('id', id).single(),
       supabase.from('record_lines').select('*').eq('order_id', id).order('created_at'),
       supabase.from('order_invites').select('id, token, accepted_at, accepted_by_name, language')
         .eq('order_id', id).is('revoked_at', null).limit(1).maybeSingle(),
       supabase.from('samples').select('status').eq('order_id', id),
+      supabase.from('qc_checks').select('*').eq('order_id', id),
     ])
     setOrder(o as Order)
     setLines((l as RecordLine[]) || [])
     setInvite(inv as Invite | null)
     setSampleStates(((smp as { status: string }[]) || []).map(x => x.status))
+    setQcChecks((qc as QcCheck[]) || [])
   }
 
   useEffect(() => { load() }, [id])
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return
+      supabase.from('profiles').select('brand_name').eq('id', data.user.id).single()
+        .then(({ data: p }) => setBrandName(p?.brand_name || ''))
+    })
+  }, [])
 
   // Keep the record live: refresh on focus and poll quietly while the
   // page is open, so factory confirmations appear without a reload.
@@ -160,7 +174,10 @@ export default function OrderDetail() {
             {order.factory_country ? `, ${order.factory_country}` : ''}
           </div>
         </div>
-        <span className={`stage-pill ${order.stage}`}>{STAGE_LABELS[order.stage]}</span>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <button className="btn ghost small no-print" onClick={() => window.print()}>Export PO (PDF)</button>
+          <span className={`stage-pill ${order.stage}`}>{STAGE_LABELS[order.stage]}</span>
+        </div>
       </div>
 
       {(() => {
@@ -314,10 +331,16 @@ export default function OrderDetail() {
         const recordSigned = activeLines.length > 0 && activeLines.every(l => l.factory_signed_at)
         const sampleApproved = sampleStates.includes('approved')
         const qcReached = STAGES.indexOf(order.stage) >= STAGES.indexOf('qc')
+        const qcPassed = qcChecks.length > 0
+          ? qcChecks.every(c => c.brand_status === 'pass')
+          : qcReached
+        const qcSub = qcChecks.length > 0
+          ? (qcPassed ? 'Every item on your checklist passed.' : `${qcChecks.filter(c => c.brand_status === 'pass').length}/${qcChecks.length} checklist items passed — the list below drives this.`)
+          : (qcReached ? 'Stage reached — add the QC checklist below to verify item by item.' : 'Balance payments are safest after QC — the checklist below drives this.')
         const conds = [
           { ok: recordSigned, title: 'The record is complete and dual-signed', sub: recordSigned ? 'Every line countersigned by the factory.' : 'Lines are still awaiting factory confirmation — nothing is agreed until both sides sign.' },
           { ok: sampleApproved, title: 'A sample round is approved', sub: sampleApproved ? 'Approval (and any condition) is on the record.' : 'No approved sample yet — paying a balance before an approved sample is where most disputes start.' },
-          { ok: qcReached, title: 'Production has reached QC', sub: qcReached ? 'Final checks are in progress or passed.' : 'Balance payments are safest after QC — the stage tracker above drives this.' },
+          { ok: qcPassed, title: qcChecks.length > 0 ? 'QC checklist passed' : 'Production has reached QC', sub: qcSub },
         ]
         const met = conds.filter(c => c.ok).length
         return (
@@ -350,12 +373,57 @@ export default function OrderDetail() {
         )
       })()}
 
+      <div className="section-label">Quality control</div>
+      <div className="card">
+        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+          One checklist, two verdicts — {order.factory_name || 'your factory'} inspects the same list on their link. Disagreements surface here, not at the port.
+        </p>
+        <Qc mode="brand" orderId={order.id} owner={order.owner} />
+      </div>
+
+      <div className="section-label">Documents</div>
+      <div className="card">
+        <Documents orderId={order.id} owner={order.owner} />
+      </div>
+
       <div className="section-label">Messages</div>
       <div className="card">
         <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.
         </p>
         <Messages mode="brand" orderId={order.id} owner={order.owner} />
+      </div>
+
+      {/* Print-only: the purchase order document */}
+      <div className="print-pack">
+        <h1>Purchase Order</h1>
+        <p className="pp-meta">
+          {brandName || 'Brand'} → {order.factory_name || 'Factory'}{order.factory_country ? `, ${order.factory_country}` : ''} · issued {new Date().toISOString().slice(0, 10)} · via Clewa
+        </p>
+        <section>
+          <h2>Order</h2>
+          <p><strong>Product:</strong> {order.name}</p>
+          {order.quantity && <p><strong>Quantity:</strong> {order.quantity.toLocaleString()} units</p>}
+          {order.unit_price && <p><strong>Unit price:</strong> {order.currency} {Number(order.unit_price).toFixed(2)}</p>}
+          {order.quantity && order.unit_price && <p><strong>Order total:</strong> {order.currency} {(order.quantity * Number(order.unit_price)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>}
+          {order.ship_by && <p><strong>Ship by:</strong> {order.ship_by}</p>}
+        </section>
+        <section>
+          <h2>The agreed record</h2>
+          {activeLines.map(l => (
+            <p key={l.id}>
+              <strong>{l.category.toUpperCase()}:</strong> {l.content}
+              {' '}[{l.factory_signed_at ? `dual-signed ${l.factory_signed_at.slice(0, 10)}` : `brand-signed ${l.brand_signed_at?.slice(0, 10)} — awaiting factory`}]
+            </p>
+          ))}
+          {activeLines.length === 0 && <p>No record lines yet.</p>}
+        </section>
+        <section>
+          <h2>Signatures</h2>
+          <p style={{ marginTop: 18 }}>Brand: ______________________ date ______</p>
+          <p style={{ marginTop: 14 }}>Factory: _____________________ date ______</p>
+        </section>
+        <p className="pp-foot">Generated by Clewa from the dual-signed record. Line-level signature timestamps are stored and exportable. clewa.io</p>
       </div>
     </>
   )

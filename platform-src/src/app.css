@@ -395,3 +395,19 @@ a:hover { text-decoration: underline; }
   .print-pack p { margin: 3px 0; }
   .print-pack .pp-foot { margin-top: 24px; color: #999; font-size: 10px; }
 }
+
+/* ---- QC & documents ---- */
+.qc-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 0; }
+.qc-row + .qc-row { border-top: 1px solid var(--hair-soft); }
+.qc-row.conflict { background: var(--err-bg); margin: 0 -12px; padding: 11px 12px; border-radius: 9px; }
+.qc-item { font-size: 13.5px; color: var(--ink); }
+.qc-theirs { display: block; font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+.qc-row.conflict .qc-theirs { color: var(--err); font-weight: 500; }
+.qc-verdict { display: flex; gap: 6px; flex-shrink: 0; }
+.qc-btn { font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--hair-2); background: var(--paper); color: var(--ink-3); cursor: pointer; transition: all 0.2s; }
+.qc-btn.pass.on { background: var(--sage-bg); border-color: var(--sage-line); color: var(--sage); }
+.qc-btn.fail.on { background: var(--err-bg); border-color: var(--err-line); color: var(--err); }
+.qc-btn:hover { border-color: var(--ink-3); }
+.doc-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; }
+.doc-row + .doc-row { border-top: 1px solid var(--hair-soft); }
+.doc-row a strong { font-size: 13.5px; }

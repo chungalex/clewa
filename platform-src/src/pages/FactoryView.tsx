@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { supabase, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
+import Qc from '../Qc'
 
 type FactoryLine = {
   id: string
@@ -147,6 +148,12 @@ export default function FactoryView() {
 
         <div className="section-label" style={{ marginTop: 22 }}>Samples</div>
         <Samples mode="factory" token={token!} />
+
+        <div className="section-label" style={{ marginTop: 22 }}>Quality control</div>
+        <p className="quiet" style={{ fontSize: 12, marginBottom: 8 }}>
+          You and {data.brand} inspect the same checklist — record your verdict per item.
+        </p>
+        <Qc mode="factory" token={token!} />
 
         <div className="section-label" style={{ marginTop: 22 }}>Messages with {data.brand}</div>
         <Messages mode="factory" token={token!} senderName={name} />
