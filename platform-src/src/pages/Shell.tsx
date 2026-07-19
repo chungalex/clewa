@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, Link } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
 
@@ -12,24 +12,31 @@ export default function Shell({ session }: { session: Session }) {
   }, [session.user.id])
 
   const cls = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '')
+  const initial = (brandName || session.user.email || 'C').slice(0, 1).toUpperCase()
 
   return (
     <div className="shell">
       <aside className="side">
         <div className="brand">Cle<em>w</em>a</div>
+        <div className="side-new">
+          <Link to="/orders/new" className="btn primary">+ New order</Link>
+        </div>
         <nav>
           <NavLink to="/" end className={cls}>Home</NavLink>
           <NavLink to="/orders" className={cls}>Orders</NavLink>
           <NavLink to="/calendar" className={cls}>Calendar</NavLink>
           <NavLink to="/finances" className={cls}>Finances</NavLink>
-          <NavLink to="/orders/new" className={cls}>+ New order</NavLink>
           {session.user.email === 'chungalexvo@gmail.com' && (
             <NavLink to="/sourcing" className={cls}>Sourcing</NavLink>
           )}
         </nav>
+        <div className="spacer" />
         <div className="foot">
-          <div>{brandName || session.user.email}</div>
-          <button onClick={() => supabase.auth.signOut()}>Sign out</button>
+          <span className="avatar">{initial}</span>
+          <span className="who">
+            <div>{brandName || session.user.email}</div>
+            <button onClick={() => supabase.auth.signOut()}>Sign out</button>
+          </span>
         </div>
       </aside>
       <main className="main">

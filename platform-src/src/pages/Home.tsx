@@ -20,7 +20,7 @@ export default function Home() {
     Promise.all([
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
       supabase.from('record_lines').select('*'),
-      supabase.from('order_invites').select('id, order_id, accepted_at'),
+      supabase.from('order_invites').select('id, order_id, accepted_at').is('revoked_at', null),
     ]).then(([o, l, i]) => {
       setOrders((o.data as Order[]) || [])
       setLines((l.data as RecordLine[]) || [])
@@ -79,6 +79,8 @@ export default function Home() {
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+  const focus = needsYou[0] || null
+  const restNeedsYou = focus ? needsYou.slice(1) : needsYou
 
   return (
     <>
@@ -92,6 +94,17 @@ export default function Home() {
         </div>
         <Link to="/orders/new" className="btn primary">+ New order</Link>
       </div>
+
+      {focus && (
+        <div className="focus-band">
+          <div className="fb-main">
+            <div className="eyebrow">Today's focus</div>
+            <h2>{focus.text}<em>.</em></h2>
+            <p>{focus.sub}.</p>
+          </div>
+          <Link to={focus.to} className="btn gold">Take care of it →</Link>
+        </div>
+      )}
 
       <div className="kpi-row">
         <div className="kpi">
@@ -112,15 +125,15 @@ export default function Home() {
         </div>
       </div>
 
-      {(needsYou.length > 0 || waiting.length > 0) && (
+      {(restNeedsYou.length > 0 || waiting.length > 0) && (
         <>
           <div className="section-label">Whose move is it?</div>
           <div className="move-grid">
             <div className="card">
               <div className="eyebrow">Waiting on you</div>
-              {needsYou.length === 0 && <p className="quiet">Nothing — you're clear.</p>}
-              {needsYou.map((q, i) => (
-                <div className="q-item" key={i} onClick={() => nav(q.to)}>
+              {restNeedsYou.length === 0 && <p className="quiet">Nothing else — the focus above is the whole list.</p>}
+              {restNeedsYou.map((q, i) => (
+                <div className={`q-item ${i === 0 ? 'hot' : ''}`} key={i} onClick={() => nav(q.to)}>
                   <strong>{q.text}</strong>
                   <span>{q.sub}</span>
                 </div>
