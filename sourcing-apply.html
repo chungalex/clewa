@@ -123,6 +123,14 @@
 </div>
 <script>
 (function(){
+  // Prefill from a Clewa style ("Find a factory for this style")
+  try {
+    var q = new URLSearchParams(location.search);
+    ['product_description','product_category','target_quantity','target_cost'].forEach(function(k){
+      var el = document.getElementById(k);
+      if (el && q.get(k)) { el.value = q.get(k); }
+    });
+  } catch (e) {}
   var SB='https://cxchrwccojvurqcxakyw.supabase.co';
   var KEY='sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o';
   var f=document.getElementById('sf');

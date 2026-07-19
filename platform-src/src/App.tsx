@@ -10,6 +10,9 @@ import Home from './pages/Home'
 import Calendar from './pages/Calendar'
 import Finances from './pages/Finances'
 import Sourcing from './pages/Sourcing'
+import Styles from './pages/Styles'
+import NewStyle from './pages/NewStyle'
+import StyleDetail from './pages/StyleDetail'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -75,6 +78,9 @@ export default function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/finances" element={<Finances />} />
         <Route path="/sourcing" element={<Sourcing />} />
+        <Route path="/styles" element={<Styles />} />
+        <Route path="/styles/new" element={<NewStyle />} />
+        <Route path="/styles/:id" element={<StyleDetail />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>

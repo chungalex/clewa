@@ -23,6 +23,7 @@ export default function Shell({ session }: { session: Session }) {
         </div>
         <nav>
           <NavLink to="/" end className={cls}>Home</NavLink>
+          <NavLink to="/styles" className={cls}>Styles</NavLink>
           <NavLink to="/orders" className={cls}>Orders</NavLink>
           <NavLink to="/calendar" className={cls}>Calendar</NavLink>
           <NavLink to="/finances" className={cls}>Finances</NavLink>
