@@ -433,3 +433,12 @@ a:hover { text-decoration: underline; }
 .brief-item strong a:hover { text-decoration: underline; }
 .brief-item span { display: block; font-size: 12.5px; color: var(--on-dark-2); margin-top: 3px; line-height: 1.5; }
 .brief-item.urgent strong a { color: var(--gold-light); }
+
+/* ---- activity ---- */
+.act-row { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; font-size: 13px; }
+.act-row + .act-row { border-top: 1px solid var(--hair-soft); }
+.act-dot { flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; background: var(--hair-2); position: relative; top: -1px; }
+.act-dot.them { background: var(--thread); box-shadow: 0 0 0 3px rgba(140, 106, 27, 0.12); }
+.act-dot.you { background: var(--ink-3); }
+.act-text { flex: 1; color: var(--ink-2); }
+.act-at { font-size: 11.5px; color: var(--ink-3); white-space: nowrap; }

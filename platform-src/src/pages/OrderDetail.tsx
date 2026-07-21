@@ -6,6 +6,7 @@ import Samples from '../Samples'
 import Qc, { QcCheck } from '../Qc'
 import Quotes from '../Quotes'
 import Documents from '../Documents'
+import Activity from '../Activity'
 
 type Invite = {
   id: string
@@ -273,7 +274,20 @@ export default function OrderDetail() {
         <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
       </div>
 
-      <div className="section-label">The Record</div>
+      <div className="section-label">
+        The Record
+        {invite?.accepted_at && activeLines.some(l => !l.factory_signed_at) && (
+          <a href="#" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} onClick={async e => {
+            e.preventDefault()
+            const n = activeLines.filter(l => !l.factory_signed_at).length
+            await supabase.from('order_messages').insert({
+              order_id: order.id, owner: order.owner, sender: 'brand',
+              body: `Friendly nudge: ${n} line${n === 1 ? '' : 's'} on the record ${n === 1 ? 'is' : 'are'} waiting for your confirmation — it takes one tap on your order link.`,
+            })
+            load()
+          }}>· nudge the factory</a>
+        )}
+      </div>
       <div className="card">
         {activeLines.length === 0 && (
           <p style={{ color: 'var(--ink-3)', paddingBottom: 12 }}>
@@ -401,6 +415,11 @@ export default function OrderDetail() {
           Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.
         </p>
         <Messages mode="brand" orderId={order.id} owner={order.owner} />
+      </div>
+
+      <div className="section-label">Activity</div>
+      <div className="card">
+        <Activity orderId={order.id} />
       </div>
 
       {/* Print-only: the purchase order document */}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
 
 type Invite = { id: string; order_id: string; accepted_at: string | null }
+type Overnight = { at: string; text: string; to: string }
 
 export default function Home() {
   const nav = useNavigate()
@@ -10,6 +11,7 @@ export default function Home() {
   const [orders, setOrders] = useState<Order[] | null>(null)
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
+  const [overnight, setOvernight] = useState<Overnight[]>([])
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -21,10 +23,29 @@ export default function Home() {
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
       supabase.from('record_lines').select('*'),
       supabase.from('order_invites').select('id, order_id, accepted_at').is('revoked_at', null),
-    ]).then(([o, l, i]) => {
-      setOrders((o.data as Order[]) || [])
+    ]).then(async ([o, l, i]) => {
+      const ords = (o.data as Order[]) || []
+      setOrders(ords)
       setLines((l.data as RecordLine[]) || [])
       setInvites((i.data as Invite[]) || [])
+      // While you slept: factory-side activity in the last 48 hours.
+      const since = new Date(Date.now() - 48 * 3600000).toISOString()
+      const nameOf = (id: string) => ords.find(x => x.id === id)?.name || 'an order'
+      const [fm, fr, fq, fl] = await Promise.all([
+        supabase.from('order_messages').select('order_id, sender_name, created_at').eq('sender', 'factory').gte('created_at', since),
+        supabase.from('production_reports').select('order_id, units, reported_by, created_at').eq('source', 'factory').gte('created_at', since),
+        supabase.from('quotes').select('order_id, unit_price, currency, created_at').eq('source', 'factory').gte('created_at', since),
+        supabase.from('record_lines').select('order_id, factory_signed_at').gte('factory_signed_at', since),
+      ])
+      const ov: Overnight[] = []
+      for (const m of fm.data || []) ov.push({ at: m.created_at, text: `${m.sender_name || 'Factory'} messaged you on ${nameOf(m.order_id)}`, to: `/orders/${m.order_id}` })
+      for (const r of fr.data || []) ov.push({ at: r.created_at, text: `${r.reported_by || 'Factory'} reported ${r.units.toLocaleString()} units on ${nameOf(r.order_id)}`, to: `/orders/${r.order_id}` })
+      for (const q of fq.data || []) ov.push({ at: q.created_at, text: `New quote on ${nameOf(q.order_id)}: ${q.currency} ${Number(q.unit_price).toFixed(2)}/unit`, to: `/orders/${q.order_id}` })
+      const signsByOrder = new Map<string, number>()
+      for (const ln of fl.data || []) signsByOrder.set(ln.order_id, (signsByOrder.get(ln.order_id) || 0) + 1)
+      for (const [oid, n] of signsByOrder) ov.push({ at: since, text: `${n} record line${n === 1 ? '' : 's'} countersigned on ${nameOf(oid)}`, to: `/orders/${oid}` })
+      ov.sort((a, b) => (a.at < b.at ? 1 : -1))
+      setOvernight(ov.slice(0, 6))
     })
   }, [])
 
@@ -149,6 +170,20 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </>
+      )}
+
+      {overnight.length > 0 && (
+        <>
+          <div className="section-label">While you were away</div>
+          <div className="card">
+            {overnight.map((o, i) => (
+              <div className="q-item" key={i} onClick={() => nav(o.to)}>
+                <strong>{o.text}</strong>
+                <span>{new Date(o.at).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })}</span>
+              </div>
+            ))}
           </div>
         </>
       )}

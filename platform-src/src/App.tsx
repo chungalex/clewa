@@ -17,6 +17,7 @@ import Inventory from './pages/Inventory'
 import Contacts from './pages/Contacts'
 import Intelligence from './pages/Intelligence'
 import Settings from './pages/Settings'
+import Planning from './pages/Planning'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -89,6 +90,7 @@ export default function App() {
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/intelligence" element={<Intelligence />} />
         <Route path="/settings" element={<Settings session={session} />} />
+        <Route path="/planning" element={<Planning />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>
