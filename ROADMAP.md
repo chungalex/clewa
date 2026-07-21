@@ -15,7 +15,9 @@ AI concept & tech-pack builder · Sourcing intake & internal ops · Factory prof
 
 ## Sequencing
 
-**Current milestone (in flight, on `dev`):** security/RLS hardening · Record versioning & change orders · invite hardening · translation (function deployed; UI next) · sourcing intake + internal pipeline · Resend notifications when key exists.
+**Status 2026-07-19 — SHIPPED and live:** design system · Record versioning & change orders · invite hardening/revocation · translation infra (function deployed; executes on key) · sourcing intake + internal pipeline · tech-pack builder (Milestone A.1: guided sections, 4-category completeness engine, PDF, convert to sourcing/order) · quotes (two-sided, accept→Record) · samples w/ conditional approval · dual-verdict QC · payment readiness · documents · PO export · CSV export · inventory (BOM auto-deduction from factory production reports, cover/stockout math) · contacts rolodex w/ earned stats · intelligence briefing + anomaly watch (computed, cited, AI-off) · Ask Clewa (deployed, key-gated) · planning/line plan + season close report · per-order activity trail · while-you-were-away feed · factory nudge · settings + in-app guide · full demo account (demo@clewa.io).
+
+**Blocked only on credentials:** translation/Ask-Clewa execution + all email (ANTHROPIC_API_KEY, RESEND_API_KEY in Supabase secrets) · clewa.io DNS · Shopify OAuth (Milestone E) · image generation provider.
 
 - **Milestone A — Concept → Tech pack:** styles, versions, documents (see spec below)
 - **Milestone B — Factory inquiry, quotes, PO, full sampling workflow**
