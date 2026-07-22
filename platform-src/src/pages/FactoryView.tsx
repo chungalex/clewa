@@ -40,6 +40,7 @@ export default function FactoryView() {
   const [busy, setBusy] = useState<string | null>(null)
   const [prodUnits, setProdUnits] = useState('')
   const [prodNote, setProdNote] = useState('')
+  const [prodStage, setProdStage] = useState('cut')
   const [prodReports, setProdReports] = useState<{ units: number; note: string | null; reported_by: string | null; created_at: string }[]>([])
 
   async function load() {
@@ -180,7 +181,7 @@ export default function FactoryView() {
         </p>
         {prodReports.map((r, i) => (
           <p key={i} style={{ fontSize: 12.5, color: 'var(--ink-2)', margin: '4px 0' }}>
-            {r.units.toLocaleString()} units · {r.created_at.slice(0, 10)}{r.note ? ` · ${r.note}` : ''}
+            {r.units.toLocaleString()} {(r as { stage?: string }).stage || 'cut'} · {r.created_at.slice(0, 10)}{r.note ? ` · ${r.note}` : ''}
           </p>
         ))}
         <form style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }} onSubmit={async e => {
@@ -188,11 +189,15 @@ export default function FactoryView() {
           const units = parseInt(prodUnits, 10)
           if (!Number.isFinite(units) || units <= 0) return
           setBusy('prod')
-          await supabase.rpc('factory_report_production', { p_token: token, p_units: units, p_note: prodNote.trim() })
+          await supabase.rpc('factory_report_production', { p_token: token, p_units: units, p_note: prodNote.trim(), p_stage: prodStage })
           setProdUnits(''); setProdNote(''); setBusy(null); load()
         }}>
-          <input value={prodUnits} onChange={e => setProdUnits(e.target.value)} placeholder="Units done"
-            style={{ width: 100, padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }} />
+          <input value={prodUnits} onChange={e => setProdUnits(e.target.value)} placeholder="Units"
+            style={{ width: 80, padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }} />
+          <select value={prodStage} onChange={e => setProdStage(e.target.value)}
+            style={{ padding: '8px 10px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13, background: 'var(--paper)' }}>
+            {['cut', 'sewn', 'finished', 'packed'].map(st => <option key={st}>{st}</option>)}
+          </select>
           <input value={prodNote} onChange={e => setProdNote(e.target.value)} placeholder="Note (optional)"
             style={{ flex: 1, minWidth: 140, padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }} />
           <button className="btn primary small" type="submit" disabled={!named || busy === 'prod'}

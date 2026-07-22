@@ -6,13 +6,20 @@ type Doc = {
   storage_path: string
   filename: string
   size_bytes: number | null
+  doc_type: string
   created_at: string
+}
+
+const DOC_TYPES: Record<string, string> = {
+  tech_pack: 'Tech packs', invoice: 'Invoices', lab_dip: 'Lab dips',
+  artwork: 'Artwork', shipping: 'Shipping', contract: 'Contracts', other: 'Other',
 }
 
 /** Order documents — tech packs, invoices, lab dips. Private storage, signed links. */
 export default function Documents({ orderId, owner }: { orderId: string; owner: string }) {
   const [docs, setDocs] = useState<Doc[]>([])
   const [uploading, setUploading] = useState(false)
+  const [docType, setDocType] = useState('other')
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -30,7 +37,7 @@ export default function Documents({ orderId, owner }: { orderId: string; owner: 
       const { error } = await supabase.storage.from('order-docs').upload(path, f)
       if (!error) {
         await supabase.from('order_documents').insert({
-          order_id: orderId, owner, storage_path: path, filename: f.name, size_bytes: f.size,
+          order_id: orderId, owner, storage_path: path, filename: f.name, size_bytes: f.size, doc_type: docType,
         })
       }
     }
@@ -59,19 +66,29 @@ export default function Documents({ orderId, owner }: { orderId: string; owner: 
       {docs.length === 0 && (
         <p className="quiet">Tech packs, invoices, lab dips, artwork — everything for this order in one place, dated.</p>
       )}
-      {docs.map(d => (
-        <div className="doc-row" key={d.id}>
-          <a href="#" onClick={e => { e.preventDefault(); open(d) }}><strong>{d.filename}</strong></a>
-          <span className="quiet" style={{ fontSize: 12 }}>
-            {fmtSize(d.size_bytes)} · {d.created_at.slice(0, 10)}
-            {' · '}<a href="#" onClick={e => { e.preventDefault(); remove(d) }}>remove</a>
-          </span>
+      {Object.keys(DOC_TYPES).filter(t => docs.some(d => (d.doc_type || 'other') === t)).map(t => (
+        <div key={t}>
+          <div className="quiet" style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '10px 0 2px' }}>{DOC_TYPES[t]}</div>
+          {docs.filter(d => (d.doc_type || 'other') === t).map(d => (
+            <div className="doc-row" key={d.id}>
+              <a href="#" onClick={e => { e.preventDefault(); open(d) }}><strong>{d.filename}</strong></a>
+              <span className="quiet" style={{ fontSize: 12 }}>
+                {fmtSize(d.size_bytes)} · {d.created_at.slice(0, 10)}
+                {' · '}<a href="#" onClick={e => { e.preventDefault(); remove(d) }}>remove</a>
+              </span>
+            </div>
+          ))}
         </div>
       ))}
-      <button className="btn ghost small" style={{ marginTop: docs.length ? 12 : 10 }}
-        onClick={() => fileRef.current?.click()} disabled={uploading}>
-        {uploading ? 'Uploading…' : '+ Upload documents'}
-      </button>
+      <div style={{ display: 'flex', gap: 8, marginTop: docs.length ? 12 : 10, alignItems: 'center' }}>
+        <select value={docType} onChange={e => setDocType(e.target.value)}
+          style={{ padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12.5, background: 'var(--paper)' }}>
+          {Object.entries(DOC_TYPES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+        </select>
+        <button className="btn ghost small" onClick={() => fileRef.current?.click()} disabled={uploading}>
+          {uploading ? 'Uploading…' : '+ Upload documents'}
+        </button>
+      </div>
       <input ref={fileRef} type="file" multiple hidden onChange={e => upload(e.target.files)} />
     </div>
   )

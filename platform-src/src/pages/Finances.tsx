@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order, STAGE_LABELS } from '../supabase'
+import { downloadCsv } from '../csv'
 
 export default function Finances() {
   const [orders, setOrders] = useState<Order[] | null>(null)
@@ -33,6 +34,12 @@ export default function Finances() {
             What you've committed to factories, straight from the record. Clewa never holds or moves your money.
           </div>
         </div>
+        {priced.length > 0 && (
+          <button className="btn ghost" onClick={() => downloadCsv('clewa-finances',
+            ['order', 'factory', 'stage', 'quantity', 'unit_price', 'currency', 'committed', 'ship_by'],
+            priced.map(o => [o.name, o.factory_name || '', o.stage, o.quantity, Number(o.unit_price), o.currency,
+              (o.quantity! * Number(o.unit_price)).toFixed(2), o.ship_by || '']))}>Export CSV</button>
+        )}
       </div>
 
       <div className="kpi-row">

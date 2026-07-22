@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
+import { downloadCsv } from '../csv'
+import { toast } from '../toast'
 
 type PlanItem = {
   id: string
@@ -21,17 +23,23 @@ export default function Planning() {
   const [items, setItems] = useState<PlanItem[] | null>(null)
   const [orders, setOrders] = useState<Order[]>([])
   const [form, setForm] = useState({ season: '', name: '', qty: '', cost: '', retail: '', currency: 'USD' })
+  const [budgets, setBudgets] = useState<{ season: string; budget: number; currency: string }[]>([])
+  const [budgetDraft, setBudgetDraft] = useState<Record<string, string>>({})
+  const [owner2, setOwner2] = useState('')
 
   async function load() {
     const { data: userData } = await supabase.auth.getUser()
     if (!userData.user) return
     setOwner(userData.user.id)
-    const [p, o] = await Promise.all([
+    const [p, o, b] = await Promise.all([
       supabase.from('planning_items').select('*').order('season', { ascending: false }).order('created_at'),
       supabase.from('orders').select('*'),
+      supabase.from('season_budgets').select('season, budget, currency'),
     ])
     setItems((p.data as PlanItem[]) || [])
     setOrders((o.data as Order[]) || [])
+    setBudgets((b.data as { season: string; budget: number; currency: string }[]) || [])
+    setOwner2(userData.user.id)
   }
   useEffect(() => { load() }, [])
 
@@ -95,11 +103,48 @@ export default function Planning() {
         return (
           <div key={season} className="no-print">
             <div className="section-label">{season}</div>
+            {(() => {
+              const bud = budgets.find(x => x.season === season)
+              if (!bud) return null
+              const pct = bud.budget > 0 ? Math.min(100, Math.round((t.spend / Number(bud.budget)) * 100)) : 0
+              const over = t.spend > Number(bud.budget)
+              return (
+                <div className="card" style={{ marginBottom: 10, padding: '14px 18px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, marginBottom: 6 }}>
+                    <span className="quiet">Open-to-buy · {season}</span>
+                    <span style={{ color: over ? 'var(--err)' : 'var(--ink-2)' }}>
+                      {bud.currency} {t.spend.toLocaleString(undefined, { maximumFractionDigits: 0 })} of {bud.currency} {Number(bud.budget).toLocaleString()}
+                      {over ? ' — over budget' : ` · ${bud.currency} ${(Number(bud.budget) - t.spend).toLocaleString(undefined, { maximumFractionDigits: 0 })} open`}
+                    </span>
+                  </div>
+                  <div style={{ height: 5, background: 'var(--hair)', borderRadius: 3 }}>
+                    <div style={{ width: `${pct}%`, height: 5, borderRadius: 3, background: over ? 'var(--err)' : 'var(--gold-light)' }} />
+                  </div>
+                </div>
+              )
+            })()}
             <div className="kpi-row">
               <div className="kpi"><strong>{t.units.toLocaleString() || '—'}</strong><span>Planned units</span></div>
               <div className="kpi"><strong>{t.spend > 0 ? `${list[0].currency} ${t.spend.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '—'}</strong><span>Planned production spend</span></div>
               <div className="kpi"><strong>{t.revenue > 0 ? `${list[0].currency} ${t.revenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '—'}</strong><span>Revenue at full sell-through</span></div>
               <div className={`kpi ${t.margin !== null && t.margin < 55 ? 'warn' : ''}`}><strong>{t.margin !== null ? `${t.margin}%` : '—'}</strong><span>Blended margin{t.margin !== null && t.margin < 55 ? ' · below typical 55% target' : ''}</span></div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+              <input placeholder="Season production budget" value={budgetDraft[season] ?? ''}
+                onChange={e => setBudgetDraft({ ...budgetDraft, [season]: e.target.value })}
+                style={{ width: 190, padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12.5 }} />
+              <button className="btn ghost small" onClick={async () => {
+                const v = parseFloat(budgetDraft[season] || '')
+                if (!Number.isFinite(v) || v <= 0) return
+                await supabase.from('season_budgets').upsert(
+                  { owner: owner2, season, budget: v, currency: list[0].currency }, { onConflict: 'owner,season' })
+                setBudgetDraft({ ...budgetDraft, [season]: '' })
+                toast('Budget set — open-to-buy is live')
+                load()
+              }}>Set budget</button>
+              <button className="btn ghost small" style={{ marginLeft: 'auto' }} onClick={() => downloadCsv(`clewa-plan-${season}`,
+                ['season', 'style', 'status', 'qty', 'target_cost', 'target_retail', 'currency'],
+                list.map(i => [i.season, i.name, i.status, i.planned_qty, i.target_cost, i.target_retail, i.currency]))}>Export CSV</button>
             </div>
             <div className="card" style={{ padding: 0, marginBottom: 8 }}>
               {list.map(i => (

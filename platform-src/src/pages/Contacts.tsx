@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
 import { toast } from '../toast'
+import { downloadCsv } from '../csv'
 
 type Closure = { label: string; from: string; to: string }
 type Factory = {
@@ -76,6 +77,14 @@ export default function Contacts() {
             Your factory rolodex — the profile you write, the track record you earn from real orders.
           </div>
         </div>
+        {factories.length > 0 && (
+          <button className="btn ghost" onClick={() => downloadCsv('clewa-factories',
+            ['name', 'country', 'specialty', 'moq', 'key_person', 'languages', 'orders', 'units'],
+            factories.map(f => {
+              const st = statsFor(f.name)
+              return [f.name, f.country || '', f.specialty || '', f.moq || '', f.key_person || '', f.languages || '', st.total, st.units]
+            }))}>Export CSV</button>
+        )}
       </div>
 
       {unrostered.length > 0 && (

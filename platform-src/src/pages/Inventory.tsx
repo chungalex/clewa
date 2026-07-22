@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
+import { downloadCsv } from '../csv'
 
 type Product = { id: string; name: string; sku: string | null; on_hand: number; weekly_sales: number; safety_stock: number; order_id: string | null }
 type Component = { id: string; name: string; unit: string; on_hand: number; on_order: number; location: string | null }
 type Bom = { id: string; order_id: string; component_id: string; qty_per_unit: number }
-type Report = { id: string; order_id: string; units: number; source: string; reported_by: string | null; note: string | null; created_at: string }
+type Report = { id: string; order_id: string; units: number; source: string; reported_by: string | null; note: string | null; stage?: string; created_at: string }
 
 export default function Inventory() {
   const [owner, setOwner] = useState('')
@@ -100,9 +101,19 @@ export default function Inventory() {
           <h1>Inventory</h1>
           <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 4 }}>
             Finished goods, components, and the recipes that connect them to production.
-            Factory progress reports deduct components automatically.
+            Components deduct when units are reported cut.
           </div>
         </div>
+        {(products.length > 0 || components.length > 0) && (
+          <button className="btn ghost" onClick={() => {
+            downloadCsv('clewa-inventory',
+              ['type', 'name', 'sku_or_unit', 'on_hand', 'weekly_sales', 'safety_stock', 'location'],
+              [
+                ...products.map(p2 => ['product', p2.name, p2.sku || '', p2.on_hand, p2.weekly_sales, p2.safety_stock, '']),
+                ...components.map(c2 => ['component', c2.name, c2.unit, c2.on_hand, '', '', c2.location || '']),
+              ])
+          }}>Export CSV</button>
+        )}
       </div>
 
       <div className="section-label">Finished goods</div>
@@ -120,6 +131,7 @@ export default function Inventory() {
           const weeks = p.weekly_sales > 0 ? p.on_hand / p.weekly_sales : null
           const stockout = weeks !== null ? new Date(Date.now() + weeks * 7 * 86400000).toISOString().slice(0, 10) : null
           const low = weeks !== null && p.on_hand - p.safety_stock < p.weekly_sales * 6
+          const aging = p.on_hand > 0 && (p.weekly_sales === 0 || (weeks !== null && weeks > 26))
           return (
             <div className="fin-row" key={p.id}>
               <div>
@@ -131,9 +143,11 @@ export default function Inventory() {
                   {stockout ? ` · stockout ~${stockout}` : ''}
                 </span>
               </div>
-              {low
-                ? <span className="sample-status changes">reorder window</span>
-                : <span className="sample-status approved">covered</span>}
+              {aging
+                ? <span className="sample-status" title="No sell-through recorded, or over 26 weeks of cover — capital sitting still">aging stock</span>
+                : low
+                  ? <span className="sample-status changes">reorder window</span>
+                  : <span className="sample-status approved">covered</span>}
             </div>
           )
         })}
@@ -230,7 +244,7 @@ export default function Inventory() {
           const o = orders.find(x => x.id === r.order_id)
           return (
             <div className="q-item" key={r.id} style={{ cursor: 'default' }}>
-              <strong>{r.units.toLocaleString()} units — {o ? <Link to={`/orders/${o.id}`}>{o.name}</Link> : 'order'}</strong>
+              <strong>{r.units.toLocaleString()} {r.stage || 'cut'} — {o ? <Link to={`/orders/${o.id}`}>{o.name}</Link> : 'order'}</strong>
               <span>{r.source === 'factory' ? `reported by ${r.reported_by || 'factory'}` : 'recorded by you'} · {r.created_at.slice(0, 10)}{r.note ? ` · ${r.note}` : ''}</span>
             </div>
           )
