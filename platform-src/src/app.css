@@ -460,3 +460,7 @@ a:hover { text-decoration: underline; }
 .cal-ev:hover { text-decoration: none; opacity: 0.85; }
 .cal-ev.late { background: var(--err-bg); color: var(--err); }
 @media (max-width: 700px) { .cal-cell { min-height: 52px; } .cal-ev { font-size: 9.5px; } }
+
+/* ---- factory closure bands ---- */
+.cal-cell.closed { background: repeating-linear-gradient(-45deg, var(--paper), var(--paper) 5px, var(--gold-bg) 5px, var(--gold-bg) 10px); }
+.cal-cell.closed .cal-daynum::after { content: ' ·closed'; font-size: 9px; letter-spacing: 0.04em; color: var(--thread); }

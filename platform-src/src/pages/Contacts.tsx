@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
 import { toast } from '../toast'
 
+type Closure = { label: string; from: string; to: string }
 type Factory = {
   id: string
   name: string
@@ -13,6 +14,7 @@ type Factory = {
   languages: string | null
   certifications: string | null
   notes: string | null
+  closures: Closure[]
 }
 
 /** The rolodex — profiles you write, performance you earn from real orders. */
@@ -23,6 +25,7 @@ export default function Contacts() {
   const [form, setForm] = useState({ name: '', country: '', specialty: '', moq: '', key_person: '', languages: '' })
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Factory>>({})
+  const [closure, setClosure] = useState({ label: '', from: '', to: '' })
 
   async function load() {
     const { data: userData } = await supabase.auth.getUser()
@@ -110,6 +113,11 @@ export default function Contacts() {
                 {[f.specialty, f.moq && `MOQ ${f.moq}`, f.key_person && `Contact: ${f.key_person}`, f.languages]
                   .filter(Boolean).join(' · ') || 'No profile details yet'}
               </div>
+              {(f.closures || []).length > 0 && (
+                <div className="quiet" style={{ fontSize: 12, marginTop: 8 }}>
+                  Closed: {(f.closures || []).map(c => `${c.label || 'closure'} ${c.from} → ${c.to}`).join(' · ')}
+                </div>
+              )}
               <div className="gate-row" style={{ marginTop: 12 }}>
                 <span className="gate ok">{st.total} order{st.total === 1 ? '' : 's'}</span>
                 <span className={`gate ${st.active ? 'ok' : ''}`}>{st.active} active</span>
@@ -147,6 +155,38 @@ export default function Contacts() {
                       onChange={ev => setEditForm({ ...editForm, [k]: ev.target.value })}
                       style={{ padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12.5 }} />
                   ))}
+                  <div style={{ borderTop: '1px solid var(--hair)', paddingTop: 10 }}>
+                    <div className="quiet" style={{ fontSize: 11.5, marginBottom: 6 }}>
+                      Closures (Tet, August break…) — these appear on your calendar and trigger collision warnings.
+                    </div>
+                    {(f.closures || []).map((c, ci) => (
+                      <div key={ci} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 12.5, padding: '3px 0' }}>
+                        <span style={{ flex: 1 }}>{c.label || 'closure'} · {c.from} → {c.to}</span>
+                        <a href="#" style={{ fontSize: 11.5 }} onClick={async ev => {
+                          ev.preventDefault()
+                          const next = (f.closures || []).filter((_, i2) => i2 !== ci)
+                          await supabase.from('factories').update({ closures: next }).eq('id', f.id)
+                          load()
+                        }}>remove</a>
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
+                      <input placeholder="Label (e.g. Tet)" value={closure.label} onChange={ev => setClosure({ ...closure, label: ev.target.value })}
+                        style={{ flex: 1, minWidth: 90, padding: '6px 9px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12 }} />
+                      <input type="date" value={closure.from} onChange={ev => setClosure({ ...closure, from: ev.target.value })}
+                        style={{ padding: '6px 9px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12 }} />
+                      <input type="date" value={closure.to} onChange={ev => setClosure({ ...closure, to: ev.target.value })}
+                        style={{ padding: '6px 9px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12 }} />
+                      <button className="btn ghost small" type="button" onClick={async () => {
+                        if (!closure.from || !closure.to) return
+                        const next = [...(f.closures || []), closure]
+                        await supabase.from('factories').update({ closures: next }).eq('id', f.id)
+                        setClosure({ label: '', from: '', to: '' })
+                        toast('Closure added — your calendar knows')
+                        load()
+                      }}>Add closure</button>
+                    </div>
+                  </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button className="btn primary small" type="submit">Save</button>
                     <button className="btn ghost small" type="button" onClick={() => setEditId(null)}>Cancel</button>

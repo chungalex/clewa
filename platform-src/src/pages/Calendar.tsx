@@ -11,8 +11,12 @@ const MILESTONES = [
   { key: 'ship', label: 'Ship', daysBefore: 0, reachedAt: 'ship' },
 ] as const
 
+type Closure = { label: string; from: string; to: string }
+type FactoryRow = { name: string; closures: Closure[] }
+
 export default function Calendar() {
   const [orders, setOrders] = useState<Order[] | null>(null)
+  const [factories, setFactories] = useState<FactoryRow[]>([])
   const [view, setView] = useState<'plan' | 'month'>('plan')
   const [monthStart, setMonthStart] = useState(() => {
     const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1)
@@ -21,7 +25,15 @@ export default function Calendar() {
   useEffect(() => {
     supabase.from('orders').select('*').is('archived_at', null).order('ship_by', { ascending: true })
       .then(({ data }) => setOrders((data as Order[]) || []))
+    supabase.from('factories').select('name, closures')
+      .then(({ data }) => setFactories((data as FactoryRow[]) || []))
   }, [])
+
+  function closuresFor(factoryName: string | null): Closure[] {
+    if (!factoryName) return []
+    const f = factories.find(x => x.name.toLowerCase() === factoryName.toLowerCase())
+    return f?.closures || []
+  }
 
   if (orders === null) return null
   const planned = orders.filter(o => o.ship_by && !['delivered', 'closed'].includes(o.stage))
@@ -45,6 +57,17 @@ export default function Calendar() {
       {view === 'month' && (() => {
         // Every milestone of every planned order lands on a day.
         const events = new Map<string, { label: string; late: boolean; to: string }[]>()
+        const closedDays = new Map<string, string[]>()
+        for (const f of factories) {
+          for (const c of f.closures || []) {
+            const from = new Date(c.from + 'T00:00:00'); const to = new Date(c.to + 'T00:00:00')
+            for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+              const k = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
+              if (!closedDays.has(k)) closedDays.set(k, [])
+              closedDays.get(k)!.push(`${f.name} closed${c.label ? ` (${c.label})` : ''}`)
+            }
+          }
+        }
         const today = new Date(new Date().toDateString())
         for (const o of planned) {
           const ship = new Date(o.ship_by + 'T00:00:00')
@@ -79,8 +102,10 @@ export default function Calendar() {
                 if (!d) return <div className="cal-cell empty" key={i} />
                 const key = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
                 const evs = events.get(key) || []
+                const closed = closedDays.get(key) || []
                 return (
-                  <div className={`cal-cell ${key === todayKey ? 'today' : ''}`} key={i}>
+                  <div className={`cal-cell ${key === todayKey ? 'today' : ''} ${closed.length ? 'closed' : ''}`} key={i}
+                    title={closed.join(' · ') || undefined}>
                     <span className="cal-daynum">{d.getDate()}</span>
                     {evs.map((e, j) => (
                       <Link to={e.to} className={`cal-ev ${e.late ? 'late' : ''}`} key={j} title={e.label}>{e.label}</Link>
@@ -136,6 +161,21 @@ export default function Calendar() {
                 )
               })}
               {(() => {
+                const cl = closuresFor(o.factory_name)
+                const collisions: string[] = []
+                for (const m of MILESTONES) {
+                  const due = new Date(ship.getTime() - m.daysBefore * 86400000)
+                  const reached = stageIdx >= STAGES.indexOf(m.reachedAt as Order['stage'])
+                  if (reached) continue
+                  for (const c of cl) {
+                    if (due >= new Date(c.from + 'T00:00:00') && due <= new Date(c.to + 'T00:00:00')) {
+                      collisions.push(`${m.label} lands inside ${o.factory_name}'s ${c.label || 'closure'} (${c.from} → ${c.to}) — move it earlier or the ${o.ship_by} ship date slips.`)
+                    }
+                  }
+                }
+                if (collisions.length) {
+                  return <p className="cal-warn">{collisions[0]}</p>
+                }
                 const prodDue = new Date(ship.getTime() - 50 * 86400000)
                 if (stageIdx < STAGES.indexOf('production') && prodDue < today) {
                   return (
