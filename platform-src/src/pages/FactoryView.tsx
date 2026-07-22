@@ -19,6 +19,7 @@ type FactoryOrder = {
   brand: string
   accepted_at: string | null
   accepted_by_name: string | null
+  language?: string | null
   order: {
     name: string
     quantity: number | null
@@ -91,7 +92,22 @@ export default function FactoryView() {
     <div className="fv-wrap">
       <header className="fv-head">
         <span className="fv-brandmark">Cle<em>w</em>a</span>
-        <span className="fv-sub">Shared order · you see exactly what {data.brand} sees</span>
+        <span className="fv-sub" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          Shared order · you see exactly what {data.brand} sees
+          <select
+            value={data.language || ''}
+            onChange={async e => {
+              await supabase.rpc('factory_set_language', { p_token: token, p_language: e.target.value })
+              load()
+            }}
+            title="Your language — messages will be translated for you"
+            style={{ padding: '4px 8px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper)', fontSize: 12 }}
+          >
+            <option value="">English</option>
+            {['Portuguese', 'Vietnamese', 'Chinese (Simplified)', 'Turkish', 'Italian', 'Spanish', 'Hindi', 'Bengali', 'Urdu', 'Indonesian', 'Thai', 'Korean', 'Japanese'].map(l => <option key={l}>{l}</option>)}
+          </select>
+          <a href="#" onClick={e => { e.preventDefault(); window.print() }} style={{ fontSize: 12 }}>Download record (PDF)</a>
+        </span>
       </header>
 
       <div className="fv-card">
@@ -191,6 +207,20 @@ export default function FactoryView() {
 
         <div className="section-label" style={{ marginTop: 22 }}>Messages with {data.brand}</div>
         <Messages mode="factory" token={token!} senderName={name} />
+      </div>
+
+      <div className="print-pack">
+        <h1>{o.name} — the agreed record</h1>
+        <p className="pp-meta">{data.brand} · exported from the shared Clewa order</p>
+        <section>
+          {activeLines.map(l => (
+            <p key={l.id}>
+              <strong>{l.category.toUpperCase()}:</strong> {l.content}
+              {' '}[{l.factory_signed_at ? `dual-signed ${l.factory_signed_at.slice(0, 10)}` : 'awaiting your confirmation'}]
+            </p>
+          ))}
+        </section>
+        <p className="pp-foot">Both parties hold this record. Powered by Clewa — clewa.io</p>
       </div>
 
       <footer className="fv-foot">

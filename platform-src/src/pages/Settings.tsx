@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
+import { toast } from '../toast'
 import { CATEGORIES } from '../styleRules'
 
 const SITUATIONS = [
@@ -33,6 +34,7 @@ export default function Settings({ session }: { session: Session }) {
       factory_situation: situation || null,
     }).eq('id', session.user.id)
     setBusy(false)
+    toast('Saved')
     setSavedNote('Saved — your factories see the new name on shared orders.')
     setTimeout(() => setSavedNote(''), 3500)
   }

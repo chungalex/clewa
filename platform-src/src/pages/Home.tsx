@@ -12,6 +12,9 @@ export default function Home() {
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
   const [overnight, setOvernight] = useState<Overnight[]>([])
+  const [showTour, setShowTour] = useState(() => {
+    try { return !localStorage.getItem('clewa-tour-done') } catch { return false }
+  })
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -115,6 +118,32 @@ export default function Home() {
         </div>
         <Link to="/orders/new" className="btn primary">+ New order</Link>
       </div>
+
+      {showTour && orders.length === 0 && (
+        <div className="card steps-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
+            <div className="eyebrow">Welcome — the three moves that matter</div>
+            <a href="#" style={{ fontSize: 12 }} onClick={e => {
+              e.preventDefault()
+              try { localStorage.setItem('clewa-tour-done', '1') } catch { /* private mode */ }
+              setShowTour(false)
+            }}>Got it, hide this</a>
+          </div>
+          {[
+            { t: 'Start in Styles if you have an idea', d: 'The guided builder turns a description into a factory-ready brief and tells you exactly what a factory still needs.', to: '/styles/new', cta: 'Describe your product →' },
+            { t: 'Start in Orders if production is already moving', d: 'Put your specs, price and terms on the Record — dated and signed. Everything else hangs off this.', to: '/orders/new', cta: 'Create an order →' },
+            { t: 'Then invite your factory with one link', d: "No account on their side. They confirm your terms line by line from a phone — and from then on, both of you see the same truth.", to: '', cta: '' },
+          ].map((x, i) => (
+            <div className="step" key={i}>
+              <span className="step-dot">{i + 1}</span>
+              <div>
+                <strong>{x.t}</strong>
+                <span>{x.d}{x.to && <> <Link to={x.to}>{x.cta}</Link></>}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {focus && (
         <div className="focus-band">

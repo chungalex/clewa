@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
+import { toast } from './toast'
 
 export type Quote = {
   id: string
@@ -85,6 +86,7 @@ export default function Quotes(props:
         content: `Agreed price: ${q.currency} ${Number(q.unit_price).toFixed(2)}/unit${q.quantity ? ` × ${q.quantity.toLocaleString()} units` : ''}${q.lead_time_days ? ` · ${q.lead_time_days}-day lead time` : ''}`,
         brand_signed_at: new Date().toISOString(),
       })
+      toast('Quote accepted — price written to the record')
       props.onAccepted?.()
     }
     setBusy(null)

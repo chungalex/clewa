@@ -7,6 +7,7 @@ import Qc, { QcCheck } from '../Qc'
 import Quotes from '../Quotes'
 import Documents from '../Documents'
 import Activity from '../Activity'
+import { toast } from '../toast'
 
 type Invite = {
   id: string
@@ -97,6 +98,7 @@ export default function OrderDetail() {
       .update({ revoked_at: new Date().toISOString() }).eq('id', invite.id)
     setInvite(null)
     await createInvite()
+    toast('Old link revoked — fresh link ready')
   }
 
   async function setInviteLanguage(lang: string) {
@@ -116,6 +118,7 @@ export default function OrderDetail() {
     try {
       await navigator.clipboard.writeText(inviteUrl(invite))
       setCopied(true)
+      toast('Invite link copied — send it to your factory')
       setTimeout(() => setCopied(false), 2000)
     } catch { /* clipboard blocked — the link is visible to copy manually */ }
   }
@@ -182,6 +185,7 @@ export default function OrderDetail() {
     }).eq('id', order.id)
     setBusy(false)
     setEditing(false)
+    toast('Order updated')
     load()
   }
 
@@ -189,6 +193,7 @@ export default function OrderDetail() {
     if (!order) return
     if (!window.confirm(`Archive "${order.name}"? It disappears from your lists but nothing is deleted — the record, messages and history stay intact. Ask me to restore it any time.`)) return
     await supabase.from('orders').update({ archived_at: new Date().toISOString() }).eq('id', order.id)
+    toast('Order archived — ask me to restore it any time')
     nav('/orders')
   }
 

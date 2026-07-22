@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
+import { toast } from './toast'
 
 export type Sample = {
   id: string
@@ -79,6 +80,7 @@ export default function Samples(props:
       })
     }
     setBusy(null)
+    if (status === 'approved') toast(note ? 'Approved — condition written to the record' : 'Sample approved')
     load()
   }
 
