@@ -19,7 +19,7 @@ export default function Styles() {
   const [gates, setGates] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    supabase.from('styles').select('*').order('created_at', { ascending: false })
+    supabase.from('styles').select('*').is('archived_at', null).order('created_at', { ascending: false })
       .then(async ({ data }) => {
         const list = (data as Style[]) || []
         setStyles(list)

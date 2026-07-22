@@ -27,7 +27,7 @@ export default function Contacts() {
     setOwner(userData.user.id)
     const [f, o] = await Promise.all([
       supabase.from('factories').select('*').order('name'),
-      supabase.from('orders').select('*'),
+      supabase.from('orders').select('*').is('archived_at', null),
     ])
     setFactories((f.data as Factory[]) || [])
     setOrders((o.data as Order[]) || [])

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
@@ -23,6 +23,7 @@ const FACTORY_LANGUAGES = [
 
 export default function OrderDetail() {
   const { id } = useParams()
+  const nav = useNavigate()
   const [order, setOrder] = useState<Order | null>(null)
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invite, setInvite] = useState<Invite | null>(null)
@@ -34,6 +35,8 @@ export default function OrderDetail() {
   const [busy, setBusy] = useState(false)
   const [copied, setCopied] = useState(false)
   const [reviseId, setReviseId] = useState<string | null>(null)
+  const [editing, setEditing] = useState(false)
+  const [edit, setEdit] = useState({ name: '', factory_name: '', factory_country: '', quantity: '', unit_price: '', currency: 'USD', ship_by: '' })
   const [reviseText, setReviseText] = useState('')
   const [showHistory, setShowHistory] = useState(false)
 
@@ -89,6 +92,7 @@ export default function OrderDetail() {
 
   async function revokeInvite() {
     if (!order || !invite) return
+    if (!window.confirm('Revoke this link? The factory loses access immediately and a fresh link is created. Their past confirmations stay on the record.')) return
     await supabase.from('order_invites')
       .update({ revoked_at: new Date().toISOString() }).eq('id', invite.id)
     setInvite(null)
@@ -153,6 +157,41 @@ export default function OrderDetail() {
     load()
   }
 
+  function startEdit() {
+    if (!order) return
+    setEdit({
+      name: order.name, factory_name: order.factory_name || '', factory_country: order.factory_country || '',
+      quantity: order.quantity ? String(order.quantity) : '', unit_price: order.unit_price ? String(order.unit_price) : '',
+      currency: order.currency, ship_by: order.ship_by || '',
+    })
+    setEditing(true)
+  }
+
+  async function saveEdit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!order || !edit.name.trim()) return
+    setBusy(true)
+    await supabase.from('orders').update({
+      name: edit.name.trim(),
+      factory_name: edit.factory_name.trim() || null,
+      factory_country: edit.factory_country.trim() || null,
+      quantity: edit.quantity ? parseInt(edit.quantity, 10) : null,
+      unit_price: edit.unit_price ? parseFloat(edit.unit_price) : null,
+      currency: edit.currency,
+      ship_by: edit.ship_by || null,
+    }).eq('id', order.id)
+    setBusy(false)
+    setEditing(false)
+    load()
+  }
+
+  async function archiveOrder() {
+    if (!order) return
+    if (!window.confirm(`Archive "${order.name}"? It disappears from your lists but nothing is deleted — the record, messages and history stay intact. Ask me to restore it any time.`)) return
+    await supabase.from('orders').update({ archived_at: new Date().toISOString() }).eq('id', order.id)
+    nav('/orders')
+  }
+
   async function setStage(stage: Order['stage']) {
     if (!order) return
     await supabase.from('orders').update({ stage }).eq('id', order.id)
@@ -177,10 +216,37 @@ export default function OrderDetail() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <button className="btn ghost small no-print" onClick={startEdit}>Edit</button>
+          <button className="btn ghost small no-print" onClick={archiveOrder}>Archive</button>
           <button className="btn ghost small no-print" onClick={() => window.print()}>Export PO (PDF)</button>
           <span className={`stage-pill ${order.stage}`}>{STAGE_LABELS[order.stage]}</span>
         </div>
       </div>
+
+      {editing && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div className="eyebrow">Edit order</div>
+          <form onSubmit={saveEdit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10, marginTop: 12 }}>
+            <input value={edit.name} onChange={e => setEdit({ ...edit, name: e.target.value })} placeholder="Order name" style={{ gridColumn: '1 / -1', padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <input value={edit.factory_name} onChange={e => setEdit({ ...edit, factory_name: e.target.value })} placeholder="Factory" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <input value={edit.factory_country} onChange={e => setEdit({ ...edit, factory_country: e.target.value })} placeholder="Country" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <input value={edit.quantity} onChange={e => setEdit({ ...edit, quantity: e.target.value })} placeholder="Quantity" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <input value={edit.unit_price} onChange={e => setEdit({ ...edit, unit_price: e.target.value })} placeholder="Unit price" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <select value={edit.currency} onChange={e => setEdit({ ...edit, currency: e.target.value })} style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9, background: 'var(--paper)' }}>
+              {['USD', 'EUR', 'GBP', 'VND', 'CNY', 'TRY'].map(c => <option key={c}>{c}</option>)}
+            </select>
+            <input type="date" value={edit.ship_by} onChange={e => setEdit({ ...edit, ship_by: e.target.value })} style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
+            <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
+              <button className="btn primary small" type="submit" disabled={busy || !edit.name.trim()}>Save changes</button>
+              <button className="btn ghost small" type="button" onClick={() => setEditing(false)}>Cancel</button>
+            </div>
+          </form>
+          <p className="quiet" style={{ fontSize: 12, marginTop: 10 }}>
+            Editing order facts doesn't touch the Record — anything already signed stays signed. If a change affects
+            what you agreed with the factory, revise the record line so they countersign it.
+          </p>
+        </div>
+      )}
 
       {(() => {
         const hasLines = activeLines.length > 0

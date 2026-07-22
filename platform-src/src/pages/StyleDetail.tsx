@@ -183,7 +183,14 @@ export default function StyleDetail() {
             {saving && <span className="quiet">saving…</span>}
           </div>
         </div>
-        <span className="stage-pill">{gateLabel}</span>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <button className="btn ghost small" onClick={async () => {
+            if (!window.confirm(`Archive "${style.name}"? It leaves your Styles list; versions and images are kept. Ask me to restore it any time.`)) return
+            await supabase.from('styles').update({ archived_at: new Date().toISOString() }).eq('id', style.id)
+            nav('/styles')
+          }}>Archive</button>
+          <span className="stage-pill">{gateLabel}</span>
+        </div>
       </div>
 
       <div className="style-grid">

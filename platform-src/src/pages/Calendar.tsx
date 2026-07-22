@@ -15,7 +15,7 @@ export default function Calendar() {
   const [orders, setOrders] = useState<Order[] | null>(null)
 
   useEffect(() => {
-    supabase.from('orders').select('*').order('ship_by', { ascending: true })
+    supabase.from('orders').select('*').is('archived_at', null).order('ship_by', { ascending: true })
       .then(({ data }) => setOrders((data as Order[]) || []))
   }, [])
 

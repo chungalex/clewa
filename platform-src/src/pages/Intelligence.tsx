@@ -25,7 +25,7 @@ export default function Intelligence() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('orders').select('*'),
+      supabase.from('orders').select('*').is('archived_at', null),
       supabase.from('record_lines').select('*'),
       supabase.from('samples').select('order_id, round, kind, status'),
       supabase.from('quotes').select('order_id, unit_price, currency, status'),

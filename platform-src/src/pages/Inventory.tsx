@@ -27,7 +27,7 @@ export default function Inventory() {
       supabase.from('products').select('*').order('name'),
       supabase.from('components').select('*').order('name'),
       supabase.from('boms').select('*'),
-      supabase.from('orders').select('*'),
+      supabase.from('orders').select('*').is('archived_at', null),
       supabase.from('production_reports').select('*').order('created_at', { ascending: false }).limit(20),
     ])
     setProducts((p.data as Product[]) || [])

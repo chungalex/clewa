@@ -36,7 +36,7 @@ export default function Orders() {
   const nav = useNavigate()
 
   useEffect(() => {
-    supabase.from('orders').select('*').order('created_at', { ascending: false })
+    supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false })
       .then(({ data }) => setOrders((data as Order[]) || []))
   }, [])
 

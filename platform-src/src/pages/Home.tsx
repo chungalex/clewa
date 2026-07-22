@@ -20,7 +20,7 @@ export default function Home() {
         .then(({ data: p }) => setBrandName(p?.brand_name || ''))
     })
     Promise.all([
-      supabase.from('orders').select('*').order('created_at', { ascending: false }),
+      supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false }),
       supabase.from('record_lines').select('*'),
       supabase.from('order_invites').select('id, order_id, accepted_at').is('revoked_at', null),
     ]).then(async ([o, l, i]) => {
