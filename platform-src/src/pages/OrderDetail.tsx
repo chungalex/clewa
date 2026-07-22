@@ -339,7 +339,7 @@ export default function OrderDetail() {
 
       <div className="section-label">Quotes</div>
       <div className="card">
-        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           The negotiation, kept. Accepting a quote writes the price to the record and updates this order.
         </p>
         <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
@@ -441,7 +441,7 @@ export default function OrderDetail() {
           <>
             <div className="section-label">Payment readiness</div>
             <div className="card">
-              <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 10 }}>
+              <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 10 }}>
                 Clewa never holds or moves money — you pay your factory directly. These are the conditions
                 worth verifying before you do. <strong style={{ color: met === 3 ? 'var(--sage)' : 'var(--thread)' }}>{met}/3 verified.</strong>
               </p>
@@ -458,7 +458,7 @@ export default function OrderDetail() {
 
             <div className="section-label">Samples</div>
       <div className="card">
-        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           The approval ladder — each round is visible to your factory, and an approval condition is written to the record.
         </p>
         <Samples mode="brand" orderId={order.id} owner={order.owner} />
@@ -469,7 +469,7 @@ export default function OrderDetail() {
 
       <div className="section-label">Quality control</div>
       <div className="card">
-        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           One checklist, two verdicts — {order.factory_name || 'your factory'} inspects the same list on their link. Disagreements surface here, not at the port.
         </p>
         <Qc mode="brand" orderId={order.id} owner={order.owner} />
@@ -482,7 +482,7 @@ export default function OrderDetail() {
 
       <div className="section-label">Messages</div>
       <div className="card">
-        <p style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
+        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.
         </p>
         <Messages mode="brand" orderId={order.id} owner={order.owner} />

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
 import { downloadCsv } from '../csv'
 
-type Product = { id: string; name: string; sku: string | null; on_hand: number; weekly_sales: number; safety_stock: number; order_id: string | null }
+type Product = { id: string; name: string; sku: string | null; on_hand: number; weekly_sales: number; safety_stock: number; order_id: string | null; sizes: Record<string, number> | null }
 type Component = { id: string; name: string; unit: string; on_hand: number; on_order: number; location: string | null }
 type Bom = { id: string; order_id: string; component_id: string; qty_per_unit: number }
 type Report = { id: string; order_id: string; units: number; source: string; reported_by: string | null; note: string | null; stage?: string; created_at: string }
@@ -17,6 +17,8 @@ export default function Inventory() {
   const [reports, setReports] = useState<Report[]>([])
   const [ready, setReady] = useState(false)
   const [pForm, setPForm] = useState({ name: '', sku: '', on_hand: '', weekly_sales: '', safety_stock: '' })
+  const [sizeEdit, setSizeEdit] = useState<string | null>(null)
+  const [sizeDraft, setSizeDraft] = useState('')
   const [cForm, setCForm] = useState({ name: '', unit: 'pcs', on_hand: '', location: '' })
   const [bomForm, setBomForm] = useState({ order_id: '', component_id: '', qty: '' })
 
@@ -151,6 +153,45 @@ export default function Inventory() {
             </div>
           )
         })}
+        {products.map(p2 => (sizeEdit === p2.id || (p2.sizes && Object.keys(p2.sizes).length)) ? (
+          <div key={`sz-${p2.id}`} style={{ padding: '0 18px 12px', borderBottom: '1px solid var(--hair)' }}>
+            <span className="quiet" style={{ fontSize: 11.5, marginRight: 8 }}>{p2.name} sizes:</span>
+            {sizeEdit === p2.id ? (
+              <span style={{ display: 'inline-flex', gap: 6 }}>
+                <input value={sizeDraft} onChange={e => setSizeDraft(e.target.value)} placeholder="S:120, M:300, L:240, XL:80"
+                  style={{ width: 240, padding: '5px 9px', border: '1px solid var(--hair-2)', borderRadius: 7, fontSize: 12 }} />
+                <button className="btn ghost small" onClick={async () => {
+                  const sizes: Record<string, number> = {}
+                  for (const part of sizeDraft.split(',')) {
+                    const [k, v] = part.split(':').map(x => x.trim())
+                    if (k && Number.isFinite(parseInt(v, 10))) sizes[k.toUpperCase()] = parseInt(v, 10)
+                  }
+                  await supabase.from('products').update({ sizes: Object.keys(sizes).length ? sizes : null }).eq('id', p2.id)
+                  setSizeEdit(null); setSizeDraft(''); load()
+                }}>Save</button>
+              </span>
+            ) : (
+              <>
+                {Object.entries(p2.sizes || {}).map(([sz, q]) => {
+                  const total = Object.values(p2.sizes || {}).reduce((a, b) => a + b, 0)
+                  const lowSize = total > 0 && q / total < 0.08
+                  return <span key={sz} className={`size-chip ${lowSize ? 'low' : ''}`} title={lowSize ? 'Under 8% of stock — this size sells out first' : ''}>{sz} {q}</span>
+                })}
+                <a href="#" style={{ fontSize: 11.5, marginLeft: 6 }} onClick={e => {
+                  e.preventDefault()
+                  setSizeEdit(p2.id)
+                  setSizeDraft(Object.entries(p2.sizes || {}).map(([k, v]) => `${k}:${v}`).join(', '))
+                }}>edit</a>
+              </>
+            )}
+          </div>
+        ) : null)}
+        {products.length > 0 && !sizeEdit && (
+          <p className="quiet coach" style={{ padding: '10px 18px 0', fontSize: 11.5 }}>
+            Add size curves to any product (<a href="#" onClick={e => { e.preventDefault(); setSizeEdit(products[0].id) }}>set sizes</a>) —
+            sizes under 8% of stock get flagged, because the size that sells out first decides your reorder date.
+          </p>
+        )}
         <form onSubmit={addProduct} style={{ display: 'flex', gap: 8, padding: 14, borderTop: '1px solid var(--hair)', flexWrap: 'wrap' }}>
           <input placeholder="Product name" value={pForm.name} onChange={e => setPForm({ ...pForm, name: e.target.value })} style={inp(160)} />
           <input placeholder="SKU" value={pForm.sku} onChange={e => setPForm({ ...pForm, sku: e.target.value })} style={inp(90)} />

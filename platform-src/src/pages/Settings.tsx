@@ -81,6 +81,31 @@ export default function Settings({ session }: { session: Session }) {
         </form>
       </div>
 
+      <div className="section-label">Interface</div>
+      <div className="card" style={{ maxWidth: 560 }}>
+        <div className="sit-grid">
+          {[
+            { key: 'guided', title: 'Guided', sub: 'Explanations stay visible on every page — why each step matters and what the factory needs. Right for your first orders.' },
+            { key: 'pro', title: 'Pro', sub: 'Hides the coaching copy and checklists. The same product, quieter — for when the workflow is muscle memory.' },
+          ].map(m => {
+            let current = 'guided'
+            try { current = localStorage.getItem('clewa-mode') || 'guided' } catch { /* private mode */ }
+            return (
+              <button type="button" key={m.key} className={`sit-card ${current === m.key ? 'on' : ''}`} onClick={() => {
+                try { localStorage.setItem('clewa-mode', m.key) } catch { /* private mode */ }
+                document.body.classList.toggle('pro-mode', m.key === 'pro')
+                toast(m.key === 'pro' ? 'Pro mode — coaching hidden' : 'Guided mode — coaching visible')
+                setSavedNote(' ')
+                setTimeout(() => setSavedNote(''), 100)
+              }}>
+                <strong>{m.title}</strong>
+                <span>{m.sub}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       <div className="section-label">Account</div>
       <div className="card" style={{ maxWidth: 560 }}>
         <p style={{ fontSize: 13.5, marginBottom: 14 }}>

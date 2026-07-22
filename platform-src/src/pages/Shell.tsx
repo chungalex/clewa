@@ -42,6 +42,12 @@ export default function Shell({ session }: { session: Session }) {
     return () => clearInterval(tick)
   }, [session.user.id])
 
+  useEffect(() => {
+    try {
+      document.body.classList.toggle('pro-mode', localStorage.getItem('clewa-mode') === 'pro')
+    } catch { /* private mode */ }
+  }, [])
+
   const cls = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '')
   const initial = (brandName || session.user.email || 'C').slice(0, 1).toUpperCase()
 

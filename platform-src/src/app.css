@@ -469,3 +469,8 @@ a:hover { text-decoration: underline; }
 .sample-photos { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .sample-photos img { width: 74px; height: 74px; object-fit: cover; border-radius: 8px; border: 1px solid var(--hair); display: block; transition: transform 0.2s var(--ease); }
 .sample-photos a:hover img { transform: scale(1.04); }
+
+/* ---- guided/pro + size chips ---- */
+body.pro-mode .coach, body.pro-mode .field-hint, body.pro-mode .steps-card { display: none; }
+.size-chip { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--hair-2); color: var(--ink-2); margin-right: 5px; font-variant-numeric: tabular-nums; }
+.size-chip.low { background: var(--err-bg); border-color: var(--err-line); color: var(--err); }
