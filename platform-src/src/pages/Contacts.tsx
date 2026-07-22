@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
+import { toast } from '../toast'
 
 type Factory = {
   id: string
@@ -20,6 +21,8 @@ export default function Contacts() {
   const [factories, setFactories] = useState<Factory[] | null>(null)
   const [orders, setOrders] = useState<Order[]>([])
   const [form, setForm] = useState({ name: '', country: '', specialty: '', moq: '', key_person: '', languages: '' })
+  const [editId, setEditId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<Partial<Factory>>({})
 
   async function load() {
     const { data: userData } = await supabase.auth.getUser()
@@ -116,6 +119,39 @@ export default function Contacts() {
                 <p className="quiet" style={{ fontSize: 11.5, marginTop: 8 }}>
                   Performance history builds automatically as orders run through Clewa.
                 </p>
+              )}
+              <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+                <a href="#" style={{ fontSize: 12 }} onClick={e => {
+                  e.preventDefault()
+                  setEditId(f.id)
+                  setEditForm({ country: f.country || '', specialty: f.specialty || '', moq: f.moq || '', key_person: f.key_person || '', languages: f.languages || '' })
+                }}>edit</a>
+                <a href="#" style={{ fontSize: 12, color: 'var(--ink-3)' }} onClick={async e => {
+                  e.preventDefault()
+                  if (!window.confirm(`Remove ${f.name} from your rolodex? Orders with them are untouched.`)) return
+                  await supabase.from('factories').delete().eq('id', f.id)
+                  toast('Removed from rolodex')
+                  load()
+                }}>remove</a>
+              </div>
+              {editId === f.id && (
+                <form style={{ display: 'grid', gap: 8, marginTop: 10 }} onSubmit={async e => {
+                  e.preventDefault()
+                  await supabase.from('factories').update(editForm).eq('id', f.id)
+                  setEditId(null)
+                  toast('Factory updated')
+                  load()
+                }}>
+                  {(['country', 'specialty', 'moq', 'key_person', 'languages'] as const).map(k => (
+                    <input key={k} placeholder={k.replace('_', ' ')} value={(editForm[k] as string) || ''}
+                      onChange={ev => setEditForm({ ...editForm, [k]: ev.target.value })}
+                      style={{ padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12.5 }} />
+                  ))}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button className="btn primary small" type="submit">Save</button>
+                    <button className="btn ghost small" type="button" onClick={() => setEditId(null)}>Cancel</button>
+                  </div>
+                </form>
               )}
             </div>
           )
