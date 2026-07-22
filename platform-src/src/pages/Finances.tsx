@@ -3,12 +3,26 @@ import { Link } from 'react-router-dom'
 import { supabase, Order, STAGE_LABELS } from '../supabase'
 import { downloadCsv } from '../csv'
 
+type FxNow = Record<string, number>
+
 export default function Finances() {
   const [orders, setOrders] = useState<Order[] | null>(null)
+  const [fxNow, setFxNow] = useState<FxNow>({})
 
   useEffect(() => {
     supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false })
-      .then(({ data }) => setOrders((data as Order[]) || []))
+      .then(async ({ data }) => {
+        const list = (data as Order[]) || []
+        setOrders(list)
+        const bases = [...new Set(list.filter(o => (o as Order & { fx_rate?: number }).fx_rate && o.currency !== 'USD').map(o => o.currency))]
+        for (const b of bases) {
+          try {
+            const r = await fetch(`https://api.frankfurter.app/latest?from=${b}&to=USD`)
+            const d = await r.json()
+            if (d?.rates?.USD) setFxNow(prev => ({ ...prev, [b]: d.rates.USD }))
+          } catch { /* fine */ }
+        }
+      })
   }, [])
 
   if (orders === null) return null
@@ -77,9 +91,25 @@ export default function Finances() {
                 {o.factory_name ? ` · ${o.factory_name}` : ''} · {STAGE_LABELS[o.stage]}
               </span>
             </div>
-            <strong className="fin-amount">
-              {o.currency} {(o.quantity! * Number(o.unit_price)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-            </strong>
+            <span style={{ textAlign: 'right' }}>
+              <strong className="fin-amount">
+                {o.currency} {(o.quantity! * Number(o.unit_price)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </strong>
+              {(() => {
+                const fo = o as Order & { fx_rate?: number; fx_captured_at?: string }
+                if (!fo.fx_rate) return null
+                const now = fxNow[o.currency]
+                const drift = now ? ((now - Number(fo.fx_rate)) / Number(fo.fx_rate)) * 100 : null
+                return (
+                  <span className="quiet" style={{ display: 'block', fontSize: 11.5 }}>
+                    FX locked {Number(fo.fx_rate).toFixed(4)} USD
+                    {drift !== null && Math.abs(drift) >= 0.05
+                      ? ` · moved ${drift > 0 ? '+' : ''}${drift.toFixed(1)}% since — your cost didn't`
+                      : ''}
+                  </span>
+                )
+              })()}
+            </span>
           </div>
         ))}
       </div>

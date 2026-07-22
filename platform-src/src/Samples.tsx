@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
+import { useEffect, useRef, useState } from 'react'
+import { supabase, SUPABASE_URL } from './supabase'
 import { toast } from './toast'
+
+function photoUrl(path: string) {
+  return `${SUPABASE_URL}/storage/v1/object/public/sample-photos/${path}`
+}
 
 export type Sample = {
   id: string
@@ -11,6 +15,7 @@ export type Sample = {
   factory_note: string | null
   decided_at: string | null
   created_at: string
+  photos?: { path: string; caption: string | null }[]
 }
 
 export const KIND_LABELS = { proto: 'Proto', fit: 'Fit', pp: 'Pre-production', shipment: 'Shipment' }
@@ -33,12 +38,21 @@ export default function Samples(props:
   const [samples, setSamples] = useState<Sample[]>([])
   const [busy, setBusy] = useState<string | null>(null)
   const [notes, setNotes] = useState<Record<string, string>>({})
+  const [uploadFor, setUploadFor] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   async function load() {
     if (props.mode === 'brand') {
-      const { data } = await supabase.from('samples').select('*')
-        .eq('order_id', props.orderId).order('round')
-      setSamples((data as Sample[]) || [])
+      const [{ data }, { data: ph }] = await Promise.all([
+        supabase.from('samples').select('*').eq('order_id', props.orderId).order('round'),
+        supabase.from('sample_photos').select('sample_id, storage_path, caption').eq('order_id', props.orderId),
+      ])
+      const photosBySample = new Map<string, { path: string; caption: string | null }[]>()
+      for (const x of (ph as { sample_id: string; storage_path: string; caption: string | null }[]) || []) {
+        if (!photosBySample.has(x.sample_id)) photosBySample.set(x.sample_id, [])
+        photosBySample.get(x.sample_id)!.push({ path: x.storage_path, caption: x.caption })
+      }
+      setSamples(((data as Sample[]) || []).map(sm => ({ ...sm, photos: photosBySample.get(sm.id) || [] })))
     } else {
       const { data } = await supabase.rpc('factory_get_samples', { p_token: props.token })
       setSamples((data as Sample[]) || [])
@@ -84,6 +98,23 @@ export default function Samples(props:
     load()
   }
 
+  async function uploadPhotos(sampleId: string, files: FileList | null) {
+    if (props.mode !== 'brand' || !files) return
+    setBusy(sampleId)
+    for (const f of Array.from(files).slice(0, 6)) {
+      const path = `${props.owner}/${props.orderId}/${sampleId}/${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`
+      const { error } = await supabase.storage.from('sample-photos').upload(path, f)
+      if (!error) {
+        await supabase.from('sample_photos').insert({
+          sample_id: sampleId, order_id: props.orderId, owner: props.owner, storage_path: path, caption: f.name,
+        })
+      }
+    }
+    setBusy(null)
+    toast('Photos added — your factory sees them on their link')
+    load()
+  }
+
   async function submit(s: Sample) {
     if (props.mode !== 'factory') return
     setBusy(s.id)
@@ -107,8 +138,26 @@ export default function Samples(props:
         <div className="sample-row" key={s.id}>
           <div className="sample-head">
             <strong>{KIND_LABELS[s.kind]} — round {s.round}</strong>
-            <span className={`sample-status ${s.status}`}>{STATUS_LABELS[s.status]}</span>
+            <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              {props.mode === 'brand' && (
+                <a href="#" style={{ fontSize: 11.5 }} onClick={e => {
+                  e.preventDefault()
+                  setUploadFor(s.id)
+                  fileRef.current?.click()
+                }}>{busy === s.id ? 'uploading…' : '+ photos'}</a>
+              )}
+              <span className={`sample-status ${s.status}`}>{STATUS_LABELS[s.status]}</span>
+            </span>
           </div>
+          {(s.photos || []).length > 0 && (
+            <div className="sample-photos">
+              {(s.photos || []).map((ph, pi) => (
+                <a href={photoUrl(ph.path)} target="_blank" rel="noreferrer" key={pi}>
+                  <img src={photoUrl(ph.path)} alt={ph.caption || 'sample photo'} loading="lazy" />
+                </a>
+              ))}
+            </div>
+          )}
           {s.factory_note && <p className="sample-note">Factory: {s.factory_note}</p>}
           {s.brand_note && <p className="sample-note">Brand: {s.brand_note}{s.status === 'approved' ? ' (on the record)' : ''}</p>}
 
@@ -136,6 +185,10 @@ export default function Samples(props:
           )}
         </div>
       ))}
+      {props.mode === 'brand' && (
+        <input ref={fileRef} type="file" accept="image/*" multiple hidden
+          onChange={e => { if (uploadFor) uploadPhotos(uploadFor, e.target.files) }} />
+      )}
       {props.mode === 'brand' && (
         <div style={{ marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {(['proto', 'fit', 'pp', 'shipment'] as const).map(k => (

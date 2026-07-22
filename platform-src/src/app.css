@@ -464,3 +464,8 @@ a:hover { text-decoration: underline; }
 /* ---- factory closure bands ---- */
 .cal-cell.closed { background: repeating-linear-gradient(-45deg, var(--paper), var(--paper) 5px, var(--gold-bg) 5px, var(--gold-bg) 10px); }
 .cal-cell.closed .cal-daynum::after { content: ' ·closed'; font-size: 9px; letter-spacing: 0.04em; color: var(--thread); }
+
+/* ---- sample photos ---- */
+.sample-photos { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.sample-photos img { width: 74px; height: 74px; object-fit: cover; border-radius: 8px; border: 1px solid var(--hair); display: block; transition: transform 0.2s var(--ease); }
+.sample-photos a:hover img { transform: scale(1.04); }

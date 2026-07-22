@@ -56,6 +56,7 @@ export default function Shell({ session }: { session: Session }) {
           <NavLink to="/" end className={cls}>Home</NavLink>
           <NavLink to="/styles" className={cls}>Styles</NavLink>
           <NavLink to="/orders" className={cls}>Orders{ordersBadge > 0 && <span className="ni-badge">{ordersBadge}</span>}</NavLink>
+          <NavLink to="/messages" className={cls}>Messages</NavLink>
           <NavLink to="/calendar" className={cls}>Calendar</NavLink>
           <NavLink to="/finances" className={cls}>Finances</NavLink>
           <NavLink to="/inventory" className={cls}>Inventory</NavLink>

@@ -77,9 +77,20 @@ export default function Quotes(props:
     await supabase.from('quotes').update({ status }).eq('id', q.id)
     if (status === 'accepted') {
       // The accepted quote becomes commercial reality: order fields + the Record.
+      // FX snapshot: lock the ECB rate at the moment of agreement (frankfurter.app,
+      // public, no key). Failure is silent — FX is a bonus, never a blocker.
+      let fx: { fx_rate: number; fx_base: string; fx_captured_at: string } | {} = {}
+      if (q.currency !== 'USD') {
+        try {
+          const r = await fetch(`https://api.frankfurter.app/latest?from=${q.currency}&to=USD`)
+          const d = await r.json()
+          if (d?.rates?.USD) fx = { fx_rate: d.rates.USD, fx_base: q.currency, fx_captured_at: new Date().toISOString() }
+        } catch { /* offline or blocked — skip */ }
+      }
       await supabase.from('orders').update({
         unit_price: q.unit_price, currency: q.currency,
         ...(q.quantity ? { quantity: q.quantity } : {}),
+        ...fx,
       }).eq('id', props.orderId)
       await supabase.from('record_lines').insert({
         order_id: props.orderId, owner: props.owner, category: 'price',
