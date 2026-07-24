@@ -16,9 +16,12 @@ type Style = {
 export default function Styles() {
   const nav = useNavigate()
   const [styles, setStyles] = useState<Style[] | null>(null)
+  const [archived, setArchived] = useState<Style[]>([])
   const [gates, setGates] = useState<Record<string, string>>({})
 
   useEffect(() => {
+    supabase.from('styles').select('*').not('archived_at', 'is', null)
+      .then(({ data }) => setArchived((data as Style[]) || []))
     supabase.from('styles').select('*').is('archived_at', null).order('created_at', { ascending: false })
       .then(async ({ data }) => {
         const list = (data as Style[]) || []
@@ -80,6 +83,20 @@ export default function Styles() {
               </div>
               <span className="stage-pill">{gates[s.id] || '…'}</span>
             </div>
+          ))}
+        </div>
+      )}
+      {archived.length > 0 && (
+        <div style={{ marginTop: 14 }}>
+          <span className="quiet" style={{ fontSize: 12.5 }}>Archived: </span>
+          {archived.map(st => (
+            <span key={st.id} className="quiet" style={{ fontSize: 12.5, marginRight: 12 }}>
+              {st.name} <a href="#" onClick={async e => {
+                e.preventDefault()
+                await supabase.from('styles').update({ archived_at: null }).eq('id', st.id)
+                location.reload()
+              }}>restore</a>
+            </span>
           ))}
         </div>
       )}

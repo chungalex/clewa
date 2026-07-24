@@ -199,7 +199,10 @@ export default function OrderDetail() {
 
   async function setStage(stage: Order['stage']) {
     if (!order) return
-    await supabase.from('orders').update({ stage }).eq('id', order.id)
+    // First arrival at delivered stamps the date — the seed of on-time history.
+    const extra = stage === 'delivered' && !(order as Order & { delivered_at?: string }).delivered_at
+      ? { delivered_at: new Date().toISOString() } : {}
+    await supabase.from('orders').update({ stage, ...extra }).eq('id', order.id)
     load()
   }
 

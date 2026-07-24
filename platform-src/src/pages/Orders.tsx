@@ -33,11 +33,15 @@ async function exportCsv(orders: Order[]) {
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[] | null>(null)
+  const [archived, setArchived] = useState<Order[]>([])
+  const [showArchived, setShowArchived] = useState(false)
   const nav = useNavigate()
 
   useEffect(() => {
     supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false })
       .then(({ data }) => setOrders((data as Order[]) || []))
+    supabase.from('orders').select('*').not('archived_at', 'is', null).order('archived_at', { ascending: false })
+      .then(({ data }) => setArchived((data as Order[]) || []))
   }, [])
 
   if (orders === null) return null
@@ -84,6 +88,31 @@ export default function Orders() {
               </div>
             )
           })}
+        </div>
+      )}
+      {archived.length > 0 && (
+        <p style={{ marginTop: 16 }}>
+          <a href="#" style={{ fontSize: 12.5 }} onClick={e => { e.preventDefault(); setShowArchived(!showArchived) }}>
+            {showArchived ? 'Hide' : 'Show'} archived ({archived.length})
+          </a>
+        </p>
+      )}
+      {showArchived && (
+        <div className="card" style={{ padding: 0, opacity: 0.75 }}>
+          {archived.map(o => (
+            <div className="order-row" key={o.id} style={{ cursor: 'default' }}>
+              <div>
+                <div className="name">{o.name}</div>
+                <div className="meta">archived {(o as Order & { archived_at?: string }).archived_at?.slice(0, 10)}</div>
+              </div>
+              <button className="btn ghost small" onClick={async () => {
+                await supabase.from('orders').update({ archived_at: null }).eq('id', o.id)
+                setArchived(archived.filter(x => x.id !== o.id))
+                supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false })
+                  .then(({ data }) => setOrders((data as Order[]) || []))
+              }}>Restore</button>
+            </div>
+          ))}
         </div>
       )}
     </>

@@ -35,14 +35,20 @@ const STAGE_NAMES: Record<string, string> = {
 }
 
 /** Internal pipeline — RLS restricts rows to the Clewa team account. */
+type PageView = { path: string; created_at: string }
+
 export default function Sourcing() {
   const [reqs, setReqs] = useState<SourcingRequest[] | null>(null)
+  const [views, setViews] = useState<PageView[] | null>(null)
   const [open, setOpen] = useState<string | null>(null)
   const [drafts, setDrafts] = useState<Record<string, Partial<SourcingRequest>>>({})
 
   async function load() {
     const { data } = await supabase.from('sourcing_requests').select('*').order('created_at', { ascending: false })
     setReqs((data as SourcingRequest[]) || [])
+    const since = new Date(Date.now() - 7 * 86400000).toISOString()
+    const { data: pv } = await supabase.from('page_views').select('path, created_at').gte('created_at', since)
+    setViews((pv as PageView[]) || null)
   }
   useEffect(() => { load() }, [])
 
@@ -71,6 +77,18 @@ export default function Sourcing() {
           </div>
         </div>
       </div>
+
+      {views && (
+        <>
+          <div className="section-label">Site — last 7 days</div>
+          <div className="kpi-row">
+            <div className="kpi"><strong>{views.length}</strong><span>Page views</span></div>
+            <div className="kpi"><strong>{views.filter(v => v.path === '/' || v.path === '/index.html').length}</strong><span>Homepage</span></div>
+            <div className="kpi"><strong>{views.filter(v => v.path.includes('platform')).length}</strong><span>Platform</span></div>
+            <div className="kpi"><strong>{views.filter(v => v.path.includes('app.html')).length}</strong><span>Demo</span></div>
+          </div>
+        </>
+      )}
 
       {reqs.length === 0 && (
         <div className="card empty">

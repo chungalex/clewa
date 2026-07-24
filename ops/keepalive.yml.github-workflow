@@ -1,0 +1,19 @@
+# Prevents Supabase free-tier auto-pause — the failure that killed the first
+# Clewa backend. One trivial query a day keeps the project active.
+name: Supabase keep-alive
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping database through PostgREST
+        run: |
+          curl -sf "https://cxchrwccojvurqcxakyw.supabase.co/rest/v1/rpc/factory_get_order" \
+            -X POST -H "Content-Type: application/json" \
+            -H "apikey: sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o" \
+            -H "Authorization: Bearer sb_publishable_6amZ7V2RrOF6sVjHYw_0DA_2cHTdS8o" \
+            -d '{"p_token":"00000000-0000-0000-0000-000000000000"}' >/dev/null
+          echo "database touched $(date -u)"
