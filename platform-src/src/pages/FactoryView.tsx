@@ -41,6 +41,9 @@ export default function FactoryView() {
   const [prodUnits, setProdUnits] = useState('')
   const [prodNote, setProdNote] = useState('')
   const [prodStage, setProdStage] = useState('cut')
+  const [showIntro, setShowIntro] = useState(() => {
+    try { return !localStorage.getItem('clewa-fv-intro') } catch { return false }
+  })
   const [prodReports, setProdReports] = useState<{ units: number; note: string | null; reported_by: string | null; created_at: string }[]>([])
 
   async function load() {
@@ -110,6 +113,22 @@ export default function FactoryView() {
           <a href="#" onClick={e => { e.preventDefault(); window.print() }} style={{ fontSize: 12 }}>Download record (PDF)</a>
         </span>
       </header>
+
+      {showIntro && !named && (
+        <div className="fv-card" style={{ marginBottom: 14, background: 'var(--gold-bg)', borderColor: 'rgba(154,123,34,0.2)' }}>
+          <p style={{ fontSize: 13.5, lineHeight: 1.6 }}>
+            <strong>{data.brand} shared this order with you through Clewa.</strong> Everything about the
+            order lives on this page — the agreed specs, samples, quality checks and messages — in your
+            language, updated live. No account, no download, nothing to install. What you confirm here is
+            dated and kept for both sides equally.
+          </p>
+          <a href="#" style={{ fontSize: 12.5 }} onClick={e => {
+            e.preventDefault()
+            try { localStorage.setItem('clewa-fv-intro', '1') } catch { /* private mode */ }
+            setShowIntro(false)
+          }}>Understood — don't show this again</a>
+        </div>
+      )}
 
       <div className="fv-card">
         <div className="fv-order-head">
