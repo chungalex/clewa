@@ -35,6 +35,7 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[] | null>(null)
   const [archived, setArchived] = useState<Order[]>([])
   const [showArchived, setShowArchived] = useState(false)
+  const [q, setQ] = useState('')
   const nav = useNavigate()
 
   useEffect(() => {
@@ -57,6 +58,10 @@ export default function Orders() {
           <Link to="/orders/new" className="btn primary">+ New order</Link>
         </div>
       </div>
+      {orders.length > 5 && (
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Filter by product or factory…"
+          style={{ width: '100%', maxWidth: 340, padding: '9px 13px', border: '1px solid var(--hair-2)', borderRadius: 999, marginBottom: 14, background: 'var(--paper)' }} />
+      )}
       {orders.length === 0 ? (
         <div className="card empty">
           <div className="eyebrow" style={{ justifyContent: 'center' }}>The thread starts here</div>
@@ -69,7 +74,7 @@ export default function Orders() {
         </div>
       ) : (
         <div className="card" style={{ padding: 0 }}>
-          {orders.map(o => {
+          {orders.filter(o => !q.trim() || `${o.name} ${o.factory_name || ''}`.toLowerCase().includes(q.toLowerCase())).map(o => {
             const stageIdx = STAGES.indexOf(o.stage)
             return (
               <div className="order-row" key={o.id} onClick={() => nav(`/orders/${o.id}`)}>

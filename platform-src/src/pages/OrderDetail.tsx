@@ -174,18 +174,39 @@ export default function OrderDetail() {
     e.preventDefault()
     if (!order || !edit.name.trim()) return
     setBusy(true)
+    const newQty = edit.quantity ? parseInt(edit.quantity, 10) : null
+    const newPrice = edit.unit_price ? parseFloat(edit.unit_price) : null
+    const newShip = edit.ship_by || null
     await supabase.from('orders').update({
       name: edit.name.trim(),
       factory_name: edit.factory_name.trim() || null,
       factory_country: edit.factory_country.trim() || null,
-      quantity: edit.quantity ? parseInt(edit.quantity, 10) : null,
-      unit_price: edit.unit_price ? parseFloat(edit.unit_price) : null,
+      quantity: newQty,
+      unit_price: newPrice,
       currency: edit.currency,
-      ship_by: edit.ship_by || null,
+      ship_by: newShip,
     }).eq('id', order.id)
+    // Change-order bridge: if commercial facts changed on an order the factory
+    // already signed, put the change on the record for countersignature.
+    const hasSigned = activeLines.some(l => l.factory_signed_at)
+    const changes: string[] = []
+    if (hasSigned) {
+      if (newQty !== order.quantity) changes.push(`quantity ${order.quantity ?? '—'} → ${newQty ?? '—'}`)
+      if (Number(newPrice) !== Number(order.unit_price)) changes.push(`unit price ${order.unit_price ?? '—'} → ${newPrice ?? '—'} ${edit.currency}`)
+      if (newShip !== order.ship_by) changes.push(`ship-by ${order.ship_by ?? '—'} → ${newShip ?? '—'}`)
+    }
+    if (changes.length && window.confirm(`Commercial terms changed (${changes.join('; ')}). Put this change order on the record for ${order.factory_name || 'the factory'} to countersign?`)) {
+      await supabase.from('record_lines').insert({
+        order_id: order.id, owner: order.owner, category: 'terms',
+        content: `Change order: ${changes.join('; ')}`,
+        brand_signed_at: new Date().toISOString(),
+      })
+      toast('Change order on the record — awaiting factory countersignature')
+    } else {
+      toast('Order updated')
+    }
     setBusy(false)
     setEditing(false)
-    toast('Order updated')
     load()
   }
 

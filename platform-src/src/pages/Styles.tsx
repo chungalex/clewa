@@ -17,6 +17,7 @@ export default function Styles() {
   const nav = useNavigate()
   const [styles, setStyles] = useState<Style[] | null>(null)
   const [archived, setArchived] = useState<Style[]>([])
+  const [thumbs, setThumbs] = useState<Record<string, string>>({})
   const [gates, setGates] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -27,6 +28,21 @@ export default function Styles() {
         const list = (data as Style[]) || []
         setStyles(list)
         if (list.length) {
+          // one thumbnail per style: first approved image, else first image
+          supabase.from('style_images').select('style_id, storage_path, approved')
+            .in('style_id', list.map(s2 => s2.id)).order('approved', { ascending: false }).order('created_at')
+            .then(async ({ data: imgs }) => {
+              const first = new Map<string, string>()
+              for (const im of (imgs as { style_id: string; storage_path: string }[]) || []) {
+                if (!first.has(im.style_id)) first.set(im.style_id, im.storage_path)
+              }
+              const t: Record<string, string> = {}
+              for (const [sid, path] of first) {
+                const { data: u } = await supabase.storage.from('style-images').createSignedUrl(path, 3600)
+                if (u?.signedUrl) t[sid] = u.signedUrl
+              }
+              setThumbs(t)
+            })
           const { data: secs } = await supabase.from('style_sections')
             .select('style_id, section, content')
             .in('style_id', list.map(s => s.id))
@@ -73,12 +89,17 @@ export default function Styles() {
         <div className="card" style={{ padding: 0 }}>
           {styles.map(s => (
             <div className="order-row" key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
-              <div>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+                {thumbs[s.id]
+                  ? <img src={thumbs[s.id]} alt="" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 9, border: '1px solid var(--hair)' }} />
+                  : <span style={{ width: 44, height: 44, borderRadius: 9, border: '1px dashed var(--hair-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-3)', fontFamily: 'var(--serif)', fontSize: 17 }}>{s.name.slice(0, 1)}</span>}
+                <div>
                 <div className="name">{s.name}</div>
                 <div className="meta">
                   {s.category || 'Uncategorized'}
                   {s.current_version > 0 ? ` · v${s.current_version}` : ' · unversioned'}
                   {` · created ${s.created_at.slice(0, 10)}`}
+                </div>
                 </div>
               </div>
               <span className="stage-pill">{gates[s.id] || '…'}</span>
