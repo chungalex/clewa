@@ -106,6 +106,14 @@ export default function Settings({ session }: { session: Session }) {
         </div>
       </div>
 
+      <div className="section-label">Integrations</div>
+      <div className="card" style={{ maxWidth: 560 }}>
+        <p style={{ fontSize: 13.5, marginBottom: 12 }}>
+          Shopify, email, files, accounting — see the full catalog with honest statuses.
+        </p>
+        <a className="btn ghost small" href="#/integrations">Open integrations →</a>
+      </div>
+
       <div className="section-label">Account</div>
       <div className="card" style={{ maxWidth: 560 }}>
         <p style={{ fontSize: 13.5, marginBottom: 14 }}>

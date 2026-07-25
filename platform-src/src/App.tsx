@@ -19,6 +19,7 @@ import Intelligence from './pages/Intelligence'
 import Settings from './pages/Settings'
 import Planning from './pages/Planning'
 import Inbox from './pages/Inbox'
+import Integrations from './pages/Integrations'
 import NewOrder from './pages/NewOrder'
 import OrderDetail from './pages/OrderDetail'
 import FactoryView from './pages/FactoryView'
@@ -93,6 +94,7 @@ export default function App() {
         <Route path="/settings" element={<Settings session={session} />} />
         <Route path="/planning" element={<Planning />} />
         <Route path="/messages" element={<Inbox />} />
+        <Route path="/integrations" element={<Integrations />} />
         <Route path="/orders/new" element={<NewOrder />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
       </Route>
