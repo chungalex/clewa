@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { supabase, SUPABASE_URL, SUPABASE_KEY } from '../supabase'
+import { toast } from '../toast'
 import { CATEGORIES, sectionsFor, completeness, gateStatus, LEVEL_LABELS, Issue } from '../styleRules'
 
 type Style = {
@@ -35,6 +36,7 @@ export default function StyleDetail() {
   const [uploading, setUploading] = useState(false)
   const [versionNote, setVersionNote] = useState('')
   const [converted, setConverted] = useState(false)
+  const [drafting, setDrafting] = useState<'idle' | 'busy' | 'setup'>('idle')
   const fileRef = useRef<HTMLInputElement>(null)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -121,6 +123,41 @@ export default function StyleDetail() {
     await supabase.from('styles').update({ current_version: v }).eq('id', style.id)
     setVersionNote('')
     setStyle({ ...style, current_version: v })
+  }
+
+  async function draftWithAI() {
+    if (!style || drafting === 'busy') return
+    setDrafting('busy')
+    try {
+      const { data: sess } = await supabase.auth.getSession()
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/draft-tech-pack`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${sess.session?.access_token || ''}` },
+        body: JSON.stringify({ style_id: style.id }),
+      })
+      const d = await resp.json()
+      if (d.setup) { setDrafting('setup'); return }
+      if (!d.ok || !d.drafts) { toast('Drafting failed — try again'); setDrafting('idle'); return }
+      // Fill EMPTY fields only — the user's words always win; everything stays editable.
+      const next: Content = { ...content }
+      let filled = 0
+      for (const [secKey, fields] of Object.entries(d.drafts as Record<string, Record<string, string>>)) {
+        if (typeof fields !== 'object' || !fields) continue
+        for (const [fk, fv] of Object.entries(fields)) {
+          if (typeof fv !== 'string' || !fv.trim()) continue
+          if ((next[secKey]?.[fk] || '').trim()) continue
+          next[secKey] = { ...(next[secKey] || {}), [fk]: fv }
+          filled++
+        }
+      }
+      setContent(next)
+      for (const secKey of Object.keys(next)) await persistSection(secKey, next[secKey])
+      toast(filled ? `${filled} fields drafted — review each; numbers marked "confirm" are typical values, not facts` : 'Nothing to draft — your sections are already filled')
+      setDrafting('idle')
+    } catch {
+      toast('Drafting failed — try again')
+      setDrafting('idle')
+    }
   }
 
   async function createOrder() {
@@ -287,7 +324,15 @@ export default function StyleDetail() {
 
           <div className="card" style={{ marginTop: 12 }}>
             <div className="eyebrow">Actions</div>
-            <button className="btn primary small" style={{ width: '100%', justifyContent: 'center', marginTop: 12 }} onClick={() => window.print()}>
+            <button className="btn gold small" style={{ width: '100%', justifyContent: 'center', marginTop: 12 }} onClick={draftWithAI} disabled={drafting === 'busy'}>
+              {drafting === 'busy' ? 'Drafting…' : 'Draft empty sections with AI'}
+            </button>
+            {drafting === 'setup' && (
+              <p className="quiet" style={{ fontSize: 11.5, marginTop: 6 }}>
+                Drafting is deployed but needs the ANTHROPIC_API_KEY secret in Supabase.
+              </p>
+            )}
+            <button className="btn primary small" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} onClick={() => window.print()}>
               Export tech pack (PDF)
             </button>
             <a className="btn gold small" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} href={sourcingUrl()}>
@@ -312,6 +357,16 @@ export default function StyleDetail() {
       <div className="print-pack">
         <h1>{style.name}</h1>
         <p className="pp-meta">{style.category || 'Uncategorized'} · v{style.current_version || '0 (draft)'} · exported from Clewa</p>
+        {images.filter(im => im.approved && im.url).length > 0 && (
+          <section>
+            <h2>Approved visuals</h2>
+            <div style={{ display: 'flex', gap: '4mm', flexWrap: 'wrap' }}>
+              {images.filter(im => im.approved && im.url).slice(0, 6).map(im => (
+                <img key={im.id} src={im.url} alt={im.caption || ''} style={{ width: '42mm', height: '42mm', objectFit: 'cover', border: '0.3mm solid #ccc' }} />
+              ))}
+            </div>
+          </section>
+        )}
         {sections.map(sec => {
           const filled = sec.fields.filter(f => (content[sec.key]?.[f.key] || '').trim())
           if (!filled.length) return null

@@ -51,6 +51,42 @@ export default function Calendar() {
         <div style={{ display: 'flex', gap: 6 }}>
           <button className={`btn small ${view === 'plan' ? 'primary' : 'ghost'}`} onClick={() => setView('plan')}>Backward plan</button>
           <button className={`btn small ${view === 'month' ? 'primary' : 'ghost'}`} onClick={() => setView('month')}>Month</button>
+          {planned.length > 0 && (
+            <button className="btn ghost small" title="Import into Google Calendar, Apple Calendar or Outlook" onClick={() => {
+              const fmt = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '')
+              const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Clewa//Production//EN']
+              for (const o of planned) {
+                const ship = new Date(o.ship_by + 'T00:00:00')
+                for (const m of MILESTONES) {
+                  const due = new Date(ship.getTime() - m.daysBefore * 86400000)
+                  lines.push('BEGIN:VEVENT',
+                    `UID:${o.id}-${m.key}@clewa.io`,
+                    `DTSTART;VALUE=DATE:${fmt(due)}`,
+                    `SUMMARY:${o.name}: ${m.label}`,
+                    `DESCRIPTION:Clewa backward plan for ${o.name}${o.factory_name ? ` (${o.factory_name})` : ''}`,
+                    'END:VEVENT')
+                }
+              }
+              for (const f of factories) {
+                for (const c of f.closures || []) {
+                  const to = new Date(new Date(c.to + 'T00:00:00').getTime() + 86400000)
+                  lines.push('BEGIN:VEVENT',
+                    `UID:closure-${f.name.replace(/\W/g, '')}-${c.from}@clewa.io`,
+                    `DTSTART;VALUE=DATE:${c.from.replace(/-/g, '')}`,
+                    `DTEND;VALUE=DATE:${fmt(to)}`,
+                    `SUMMARY:${f.name} closed${c.label ? ` — ${c.label}` : ''}`,
+                    'END:VEVENT')
+                }
+              }
+              lines.push('END:VCALENDAR')
+              const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' })
+              const a = document.createElement('a')
+              a.href = URL.createObjectURL(blob)
+              a.download = 'clewa-production.ics'
+              a.click()
+              URL.revokeObjectURL(a.href)
+            }}>Export to calendar (.ics)</button>
+          )}
         </div>
       </div>
 
