@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
@@ -53,7 +54,7 @@ export default function Contacts() {
     load()
   }
 
-  if (factories === null) return null
+  if (factories === null) return <Loading variant="detail" />
 
   // Names seen on orders but not yet in the rolodex — offer one-click add.
   const knownNames = new Set(factories.map(f => f.name.toLowerCase()))

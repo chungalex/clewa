@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
@@ -45,7 +46,7 @@ export default function Orders() {
       .then(({ data }) => setArchived((data as Order[]) || []))
   }, [])
 
-  if (orders === null) return null
+  if (orders === null) return <Loading />
 
   return (
     <>
@@ -77,7 +78,7 @@ export default function Orders() {
           {orders.filter(o => !q.trim() || `${o.name} ${o.factory_name || ''}`.toLowerCase().includes(q.toLowerCase())).map(o => {
             const stageIdx = STAGES.indexOf(o.stage)
             return (
-              <div className="order-row" key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
+              <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
                 <div>
                   <div className="name">{o.name}</div>
                   <div className="meta">
@@ -105,7 +106,7 @@ export default function Orders() {
       {showArchived && (
         <div className="card" style={{ padding: 0, opacity: 0.75 }}>
           {archived.map(o => (
-            <div className="order-row" key={o.id} style={{ cursor: 'default' }}>
+            <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={o.id} style={{ cursor: 'default' }}>
               <div>
                 <div className="name">{o.name}</div>
                 <div className="meta">archived {(o as Order & { archived_at?: string }).archived_at?.slice(0, 10)}</div>

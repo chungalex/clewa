@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 
@@ -65,7 +66,7 @@ export default function Sourcing() {
     load()
   }
 
-  if (reqs === null) return null
+  if (reqs === null) return <Loading variant="detail" />
 
   return (
     <>

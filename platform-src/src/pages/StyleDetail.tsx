@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase, SUPABASE_URL, SUPABASE_KEY } from '../supabase'
@@ -196,7 +197,7 @@ export default function StyleDetail() {
     return `../sourcing-apply.html?${p.toString()}`
   }
 
-  if (!style) return null
+  if (!style) return <Loading variant="detail" />
   const sections = sectionsFor(style.category)
   const issues = completeness(style.category, content)
   const gates = gateStatus(issues)

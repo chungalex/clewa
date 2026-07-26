@@ -54,7 +54,7 @@ export default function Shell({ session }: { session: Session }) {
   return (
     <div className="shell">
       <aside className="side">
-        <a className="brand" href="../" title="Back to clewa site">Cle<em>w</em>a</a>
+        <a className="brand" href="../" title="Back to clewa site" aria-label="Clewa — back to site">Cle<em>w</em>a</a>
         <div className="side-new">
           <Link to="/orders/new" className="btn primary">+ New order</Link>
         </div>

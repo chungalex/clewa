@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 
@@ -29,7 +30,7 @@ export default function Integrations() {
       .then(({ data }) => setProviders((data as Provider[]) || []))
   }, [])
 
-  if (providers === null) return null
+  if (providers === null) return <Loading variant="detail" />
   const categories = [...new Set(providers.map(p => p.category))]
 
   return (

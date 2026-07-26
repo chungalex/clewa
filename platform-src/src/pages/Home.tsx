@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
@@ -52,7 +53,7 @@ export default function Home() {
     })
   }, [])
 
-  if (orders === null) return null
+  if (orders === null) return <Loading />
 
   const active = orders.filter(o => !['delivered', 'closed'].includes(o.stage))
   // Never sum across currencies — headline the largest, note the rest.
@@ -230,7 +231,7 @@ export default function Home() {
           {active.map(o => {
             const stageIdx = STAGES.indexOf(o.stage)
             return (
-              <div className="order-row" key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
+              <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
                 <div>
                   <div className="name">{o.name}</div>
                   <div className="meta">

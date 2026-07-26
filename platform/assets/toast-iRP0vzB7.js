@@ -1,0 +1,1 @@
+function s(e){const t=document.createElement("div");t.className="toast",t.textContent=e,document.body.appendChild(t),requestAnimationFrame(()=>t.classList.add("show")),setTimeout(()=>{t.classList.remove("show"),setTimeout(()=>t.remove(),400)},2600)}export{s as t};

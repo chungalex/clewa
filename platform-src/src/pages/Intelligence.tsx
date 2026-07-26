@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, SUPABASE_URL, SUPABASE_KEY, Order, RecordLine, STAGES } from '../supabase'
@@ -65,7 +66,7 @@ export default function Intelligence() {
     }
   }
 
-  if (!ready) return null
+  if (!ready) return <Loading />
 
   const active = orders.filter(o => !['delivered', 'closed'].includes(o.stage))
   const insights: Insight[] = []

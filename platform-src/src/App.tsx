@@ -1,28 +1,29 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './supabase'
-import Auth from './pages/Auth'
-import Welcome from './pages/Welcome'
-import Shell from './pages/Shell'
-import Orders from './pages/Orders'
-import Home from './pages/Home'
-import Calendar from './pages/Calendar'
-import Finances from './pages/Finances'
-import Sourcing from './pages/Sourcing'
-import Styles from './pages/Styles'
-import NewStyle from './pages/NewStyle'
-import StyleDetail from './pages/StyleDetail'
-import Inventory from './pages/Inventory'
-import Contacts from './pages/Contacts'
-import Intelligence from './pages/Intelligence'
-import Settings from './pages/Settings'
-import Planning from './pages/Planning'
-import Inbox from './pages/Inbox'
-import Integrations from './pages/Integrations'
-import NewOrder from './pages/NewOrder'
-import OrderDetail from './pages/OrderDetail'
-import FactoryView from './pages/FactoryView'
+import Loading from './Loading'
+const Auth = lazy(() => import('./pages/Auth'))
+const Welcome = lazy(() => import('./pages/Welcome'))
+const Shell = lazy(() => import('./pages/Shell'))
+const Orders = lazy(() => import('./pages/Orders'))
+const Home = lazy(() => import('./pages/Home'))
+const Calendar = lazy(() => import('./pages/Calendar'))
+const Finances = lazy(() => import('./pages/Finances'))
+const Sourcing = lazy(() => import('./pages/Sourcing'))
+const Styles = lazy(() => import('./pages/Styles'))
+const NewStyle = lazy(() => import('./pages/NewStyle'))
+const StyleDetail = lazy(() => import('./pages/StyleDetail'))
+const Inventory = lazy(() => import('./pages/Inventory'))
+const Contacts = lazy(() => import('./pages/Contacts'))
+const Intelligence = lazy(() => import('./pages/Intelligence'))
+const Settings = lazy(() => import('./pages/Settings'))
+const Planning = lazy(() => import('./pages/Planning'))
+const Inbox = lazy(() => import('./pages/Inbox'))
+const Integrations = lazy(() => import('./pages/Integrations'))
+const NewOrder = lazy(() => import('./pages/NewOrder'))
+const OrderDetail = lazy(() => import('./pages/OrderDetail'))
+const FactoryView = lazy(() => import('./pages/FactoryView'))
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -55,28 +56,37 @@ export default function App() {
   // Factory share-link: works with no account, before any auth gate.
   if (location.pathname.startsWith('/f/')) {
     return (
-      <Routes>
-        <Route path="/f/:token" element={<FactoryView />} />
-      </Routes>
+      <Suspense fallback={<div className="fv-wrap"><div className="fv-card"><Loading variant="plain" /></div></div>}>
+        <Routes>
+          <Route path="/f/:token" element={<FactoryView />} />
+        </Routes>
+      </Suspense>
     )
   }
 
   if (!session) {
     if (location.pathname !== '/auth') return <Navigate to="/auth" replace />
     return (
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
+      <Suspense fallback={<div className="auth-wrap"><Loading variant="plain" /></div>}>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </Suspense>
     )
   }
 
   if (!profileReady) return null
 
   if (needsWelcome) {
-    return <Welcome userId={session.user.id} onDone={() => setNeedsWelcome(false)} />
+    return (
+      <Suspense fallback={<div className="auth-wrap"><Loading variant="plain" /></div>}>
+        <Welcome userId={session.user.id} onDone={() => setNeedsWelcome(false)} />
+      </Suspense>
+    )
   }
 
   return (
+    <Suspense fallback={<div style={{ padding: '40px' }}><Loading /></div>}>
     <Routes>
       <Route path="/auth" element={<Navigate to="/" replace />} />
       <Route element={<Shell session={session} />}>
@@ -100,5 +110,6 @@ export default function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   )
 }

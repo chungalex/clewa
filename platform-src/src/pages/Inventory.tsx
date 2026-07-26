@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
@@ -81,7 +82,7 @@ export default function Inventory() {
     load()
   }
 
-  if (!ready) return null
+  if (!ready) return <Loading />
 
   const activeOrders = orders.filter(o => !['delivered', 'closed'].includes(o.stage))
   const producedByOrder = new Map<string, number>()

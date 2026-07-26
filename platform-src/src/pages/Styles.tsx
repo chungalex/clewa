@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
@@ -61,7 +62,7 @@ export default function Styles() {
       })
   }, [])
 
-  if (styles === null) return null
+  if (styles === null) return <Loading />
 
   return (
     <>
@@ -88,7 +89,7 @@ export default function Styles() {
       ) : (
         <div className="card" style={{ padding: 0 }}>
           {styles.map(s => (
-            <div className="order-row" key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
+            <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
               <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
                 {thumbs[s.id]
                   ? <img src={thumbs[s.id]} alt="" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 9, border: '1px solid var(--hair)' }} />

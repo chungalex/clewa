@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order, STAGES } from '../supabase'
@@ -35,7 +36,7 @@ export default function Calendar() {
     return f?.closures || []
   }
 
-  if (orders === null) return null
+  if (orders === null) return <Loading variant="detail" />
   const planned = orders.filter(o => o.ship_by && !['delivered', 'closed'].includes(o.stage))
   const unplanned = orders.filter(o => !o.ship_by && !['delivered', 'closed'].includes(o.stage))
 

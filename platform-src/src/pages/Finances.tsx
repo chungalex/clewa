@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order, STAGE_LABELS } from '../supabase'
@@ -25,7 +26,7 @@ export default function Finances() {
       })
   }, [])
 
-  if (orders === null) return null
+  if (orders === null) return <Loading />
 
   const priced = orders.filter(o => o.quantity && o.unit_price)
   const unpriced = orders.filter(o => !(o.quantity && o.unit_price) && !['delivered', 'closed'].includes(o.stage))

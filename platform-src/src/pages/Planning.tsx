@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
@@ -62,7 +63,7 @@ export default function Planning() {
     load()
   }
 
-  if (items === null) return null
+  if (items === null) return <Loading />
 
   const seasons = [...new Set(items.map(i => i.season))]
   const closedOrders = orders.filter(o => ['delivered', 'closed'].includes(o.stage))

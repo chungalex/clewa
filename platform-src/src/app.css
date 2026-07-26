@@ -474,3 +474,34 @@ a:hover { text-decoration: underline; }
 body.pro-mode .coach, body.pro-mode .field-hint, body.pro-mode .steps-card { display: none; }
 .size-chip { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--hair-2); color: var(--ink-2); margin-right: 5px; font-variant-numeric: tabular-nums; }
 .size-chip.low { background: var(--err-bg); border-color: var(--err-line); color: var(--err); }
+
+/* ---- skeleton loading ---- */
+.skel-wrap { padding: 2px; }
+.skel { position: relative; overflow: hidden; background: var(--hair-soft); border-radius: 8px; }
+.skel::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+  animation: skel-sweep 1.4s infinite; }
+.skel.title { height: 30px; margin-bottom: 10px; }
+.skel.line { height: 13px; margin-bottom: 6px; }
+.skel.num { height: 26px; }
+.skel.card { height: 130px; border-radius: 14px; margin-bottom: 14px; }
+.skel.card.short { height: 84px; }
+.w40 { width: 40%; } .w60 { width: 60%; } .w75 { width: 75%; } .w90 { width: 90%; }
+@keyframes skel-sweep { 100% { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .skel::after { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---- accessibility: visible keyboard focus everywhere ---- */
+:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; border-radius: 4px; }
+.side nav a:focus-visible, .btn:focus-visible { outline-offset: 1px; }
+
+/* ---- factory record: stack on phones (no more word-per-line squeeze) ---- */
+@media (max-width: 480px) {
+  .fv-card .rec-line { display: block; }
+  .fv-card .rec-cat { display: block; width: auto; margin-bottom: 3px; }
+  .fv-card .rec-content { display: block; margin-bottom: 6px; }
+  .fv-card .rec-sign { display: block; white-space: normal; }
+  .fv-card .rec-line .btn { margin-top: 4px; }
+}

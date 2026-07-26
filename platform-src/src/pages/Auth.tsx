@@ -25,7 +25,7 @@ export default function Auth() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <a className="auth-brand" href="../">Cle<em>w</em>a</a>
+        <a className="auth-brand" href="../" aria-label="Clewa — back to site">Cle<em>w</em>a</a>
         <div className="card">
           <div className="eyebrow">{mode === 'signup' ? 'Start free' : 'Welcome back'}</div>
           <h1>{mode === 'signup' ? <>Your first order is <em style={{ color: 'var(--gold)' }}>on us.</em></> : 'Sign in'}</h1>

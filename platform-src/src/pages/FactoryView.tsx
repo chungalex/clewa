@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { supabase, STAGE_LABELS } from '../supabase'
 import Messages from '../Messages'
 import Samples from '../Samples'
+import Loading from '../Loading'
 import Qc from '../Qc'
 import Quotes from '../Quotes'
 
@@ -86,7 +87,13 @@ export default function FactoryView() {
     )
   }
 
-  if (!data) return null
+  if (!data) {
+    return (
+      <div className="fv-wrap">
+        <div className="fv-card"><Loading variant="plain" /></div>
+      </div>
+    )
+  }
   const o = data.order
   const activeLines = data.lines.filter(l => !l.superseded_by)
   const supersededLines = data.lines.filter(l => l.superseded_by)
@@ -95,7 +102,7 @@ export default function FactoryView() {
   return (
     <div className="fv-wrap">
       <header className="fv-head">
-        <span className="fv-brandmark">Cle<em>w</em>a</span>
+        <span className="fv-brandmark" aria-label="Clewa" role="img">Cle<em>w</em>a</span>
         <span className="fv-sub" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           Shared order · you see exactly what {data.brand} sees
           <select

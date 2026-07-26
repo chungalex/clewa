@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase, Order } from '../supabase'
@@ -35,7 +36,7 @@ export default function Inbox() {
     return () => clearInterval(tick)
   }, [])
 
-  if (msgs === null) return null
+  if (msgs === null) return <Loading variant="detail" />
 
   // One row per order, newest thread first.
   const threads = new Map<string, { latest: Msg; count: number; fromFactory: number }>()
@@ -71,7 +72,7 @@ export default function Inbox() {
             const m = r.latest
             const preview = (m.sender !== 'brand' && m.translation_status === 'done' && m.translated_body) ? m.translated_body : m.body
             return (
-              <div className="order-row" key={r.orderId} onClick={() => nav(`/orders/${r.orderId}`)}>
+              <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={r.orderId} onClick={() => nav(`/orders/${r.orderId}`)}>
                 <div style={{ minWidth: 0 }}>
                   <div className="name">
                     {r.order!.name}

@@ -1,3 +1,4 @@
+import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
@@ -227,7 +228,7 @@ export default function OrderDetail() {
     load()
   }
 
-  if (!order) return null
+  if (!order) return <Loading variant="detail" />
   const stageIdx = STAGES.indexOf(order.stage)
   const activeLines = lines.filter(l => !l.superseded_by)
   const supersededLines = lines.filter(l => l.superseded_by)
