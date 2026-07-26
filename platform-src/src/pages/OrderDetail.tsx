@@ -304,7 +304,16 @@ export default function OrderDetail() {
         )
       })()}
 
-      <div className="section-label">Stage</div>
+      <nav className="subnav no-print" aria-label="Order sections">
+        {[['stage', 'Stage'], ['factory', 'Factory'], ['quotes', 'Quotes'], ['record', 'The Record'], ['samples', 'Samples'], ['qc', 'QC'], ['docs', 'Documents'], ['messages', 'Messages'], ['activity', 'Activity']].map(([id, label]) => (
+          <a key={id} href={`#${id}`} onClick={e => {
+            e.preventDefault()
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }}>{label}</a>
+        ))}
+      </nav>
+
+      <div className="section-label" id="stage">Stage</div>
       <div className="card" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {STAGES.map((s, i) => (
           <button
@@ -317,7 +326,7 @@ export default function OrderDetail() {
         ))}
       </div>
 
-      <div className="section-label">Your factory</div>
+      <div className="section-label" id="factory">Your factory</div>
       <div className="card">
         {!invite && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
@@ -362,7 +371,7 @@ export default function OrderDetail() {
         )}
       </div>
 
-      <div className="section-label">Quotes</div>
+      <div className="section-label" id="quotes">Quotes</div>
       <div className="card">
         <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           The negotiation, kept. Accepting a quote writes the price to the record and updates this order.
@@ -370,7 +379,7 @@ export default function OrderDetail() {
         <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
       </div>
 
-      <div className="section-label">
+      <div className="section-label" id="record">
         The Record
         {invite?.accepted_at && activeLines.some(l => !l.factory_signed_at) && (
           <a href="#" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} onClick={async e => {
@@ -464,7 +473,7 @@ export default function OrderDetail() {
         const met = conds.filter(c => c.ok).length
         return (
           <>
-            <div className="section-label">Payment readiness</div>
+            <div className="section-label" id="payment">Payment readiness</div>
             <div className="card">
               <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 10 }}>
                 Clewa never holds or moves money — you pay your factory directly. These are the conditions
@@ -481,7 +490,7 @@ export default function OrderDetail() {
               ))}
             </div>
 
-            <div className="section-label">Samples</div>
+            <div className="section-label" id="samples">Samples</div>
       <div className="card">
         <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           The approval ladder — each round is visible to your factory, and an approval condition is written to the record.
@@ -492,7 +501,7 @@ export default function OrderDetail() {
         )
       })()}
 
-      <div className="section-label">Quality control</div>
+      <div className="section-label" id="qc">Quality control</div>
       <div className="card">
         <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           One checklist, two verdicts — {order.factory_name || 'your factory'} inspects the same list on their link. Disagreements surface here, not at the port.
@@ -500,12 +509,12 @@ export default function OrderDetail() {
         <Qc mode="brand" orderId={order.id} owner={order.owner} />
       </div>
 
-      <div className="section-label">Documents</div>
+      <div className="section-label" id="docs">Documents</div>
       <div className="card">
         <Documents orderId={order.id} owner={order.owner} />
       </div>
 
-      <div className="section-label">Messages</div>
+      <div className="section-label" id="messages">Messages</div>
       <div className="card">
         <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
           Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.
@@ -513,7 +522,7 @@ export default function OrderDetail() {
         <Messages mode="brand" orderId={order.id} owner={order.owner} />
       </div>
 
-      <div className="section-label">Activity</div>
+      <div className="section-label" id="activity">Activity</div>
       <div className="card">
         <Activity orderId={order.id} />
       </div>

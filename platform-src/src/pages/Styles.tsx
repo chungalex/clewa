@@ -87,25 +87,33 @@ export default function Styles() {
           <Link to="/styles/new" className="btn gold">Create your first style →</Link>
         </div>
       ) : (
-        <div className="card" style={{ padding: 0 }}>
+        <div className="style-cards">
           {styles.map(s => (
-            <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
-              <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            <div className="style-card" role="link" tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }}
+              key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
+              <div className="sc-visual">
                 {thumbs[s.id]
-                  ? <img src={thumbs[s.id]} alt="" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 9, border: '1px solid var(--hair)' }} />
-                  : <span style={{ width: 44, height: 44, borderRadius: 9, border: '1px dashed var(--hair-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-3)', fontFamily: 'var(--serif)', fontSize: 17 }}>{s.name.slice(0, 1)}</span>}
-                <div>
+                  ? <img src={thumbs[s.id]} alt="" loading="lazy" />
+                  : <span className="sc-monogram">{s.name.slice(0, 1)}</span>}
+                <span className="stage-pill sc-gate">{gates[s.id] || '…'}</span>
+              </div>
+              <div className="sc-body">
                 <div className="name">{s.name}</div>
                 <div className="meta">
                   {s.category || 'Uncategorized'}
-                  {s.current_version > 0 ? ` · v${s.current_version}` : ' · unversioned'}
-                  {` · created ${s.created_at.slice(0, 10)}`}
-                </div>
+                  {s.current_version > 0 ? ` · v${s.current_version}` : ''}
                 </div>
               </div>
-              <span className="stage-pill">{gates[s.id] || '…'}</span>
             </div>
           ))}
+          <button className="style-card sc-new" onClick={() => nav('/styles/new')}>
+            <div className="sc-visual"><span className="sc-monogram">+</span></div>
+            <div className="sc-body">
+              <div className="name">New style</div>
+              <div className="meta">Describe it — the builder does the rest</div>
+            </div>
+          </button>
         </div>
       )}
       {archived.length > 0 && (
