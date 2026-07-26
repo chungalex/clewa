@@ -71,18 +71,21 @@ export default function Shell({ session }: { session: Session }) {
         </div>
         <nav>
           <NavLink to="/" end className={cls}>Home</NavLink>
-          <NavLink to="/styles" className={cls}>Styles</NavLink>
           <NavLink to="/orders" className={cls}>Orders{ordersBadge > 0 && <span className="ni-badge">{ordersBadge}</span>}</NavLink>
-          <NavLink to="/messages" className={cls}>Messages</NavLink>
           <NavLink to="/calendar" className={cls}>Calendar</NavLink>
+          <NavLink to="/messages" className={cls}>Messages</NavLink>
           <NavLink to="/finances" className={cls}>Finances</NavLink>
+          <div className="side-sec">Make &amp; plan</div>
+          <NavLink to="/styles" className={cls}>Styles</NavLink>
+          <NavLink to="/planning" className={cls}>Planning</NavLink>
+          <div className="side-sec">Track</div>
           <NavLink to="/inventory" className={cls}>Inventory</NavLink>
           <NavLink to="/contacts" className={cls}>Contacts</NavLink>
-          <NavLink to="/planning" className={cls}>Planning</NavLink>
-          <NavLink to="/intelligence" className={cls}>Intelligence{intelBadge > 0 && <span className="ni-badge">{intelBadge}</span>}</NavLink>
           {session.user.email === 'chungalexvo@gmail.com' && (
             <NavLink to="/sourcing" className={cls}>Sourcing</NavLink>
           )}
+          <div className="side-sec">Intelligence</div>
+          <NavLink to="/intelligence" className={cls}>Intelligence{intelBadge > 0 && <span className="ni-badge">{intelBadge}</span>}</NavLink>
         </nav>
         <div className="spacer" />
         <div className="foot">
