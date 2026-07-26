@@ -54,9 +54,13 @@ export default function Shell({ session }: { session: Session }) {
   }, [session.user.id])
 
   useEffect(() => {
+    document.body.classList.add('app')
     try {
-      document.body.classList.toggle('pro-mode', localStorage.getItem('clewa-mode') === 'pro')
+      const pro = localStorage.getItem('clewa-mode') === 'pro'
+      document.body.classList.toggle('pro-mode', pro)
+      document.body.classList.toggle('guided', !pro)
     } catch { /* private mode */ }
+    return () => document.body.classList.remove('app', 'guided', 'pro-mode')
   }, [])
 
   const cls = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '')

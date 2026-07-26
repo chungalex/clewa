@@ -63,6 +63,7 @@ export default function Topbar({ brandName, needs }: { brandName: string; needs:
     setMode(next)
     try { localStorage.setItem('clewa-mode', next) } catch { /* private mode */ }
     document.body.classList.toggle('pro-mode', next === 'pro')
+    document.body.classList.toggle('guided', next === 'guided')
     toast(next === 'pro' ? 'Pro mode — coaching hidden' : 'Guided mode — coaching visible')
   }
 
