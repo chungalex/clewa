@@ -23,7 +23,7 @@ export default function Topbar({ brandName, needs }: { brandName: string; needs:
   const [open, setOpen] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
   const [mode, setMode] = useState(() => {
-    try { return localStorage.getItem('clewa-mode') || 'guided' } catch { return 'guided' }
+    try { return localStorage.getItem('clewa-mode') || 'pro' } catch { return 'pro' }
   })
   const boxRef = useRef<HTMLDivElement>(null)
 

@@ -56,9 +56,10 @@ export default function Shell({ session }: { session: Session }) {
   useEffect(() => {
     document.body.classList.add('app')
     try {
-      const pro = localStorage.getItem('clewa-mode') === 'pro'
-      document.body.classList.toggle('pro-mode', pro)
-      document.body.classList.toggle('guided', !pro)
+      // The demo defaults to the full cockpit — Guided is opt-in, like the zip.
+      const guided = localStorage.getItem('clewa-mode') === 'guided'
+      document.body.classList.toggle('pro-mode', !guided)
+      document.body.classList.toggle('guided', guided)
     } catch { /* private mode */ }
     return () => document.body.classList.remove('app', 'guided', 'pro-mode')
   }, [])

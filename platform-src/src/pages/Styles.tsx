@@ -2,7 +2,8 @@ import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
-import { sectionsFor, completeness, gateStatus } from '../styleRules'
+import { completeness, gateStatus } from '../styleRules'
+import '../parity/styles.css'
 
 type Style = {
   id: string
@@ -65,71 +66,86 @@ export default function Styles() {
   if (styles === null) return <Loading />
 
   return (
-    <>
-      <div className="main-head">
-        <div>
-          <h1>Styles</h1>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 4 }}>
-            From idea to factory-ready brief — every style becomes a tech pack, a sourcing request, or an order.
+    <section className="page on" data-page="techpack">
+      <div className="page-w">
+        <div className="pg-bar">
+          <div>
+            <h2 className="pg-h">Styles</h2>
+            <div className="pg-sub" style={{ marginBottom: 0 }}>
+              Build a complete spec before you ever send it out. Clewa checks for the gaps factories quietly guess on — so nothing comes back wrong.
+            </div>
+            <div className="tp-tpl">
+              Every style becomes a <b>tech pack</b> — a factory-ready brief with the fields a factory needs, already listed.
+            </div>
+          </div>
+          <div className="dv-tools">
+            <Link to="/styles/new" className="x-btn">
+              <span className="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg></span>
+              New style
+            </Link>
           </div>
         </div>
-        <Link to="/styles/new" className="btn primary">+ New style</Link>
-      </div>
 
-      {styles.length === 0 ? (
-        <div className="card empty">
-          <div className="eyebrow" style={{ justifyContent: 'center' }}>Start from anything</div>
-          <h2>Describe it, and Clewa builds the brief.</h2>
-          <p>
-            A style starts as a sentence or a few reference photos. The guided builder turns it into
-            a structured tech pack — and flags exactly what a factory still needs before it can quote.
-          </p>
-          <Link to="/styles/new" className="btn gold">Create your first style →</Link>
-        </div>
-      ) : (
-        <div className="style-cards">
-          {styles.map(s => (
-            <div className="style-card" role="link" tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }}
-              key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
-              <div className="sc-visual">
-                {thumbs[s.id]
-                  ? <img src={thumbs[s.id]} alt="" loading="lazy" />
-                  : <span className="sc-monogram">{s.name.slice(0, 1)}</span>}
-                <span className="stage-pill sc-gate">{gates[s.id] || '…'}</span>
-              </div>
-              <div className="sc-body">
-                <div className="name">{s.name}</div>
-                <div className="meta">
-                  {s.category || 'Uncategorized'}
-                  {s.current_version > 0 ? ` · v${s.current_version}` : ''}
+        {styles.length === 0 ? (
+          <div className="ibx-card">
+            <div className="ibx-head slim">
+              <div>
+                <div className="ibx-kick">Start from anything</div>
+                <div className="ibx-sub">
+                  A style starts as a sentence or a few reference photos. The guided builder turns it into
+                  a structured tech pack — and flags exactly what a factory still needs before it can quote.
                 </div>
               </div>
             </div>
-          ))}
-          <button className="style-card sc-new" onClick={() => nav('/styles/new')}>
-            <div className="sc-visual"><span className="sc-monogram">+</span></div>
-            <div className="sc-body">
-              <div className="name">New style</div>
-              <div className="meta">Describe it — the builder does the rest</div>
+            <div style={{ padding: '18px 22px' }}>
+              <Link to="/styles/new" className="x-btn tp-go">Create your first style →</Link>
             </div>
-          </button>
-        </div>
-      )}
-      {archived.length > 0 && (
-        <div style={{ marginTop: 14 }}>
-          <span className="quiet" style={{ fontSize: 12.5 }}>Archived: </span>
-          {archived.map(st => (
-            <span key={st.id} className="quiet" style={{ fontSize: 12.5, marginRight: 12 }}>
-              {st.name} <a href="#" onClick={async e => {
-                e.preventDefault()
-                await supabase.from('styles').update({ archived_at: null }).eq('id', st.id)
-                location.reload()
-              }}>restore</a>
-            </span>
-          ))}
-        </div>
-      )}
-    </>
+          </div>
+        ) : (
+          <div className="style-cards">
+            {styles.map(s => (
+              <div className="style-card" role="link" tabIndex={0}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }}
+                key={s.id} onClick={() => nav(`/styles/${s.id}`)}>
+                <div className="sc-visual">
+                  {thumbs[s.id]
+                    ? <img src={thumbs[s.id]} alt="" loading="lazy" />
+                    : <span className="sc-monogram">{s.name.slice(0, 1)}</span>}
+                  <span className="stage-pill sc-gate">{gates[s.id] || '…'}</span>
+                </div>
+                <div className="sc-body">
+                  <div className="name">{s.name}</div>
+                  <div className="meta">
+                    {s.category || 'Uncategorized'}
+                    {s.current_version > 0 ? ` · v${s.current_version}` : ''}
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="style-card sc-new" onClick={() => nav('/styles/new')}>
+              <div className="sc-visual"><span className="sc-monogram">+</span></div>
+              <div className="sc-body">
+                <div className="name">New style</div>
+                <div className="meta">Describe it — the builder does the rest</div>
+              </div>
+            </button>
+          </div>
+        )}
+        {archived.length > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <span className="quiet" style={{ fontSize: 12.5 }}>Archived: </span>
+            {archived.map(st => (
+              <span key={st.id} className="quiet" style={{ fontSize: 12.5, marginRight: 12 }}>
+                {st.name} <a href="#" onClick={async e => {
+                  e.preventDefault()
+                  await supabase.from('styles').update({ archived_at: null }).eq('id', st.id)
+                  location.reload()
+                }}>restore</a>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
