@@ -1,0 +1,29 @@
+/* Pixel-parity CSS for the Order detail page — extracted verbatim from the Clewa demo
+   (/Users/alexchung/clewa/app.css + styles.css). Do not hand-tune; re-extract instead.
+   Shared chrome (.pg-bar .pg-h .pg-sub .dv-tools .x-btn .xb-ic .hx-newbtn .hx-card
+   .hx-chead .hc-title .hc-sub .hc-link .ot-stage .bo-pill .dm-btn .subnav) lives in
+   src/app.css and is not duplicated here. */
+
+.page-w { max-width: 1180px; }
+
+/* ---------- back link (app.css) ---------- */
+.od-back { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-3); cursor: pointer; margin-bottom: 14px; }
+.od-back:hover { color: var(--ink); }
+
+/* ---------- card family (app.css) — duplicated per parity-file convention: pages are lazy-loaded ---------- */
+.ibx-card { background: var(--paper); border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+.ibx-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 20px 22px; border-bottom: 1px solid var(--hair); flex-wrap: wrap; }
+.ibx-head.slim { padding: 16px 22px; }
+.ibx-kick { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+.ibx-sub { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+.x-btn.ghost { background: transparent; }
+
+/* ---------- platform glue (not in demo) ---------- */
+/* anchored cards scroll under the sticky subnav, like .section-label[id] did */
+.ibx-card[id] { scroll-margin-top: 64px; }
+/* demo card bodies carry their own padding per composition; the platform's
+   functional components (Record, Quotes, Samples, Qc, Documents, Messages,
+   Activity) are unpadded, so cards give them a uniform body */
+.odx-body { padding: 16px 22px 18px; }
+.odx-body > :last-child { margin-bottom: 0; }
+.hx-newbtn:disabled { opacity: 0.5; cursor: default; }

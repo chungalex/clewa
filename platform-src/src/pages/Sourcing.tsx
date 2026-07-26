@@ -1,6 +1,7 @@
 import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
+import '../parity/settings.css'
 
 type SourcingRequest = {
   id: string
@@ -69,101 +70,101 @@ export default function Sourcing() {
   if (reqs === null) return <Loading variant="detail" />
 
   return (
-    <>
-      <div className="main-head">
-        <div>
-          <h1>Sourcing pipeline</h1>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 4 }}>
-            Internal — intake submissions from the public form land here.
+    <section className="page on" data-page="sourcing">
+      <div className="page-w">
+        <div className="pg-bar">
+          <div>
+            <h2 className="pg-h">Sourcing pipeline</h2>
+            <div className="pg-sub">Internal — intake submissions from the public form land here.</div>
           </div>
         </div>
-      </div>
 
-      {views && (
-        <>
-          <div className="section-label">Site — last 7 days</div>
-          <div className="kpi-row">
-            <div className="kpi"><strong>{views.length}</strong><span>Page views</span></div>
-            <div className="kpi"><strong>{views.filter(v => v.path === '/' || v.path === '/index.html').length}</strong><span>Homepage</span></div>
-            <div className="kpi"><strong>{views.filter(v => v.path.includes('platform')).length}</strong><span>Platform</span></div>
-            <div className="kpi"><strong>{views.filter(v => v.path.includes('app.html')).length}</strong><span>Demo</span></div>
+        {views && (
+          <div className="fin-kpis">
+            <div className="fin-kpi"><div className="fk-num">{views.length}</div><div className="fk-label">Page views · 7 days</div></div>
+            <div className="fin-kpi"><div className="fk-num">{views.filter(v => v.path === '/' || v.path === '/index.html').length}</div><div className="fk-label">Homepage</div></div>
+            <div className="fin-kpi"><div className="fk-num">{views.filter(v => v.path.includes('platform')).length}</div><div className="fk-label">Platform</div></div>
+            <div className="fin-kpi"><div className="fk-num">{views.filter(v => v.path.includes('app.html')).length}</div><div className="fk-label">Demo</div></div>
           </div>
-        </>
-      )}
+        )}
 
-      {reqs.length === 0 && (
-        <div className="card empty">
-          <h2>No sourcing requests yet.</h2>
-          <p>When a brand submits the sourcing brief, it appears here with the full pipeline: New → Discovery → Brief → Search → Shortlist → Sampling → Production.</p>
-        </div>
-      )}
-
-      {reqs.map(r => {
-        const d = drafts[r.id] || {}
-        const isOpen = open === r.id
-        return (
-          <div className="card" key={r.id} style={{ marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', cursor: 'pointer' }}
-              onClick={() => setOpen(isOpen ? null : r.id)}>
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <strong style={{ fontSize: 14.5 }}>{r.brand_name}</strong>
-                <span style={{ color: 'var(--ink-3)', fontSize: 12.5, marginLeft: 8 }}>
-                  {r.product_category || 'uncategorized'} · {r.target_quantity || 'qty ?'} · {r.email}
-                </span>
-              </div>
-              <span className="stage-pill">{STAGE_NAMES[r.status]}</span>
-              <span style={{ color: 'var(--ink-3)', fontSize: 12 }}>{r.created_at.slice(0, 10)}</span>
+        {reqs.length === 0 && (
+          <div className="ibx-card">
+            <div className="empty">
+              <h2>No sourcing requests yet.</h2>
+              <p>When a brand submits the sourcing brief, it appears here with the full pipeline: New → Discovery → Brief → Search → Shortlist → Sampling → Production.</p>
             </div>
-
-            {isOpen && (
-              <div style={{ marginTop: 14, borderTop: '1px solid var(--hair)', paddingTop: 14 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 10, fontSize: 13 }}>
-                  <div><span className="quiet">Contact:</span> {r.contact_name || '—'}</div>
-                  <div><span className="quiet">Region:</span> {r.target_region || '—'}</div>
-                  <div><span className="quiet">Target cost:</span> {r.target_cost || '—'}</div>
-                  <div><span className="quiet">Delivery:</span> {r.target_delivery || '—'}</div>
-                  <div><span className="quiet">Produced before:</span> {r.has_produced_before || '—'}</div>
-                  <div><span className="quiet">Budget/readiness:</span> {r.budget_readiness || '—'}</div>
-                </div>
-                {r.product_description && <p style={{ fontSize: 13, marginTop: 10 }}><span className="quiet">Product:</span> {r.product_description}</p>}
-                {r.main_challenges && <p style={{ fontSize: 13, marginTop: 6 }}><span className="quiet">Challenges:</span> {r.main_challenges}</p>}
-
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 12 }}>
-                  {STAGES.map(s => (
-                    <button key={s} className={`btn small ${r.status === s ? 'primary' : 'ghost'}`} onClick={() => setStatus(r, s)}>
-                      {STAGE_NAMES[s]}
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 10, marginTop: 12 }}>
-                  <textarea
-                    placeholder="Internal notes"
-                    defaultValue={r.internal_notes || ''}
-                    onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, internal_notes: e.target.value } })}
-                    style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, minHeight: 60, font: 'inherit', fontSize: 13 }}
-                  />
-                  <input
-                    placeholder="Next action"
-                    defaultValue={r.next_action || ''}
-                    onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, next_action: e.target.value } })}
-                    style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }}
-                  />
-                  <input
-                    type="date"
-                    defaultValue={r.follow_up_date || ''}
-                    onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, follow_up_date: e.target.value } })}
-                    style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }}
-                  />
-                </div>
-                <button className="btn primary small" style={{ marginTop: 10 }} onClick={() => save(r)}>Save notes</button>
-                {' '}
-                <a className="btn ghost small" href={`mailto:${r.email}?subject=Clewa Sourcing — ${encodeURIComponent(r.brand_name)}`} style={{ marginTop: 10, display: 'inline-block' }}>Email {r.contact_name || 'them'}</a>
-              </div>
-            )}
           </div>
-        )
-      })}
-    </>
+        )}
+
+        {reqs.map(r => {
+          const d = drafts[r.id] || {}
+          const isOpen = open === r.id
+          return (
+            <div className="ibx-card" key={r.id}>
+              <div className="team-row" style={{ cursor: 'pointer' }} onClick={() => setOpen(isOpen ? null : r.id)}>
+                <span className="team-av">{r.brand_name.slice(0, 1).toUpperCase()}</span>
+                <div>
+                  <div className="team-name">{r.brand_name}</div>
+                  <div className="team-email">
+                    {r.product_category || 'uncategorized'} · {r.target_quantity || 'qty ?'} · {r.email}
+                  </div>
+                </div>
+                <span className="team-sees">{r.created_at.slice(0, 10)}</span>
+                <span className="stage-pill">{STAGE_NAMES[r.status]}</span>
+              </div>
+
+              {isOpen && (
+                <div style={{ borderTop: '1px solid var(--hair)', padding: '16px 20px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 10, fontSize: 13 }}>
+                    <div><span className="quiet">Contact:</span> {r.contact_name || '—'}</div>
+                    <div><span className="quiet">Region:</span> {r.target_region || '—'}</div>
+                    <div><span className="quiet">Target cost:</span> {r.target_cost || '—'}</div>
+                    <div><span className="quiet">Delivery:</span> {r.target_delivery || '—'}</div>
+                    <div><span className="quiet">Produced before:</span> {r.has_produced_before || '—'}</div>
+                    <div><span className="quiet">Budget/readiness:</span> {r.budget_readiness || '—'}</div>
+                  </div>
+                  {r.product_description && <p style={{ fontSize: 13, marginTop: 10 }}><span className="quiet">Product:</span> {r.product_description}</p>}
+                  {r.main_challenges && <p style={{ fontSize: 13, marginTop: 6 }}><span className="quiet">Challenges:</span> {r.main_challenges}</p>}
+
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 12 }}>
+                    {STAGES.map(s => (
+                      <button key={s} className={`btn small ${r.status === s ? 'primary' : 'ghost'}`} onClick={() => setStatus(r, s)}>
+                        {STAGE_NAMES[s]}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 10, marginTop: 12 }}>
+                    <textarea
+                      placeholder="Internal notes"
+                      defaultValue={r.internal_notes || ''}
+                      onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, internal_notes: e.target.value } })}
+                      style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, minHeight: 60, font: 'inherit', fontSize: 13 }}
+                    />
+                    <input
+                      placeholder="Next action"
+                      defaultValue={r.next_action || ''}
+                      onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, next_action: e.target.value } })}
+                      style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }}
+                    />
+                    <input
+                      type="date"
+                      defaultValue={r.follow_up_date || ''}
+                      onChange={e => setDrafts({ ...drafts, [r.id]: { ...d, follow_up_date: e.target.value } })}
+                      style={{ padding: '8px 11px', border: '1px solid var(--hair-2)', borderRadius: 9, fontSize: 13 }}
+                    />
+                  </div>
+                  <div className="dv-tools" style={{ marginTop: 12 }}>
+                    <button className="hx-newbtn" onClick={() => save(r)}>Save notes</button>
+                    <a className="x-btn" href={`mailto:${r.email}?subject=Clewa Sourcing — ${encodeURIComponent(r.brand_name)}`} style={{ textDecoration: 'none' }}>Email {r.contact_name || 'them'}</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }

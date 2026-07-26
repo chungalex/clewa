@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
 import { toast } from '../toast'
-import { CATEGORIES } from '../styleRules'
+import '../parity/settings.css'
 
 const SITUATIONS = [
   { key: 'have_factory', label: 'I have a factory' },
@@ -51,39 +51,43 @@ export default function Settings({ session }: { session: Session }) {
   }
 
   return (
-    <>
-      <div className="main-head">
-        <div>
-          <h1>Settings</h1>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 4 }}>
-            Your workspace, your account, and how Clewa works.
+    <section className="page on" data-page="settings">
+      <div className="page-w">
+        <div className="pg-bar">
+          <div>
+            <h2 className="pg-h">Settings</h2>
+            <div className="pg-sub">Your workspace, your account, and how Clewa works.</div>
           </div>
         </div>
-      </div>
 
-      <div className="section-label">Brand</div>
-      <div className="card" style={{ maxWidth: 560 }}>
-        <form onSubmit={saveProfile}>
-          <div className="field">
-            <label>Brand name</label>
-            <input value={brandName} onChange={e => setBrandName(e.target.value)} placeholder="What your factory knows you as" />
-            <p className="field-hint">Shown to factories on shared orders and on exported POs.</p>
-          </div>
-          <div className="field">
-            <label>Factory situation</label>
-            <select value={situation} onChange={e => setSituation(e.target.value)}>
-              <option value="">—</option>
-              {SITUATIONS.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
-            </select>
-          </div>
-          <button className="btn primary small" type="submit" disabled={busy}>Save</button>
-          {savedNote && <p className="ok-note">{savedNote}</p>}
-        </form>
-      </div>
+        <div className="ibx-card" style={{ maxWidth: 640 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">Brand</div>
+            <div className="ibx-sub">Shown to factories on shared orders and on exported POs.</div>
+          </div></div>
+          <form className="ibx-body" onSubmit={saveProfile}>
+            <div className="field">
+              <label>Brand name</label>
+              <input value={brandName} onChange={e => setBrandName(e.target.value)} placeholder="What your factory knows you as" />
+            </div>
+            <div className="field">
+              <label>Factory situation</label>
+              <select value={situation} onChange={e => setSituation(e.target.value)}>
+                <option value="">—</option>
+                {SITUATIONS.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+              </select>
+            </div>
+            <button className="hx-newbtn" type="submit" disabled={busy}>Save</button>
+            {savedNote && <p className="ok-note">{savedNote}</p>}
+          </form>
+        </div>
 
-      <div className="section-label">Interface</div>
-      <div className="card" style={{ maxWidth: 560 }}>
-        <div className="sit-grid">
+        <div className="ibx-card" style={{ maxWidth: 640 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">Interface</div>
+            <div className="ibx-sub">How much coaching you want on screen — switch any time.</div>
+          </div></div>
+          <div className="ibx-body sit-grid">
           {[
             { key: 'guided', title: 'Guided', sub: 'Explanations stay visible on every page — why each step matters and what the factory needs. Right for your first orders.' },
             { key: 'pro', title: 'Pro', sub: 'Hides the coaching copy and checklists. The same product, quieter — for when the workflow is muscle memory.' },
@@ -103,38 +107,45 @@ export default function Settings({ session }: { session: Session }) {
               </button>
             )
           })}
-        </div>
-      </div>
-
-      <div className="section-label">Integrations</div>
-      <div className="card" style={{ maxWidth: 560 }}>
-        <p style={{ fontSize: 13.5, marginBottom: 12 }}>
-          Shopify, email, files, accounting — see the full catalog with honest statuses.
-        </p>
-        <a className="btn ghost small" href="#/integrations">Open integrations →</a>
-      </div>
-
-      <div className="section-label">Account</div>
-      <div className="card" style={{ maxWidth: 560 }}>
-        <p style={{ fontSize: 13.5, marginBottom: 14 }}>
-          Signed in as <strong>{session.user.email}</strong>
-        </p>
-        <form onSubmit={changePassword}>
-          <div className="field">
-            <label>New password</label>
-            <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" />
           </div>
-          <button className="btn ghost small" type="submit" disabled={busy || !pw}>Change password</button>
-          {pwNote && <p className={pwNote === 'Password changed.' ? 'ok-note' : 'err-note'}>{pwNote}</p>}
-        </form>
-        <p className="quiet" style={{ fontSize: 12, marginTop: 14 }}>
-          Your data is yours: every order and record line exports from the Orders page (CSV), tech packs and POs export as PDF.
-          To close your account entirely, email hello@clewa.io and we delete everything.
-        </p>
-      </div>
+        </div>
 
-      <div className="section-label">How Clewa works — the 60-second guide</div>
-      <div className="card" style={{ maxWidth: 720 }}>
+        <div className="ibx-card" style={{ maxWidth: 640 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">Integrations</div>
+            <div className="ibx-sub">Shopify, email, files, accounting — see the full catalog with honest statuses.</div>
+          </div></div>
+          <div className="ibx-body">
+            <a className="x-btn" href="#/integrations" style={{ textDecoration: 'none' }}>Open integrations →</a>
+          </div>
+        </div>
+
+        <div className="ibx-card" style={{ maxWidth: 640 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">Account</div>
+            <div className="ibx-sub">Signed in as <strong>{session.user.email}</strong></div>
+          </div></div>
+          <div className="ibx-body">
+            <form onSubmit={changePassword}>
+              <div className="field">
+                <label>New password</label>
+                <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" />
+              </div>
+              <button className="x-btn" type="submit" disabled={busy || !pw}>Change password</button>
+              {pwNote && <p className={pwNote === 'Password changed.' ? 'ok-note' : 'err-note'}>{pwNote}</p>}
+            </form>
+            <p className="quiet" style={{ fontSize: 12, marginTop: 14 }}>
+              Your data is yours: every order and record line exports from the Orders page (CSV), tech packs and POs export as PDF.
+              To close your account entirely, email hello@clewa.io and we delete everything.
+            </p>
+          </div>
+        </div>
+
+        <div className="ibx-card" style={{ maxWidth: 760 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">How Clewa works — the 60-second guide</div>
+          </div></div>
+          <div className="ibx-body">
         {[
           {
             t: 'The Record is the spine',
@@ -169,7 +180,9 @@ export default function Settings({ session }: { session: Session }) {
             </div>
           </div>
         ))}
+          </div>
+        </div>
       </div>
-    </>
+    </section>
   )
 }

@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase, SUPABASE_URL, SUPABASE_KEY } from '../supabase'
 import { toast } from '../toast'
 import { CATEGORIES, sectionsFor, completeness, gateStatus, LEVEL_LABELS, Issue } from '../styleRules'
+import '../parity/style-detail.css'
 
 type Style = {
   id: string
@@ -32,7 +33,6 @@ export default function StyleDetail() {
   const [style, setStyle] = useState<Style | null>(null)
   const [content, setContent] = useState<Content>({})
   const [images, setImages] = useState<StyleImage[]>([])
-  const [openSection, setOpenSection] = useState<string>('overview')
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [versionNote, setVersionNote] = useState('')
@@ -204,14 +204,17 @@ export default function StyleDetail() {
   const grouped: Record<Issue['level'], Issue[]> = { quote: [], sampling: [], bulk: [], recommend: [] }
   for (const i of issues) grouped[i.level].push(i)
   const gateLabel = gates.bulkReady ? 'Production-ready' : gates.samplingReady ? 'Sampling-ready' : gates.quoteReady ? 'Quote-ready' : 'In development'
+  const totalFields = sections.reduce((n, s) => n + s.fields.length, 0)
+  const filledFields = sections.reduce((n, s) => n + s.fields.filter(f => (content[s.key]?.[f.key] || '').trim()).length, 0)
+  const pct = totalFields ? Math.round((filledFields / totalFields) * 100) : 0
 
   return (
-    <>
-      <div className="main-head no-print">
+    <div className="page-w">
+      <Link to="/styles" className="od-back no-print" style={{ textDecoration: 'none' }}>← All styles</Link>
+      <div className="pg-bar no-print">
         <div>
-          <Link to="/styles" style={{ fontSize: 12, color: 'var(--ink-3)' }}>← Styles</Link>
-          <h1 style={{ marginTop: 4 }}>{style.name}</h1>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 2, display: 'flex', gap: 10, alignItems: 'center' }}>
+          <h2 className="pg-h">{style.name}</h2>
+          <div className="pg-sub" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
             <select value={style.category || ''} onChange={e => setCategory(e.target.value)}
               style={{ padding: '5px 8px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper)', fontSize: 12.5 }}>
               <option value="">Set category…</option>
@@ -221,134 +224,160 @@ export default function StyleDetail() {
             {saving && <span className="quiet">saving…</span>}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button className="btn ghost small" onClick={async () => {
+        <div className="dv-tools">
+          <button className="x-btn ghost" type="button" onClick={async () => {
             if (!window.confirm(`Archive "${style.name}"? It leaves your Styles list; versions and images are kept. Ask me to restore it any time.`)) return
             await supabase.from('styles').update({ archived_at: new Date().toISOString() }).eq('id', style.id)
             nav('/styles')
           }}>Archive</button>
-          <span className="stage-pill">{gateLabel}</span>
+          <button className="x-btn" type="button" onClick={() => window.print()}>
+            <span className="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg></span>
+            Export PDF
+          </button>
+          <span className={`ot-stage ${gates.bulkReady ? 'live' : 'idle'}`}>{gateLabel}</span>
         </div>
       </div>
 
-      <div className="style-grid">
-        <div>
-          {/* Visuals */}
-          <div className="card no-print" style={{ marginBottom: 16 }}>
-            <div className="card-head">
-              <span className="ch-title">Visuals</span>
-              <span className="ch-sub">references now — AI concept views when generation is configured</span>
+      {/* Artwork, sketches & references */}
+      <div className="ibx-card no-print">
+        <div className="ibx-head slim">
+          <div>
+            <div className="ibx-kick">Artwork, sketches &amp; references</div>
+            <div className="ibx-sub">
+              Drop in your CAD, flats, prints and reference photos — they travel with the spec so the factory makes
+              exactly what you drew. AI concept views (front/back, colorways) switch on once an image provider is
+              configured in project secrets; uploads work fully today.
             </div>
-            <div className="img-grid">
-              {images.map(img => (
-                <figure className={`img-tile ${img.approved ? 'approved' : ''}`} key={img.id}>
-                  {img.url ? <img src={img.url} alt={img.caption || ''} /> : <div className="img-missing">…</div>}
-                  <figcaption>
-                    <span>{img.kind === 'generated' ? 'Concept visualization' : 'Reference'}</span>
-                    <span className="img-actions">
-                      <a href="#" onClick={e => { e.preventDefault(); toggleApproved(img) }}>{img.approved ? '★ approved' : '☆ approve'}</a>
-                      {' · '}
-                      <a href="#" onClick={e => { e.preventDefault(); removeImage(img) }}>remove</a>
-                    </span>
-                  </figcaption>
-                </figure>
-              ))}
-              <button className="img-add" onClick={() => fileRef.current?.click()} disabled={uploading}>
-                {uploading ? 'Uploading…' : '+ Add images'}
-              </button>
-              <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={e => upload(e.target.files)} />
-            </div>
-            <p className="quiet" style={{ marginTop: 10, fontSize: 12 }}>
-              AI concept generation (front/back views, colorways) is ready to switch on — it needs an image
-              provider configured in project secrets. Uploads work fully today.
-            </p>
           </div>
+        </div>
+        <div className="tp-art">
+          {images.map(img => (
+            <div className={`tp-slot filled ${img.approved ? 'approved' : ''}`} key={img.id}>
+              {img.url
+                ? <img src={img.url} alt={img.caption || ''} />
+                : <div className="ts-thumb"><span className="ts-name">…</span></div>}
+              <span className="ts-meta">
+                <span className="ts-cap">{img.kind === 'generated' ? 'Concept' : (img.caption || 'Reference')}</span>
+                <span>
+                  <a href="#" onClick={e => { e.preventDefault(); toggleApproved(img) }}>{img.approved ? '★ approved' : '☆ approve'}</a>
+                  {' · '}
+                  <a href="#" onClick={e => { e.preventDefault(); removeImage(img) }}>remove</a>
+                </span>
+              </span>
+            </div>
+          ))}
+          <button type="button" className="tp-slot" onClick={() => fileRef.current?.click()} disabled={uploading}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+            <span className="ts-lab">{uploading ? 'Uploading…' : 'Add images'}</span>
+          </button>
+          <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={e => upload(e.target.files)} />
+        </div>
+      </div>
 
-          {/* Guided sections */}
+      <div className="tp-grid">
+        {/* Guided sections — every field live, autosaved */}
+        <div className="ibx-card" style={{ margin: 0 }}>
           {sections.map(sec => {
-            const open = openSection === sec.key
             const filled = sec.fields.filter(f => (content[sec.key]?.[f.key] || '').trim()).length
+            const done = filled === sec.fields.length
             return (
-              <div className={`card sec-card ${open ? '' : 'collapsed'}`} key={sec.key} style={{ marginBottom: 10 }}>
-                <button className="sec-head" onClick={() => setOpenSection(open ? '' : sec.key)}>
-                  <span className="sec-title">{sec.title}</span>
-                  <span className="sec-state">{filled}/{sec.fields.length}{open ? ' —' : ' +'}</span>
-                </button>
-                {open && (
-                  <div className="sec-body">
-                    <p className="field-hint" style={{ marginTop: 0, marginBottom: 12 }}>{sec.hint}</p>
-                    {sec.fields.map(f => (
-                      <div className="field" key={f.key}>
-                        <label>{f.label}</label>
-                        {f.multiline ? (
-                          <textarea rows={3} value={content[sec.key]?.[f.key] || ''} placeholder={f.placeholder}
-                            onChange={e => setField(sec.key, f.key, e.target.value)} />
-                        ) : (
-                          <input value={content[sec.key]?.[f.key] || ''} placeholder={f.placeholder}
-                            onChange={e => setField(sec.key, f.key, e.target.value)} />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="tp-sec" key={sec.key}>
+                <div className="tp-sec-h">
+                  <span className="tps-t">
+                    <span className={`tps-c ${done ? 'done' : 'warn'}`}>
+                      {done
+                        ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7" /></svg>
+                        : '!'}
+                    </span>
+                    {sec.title}
+                  </span>
+                  <span className="tps-n">{filled} of {sec.fields.length}{done ? '' : ` · ${sec.fields.length - filled} open`}</span>
+                </div>
+                <div className="tps-why">{sec.hint}</div>
+                <div className="tp-fields">
+                  {sec.fields.map(f => (
+                    <div className={`tp-f ${f.multiline ? 'full' : ''}`} key={f.key}>
+                      <label>{f.label}</label>
+                      {f.multiline ? (
+                        <textarea rows={3} value={content[sec.key]?.[f.key] || ''} placeholder={f.placeholder}
+                          onChange={e => setField(sec.key, f.key, e.target.value)} />
+                      ) : (
+                        <input value={content[sec.key]?.[f.key] || ''} placeholder={f.placeholder}
+                          onChange={e => setField(sec.key, f.key, e.target.value)} />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )
           })}
         </div>
 
         {/* Completeness rail */}
-        <aside className="rail no-print">
-          <div className="card">
-            <div className="eyebrow">Factory readiness</div>
-            <div className="gate-row">
-              <span className={`gate ${gates.quoteReady ? 'ok' : ''}`}>Quote</span>
-              <span className={`gate ${gates.samplingReady ? 'ok' : ''}`}>Sampling</span>
-              <span className={`gate ${gates.bulkReady ? 'ok' : ''}`}>Bulk</span>
+        <aside className="tp-side no-print">
+          <div className="ibx-card">
+            <div className="tp-meter">
+              <div
+                className={`tp-ring ${pct === 100 ? 'complete' : ''}`}
+                style={{ background: `conic-gradient(${pct === 100 ? '#4A6B52' : 'var(--thread)'} 0 ${pct}%, var(--hair) ${pct}% 100%)` }}
+              ><span>{pct}%</span></div>
+              <div className="tpm-lab">
+                {issues.length === 0
+                  ? <><b>Factory-ready.</b> Nothing missing from this brief.</>
+                  : <><b>{gateLabel}.</b> {issues.length} gap{issues.length === 1 ? '' : 's'} flagged below.</>}
+              </div>
+            </div>
+          </div>
+
+          <div className="ibx-card">
+            <div className="hx-chead"><span className="hc-title">Completeness check</span><span className="hc-sub">{issues.length === 0 ? 'no gaps' : `${issues.length} gap${issues.length === 1 ? '' : 's'}`}</span></div>
+            <div className="tpx-body">
+              <div className="gate-row" style={{ marginTop: 0 }}>
+                <span className={`gate ${gates.quoteReady ? 'ok' : ''}`}>Quote</span>
+                <span className={`gate ${gates.samplingReady ? 'ok' : ''}`}>Sampling</span>
+                <span className={`gate ${gates.bulkReady ? 'ok' : ''}`}>Bulk</span>
+              </div>
             </div>
             {issues.length === 0 && (
-              <p className="fv-done" style={{ marginTop: 12 }}>
-                Nothing missing. This brief is ready for a factory.
-              </p>
+              <div className="tpfl"><span className="fl-d ok" /><div><b>Nothing missing.</b> This brief is ready for a factory.</div></div>
             )}
             {(['quote', 'sampling', 'bulk', 'recommend'] as const).map(level => grouped[level].length > 0 && (
-              <div key={level} style={{ marginTop: 14 }}>
+              <div key={level}>
                 <div className="rail-level">{LEVEL_LABELS[level]}</div>
                 {grouped[level].map((i, idx) => (
-                  <div className="rail-issue" key={idx}>
-                    <strong>{i.message}</strong>
-                    <span>{i.why}</span>
-                  </div>
+                  <div className="tpfl" key={idx}><span className="fl-d warn" /><div><b>{i.message}</b> {i.why}</div></div>
                 ))}
               </div>
             ))}
           </div>
 
-          <div className="card" style={{ marginTop: 12 }}>
-            <div className="eyebrow">Actions</div>
-            <button className="btn gold small" style={{ width: '100%', justifyContent: 'center', marginTop: 12 }} onClick={draftWithAI} disabled={drafting === 'busy'}>
-              {drafting === 'busy' ? 'Drafting…' : 'Draft empty sections with AI'}
-            </button>
-            {drafting === 'setup' && (
-              <p className="quiet" style={{ fontSize: 11.5, marginTop: 6 }}>
-                Drafting is deployed but needs the ANTHROPIC_API_KEY secret in Supabase.
+          <div className="ibx-card">
+            <div className="hx-chead"><span className="hc-title">Actions</span></div>
+            <div className="tpx-body">
+              <button className="x-btn ghost" type="button" onClick={draftWithAI} disabled={drafting === 'busy'}>
+                {drafting === 'busy' ? 'Drafting…' : 'Draft empty sections with AI'}
+              </button>
+              {drafting === 'setup' && (
+                <p className="quiet" style={{ fontSize: 11.5, margin: '6px 0 0' }}>
+                  Drafting is deployed but needs the ANTHROPIC_API_KEY secret in Supabase.
+                </p>
+              )}
+              <button className="x-btn" type="button" onClick={() => window.print()}>
+                Export tech pack (PDF)
+              </button>
+              <a className="x-btn" href={sourcingUrl()}>
+                Find a factory for this style →
+              </a>
+              <button className="hx-newbtn" type="button" onClick={createOrder} disabled={converted}>
+                {converted ? 'Creating order…' : 'Start a production order'}
+              </button>
+              <p className="quiet" style={{ fontSize: 11.5, margin: '8px 0 0' }}>
+                Starting an order seeds the Record from this brief — fabric, measurements, tolerances, QC.
               </p>
-            )}
-            <button className="btn primary small" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} onClick={() => window.print()}>
-              Export tech pack (PDF)
-            </button>
-            <a className="btn gold small" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} href={sourcingUrl()}>
-              Find a factory for this style →
-            </a>
-            <button className="btn ghost small" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} onClick={createOrder} disabled={converted}>
-              {converted ? 'Creating order…' : 'Start a production order'}
-            </button>
-            <p className="quiet" style={{ fontSize: 11.5, marginTop: 8 }}>
-              Starting an order seeds the Record from this brief — fabric, measurements, tolerances, QC.
-            </p>
-            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-              <input value={versionNote} onChange={e => setVersionNote(e.target.value)} placeholder="Version note"
-                style={{ flex: 1, padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8, fontSize: 12.5 }} />
-              <button className="btn ghost small" onClick={saveVersion}>Save v{style.current_version + 1}</button>
+              <div className="tpx-row">
+                <input value={versionNote} onChange={e => setVersionNote(e.target.value)} placeholder="Version note" />
+                <button className="x-btn ghost" type="button" onClick={saveVersion}>Save v{style.current_version + 1}</button>
+              </div>
             </div>
           </div>
         </aside>
@@ -382,6 +411,6 @@ export default function StyleDetail() {
         })}
         <p className="pp-foot">Generated by Clewa — the record of what was agreed. clewa.io</p>
       </div>
-    </>
+    </div>
   )
 }

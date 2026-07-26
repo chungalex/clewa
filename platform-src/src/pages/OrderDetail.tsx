@@ -9,6 +9,7 @@ import Quotes from '../Quotes'
 import Documents from '../Documents'
 import Activity from '../Activity'
 import { toast } from '../toast'
+import '../parity/order-detail.css'
 
 type Invite = {
   id: string
@@ -232,31 +233,47 @@ export default function OrderDetail() {
   const stageIdx = STAGES.indexOf(order.stage)
   const activeLines = lines.filter(l => !l.superseded_by)
   const supersededLines = lines.filter(l => l.superseded_by)
+  const shipDays = order.ship_by ? Math.ceil((new Date(order.ship_by).getTime() - Date.now()) / 86400000) : null
+  const stagePill = ['production', 'qc', 'ship', 'delivered', 'closed'].includes(order.stage) ? 'live'
+    : shipDays !== null && shipDays < 50 ? 'risk' : 'idle'
 
   return (
-    <>
-      <div className="main-head">
+    <div className="page-w">
+      <Link to="/orders" className="od-back no-print" style={{ textDecoration: 'none' }}>← All orders</Link>
+      <div className="pg-bar">
         <div>
-          <Link to="/" style={{ fontSize: 12, color: 'var(--ink-3)' }}>← Orders</Link>
-          <h1 style={{ marginTop: 4 }}>{order.name}</h1>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 2 }}>
+          <h2 className="pg-h">{order.name}</h2>
+          <div className="pg-sub">
             {order.quantity ? `${order.quantity.toLocaleString()} units` : 'Quantity TBD'}
             {order.factory_name ? ` · ${order.factory_name}` : ''}
             {order.factory_country ? `, ${order.factory_country}` : ''}
+            {order.ship_by ? ` · ship by ${order.ship_by}` : ''}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button className="btn ghost small no-print" onClick={startEdit}>Edit</button>
-          <button className="btn ghost small no-print" onClick={archiveOrder}>Archive</button>
-          <button className="btn ghost small no-print" onClick={() => window.print()}>Export PO (PDF)</button>
-          <span className={`stage-pill ${order.stage}`}>{STAGE_LABELS[order.stage]}</span>
+        <div className="dv-tools no-print">
+          <button className="x-btn ghost" type="button" onClick={startEdit}>Edit</button>
+          <button className="x-btn ghost" type="button" onClick={archiveOrder}>Archive</button>
+          <button className="x-btn" type="button" onClick={() => window.print()}>
+            <span className="xb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg></span>
+            Export PO (PDF)
+          </button>
+          <span className={`ot-stage ${stagePill}`}>{STAGE_LABELS[order.stage]}</span>
         </div>
       </div>
 
       {editing && (
-        <div className="card" style={{ marginBottom: 16 }}>
-          <div className="eyebrow">Edit order</div>
-          <form onSubmit={saveEdit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10, marginTop: 12 }}>
+        <div className="ibx-card">
+          <div className="ibx-head slim">
+            <div>
+              <div className="ibx-kick">Edit order</div>
+              <div className="ibx-sub">
+                Editing order facts doesn't touch the Record — anything already signed stays signed. If a change affects
+                what you agreed with the factory, revise the record line so they countersign it.
+              </div>
+            </div>
+          </div>
+          <div className="odx-body">
+          <form onSubmit={saveEdit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
             <input value={edit.name} onChange={e => setEdit({ ...edit, name: e.target.value })} placeholder="Order name" style={{ gridColumn: '1 / -1', padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
             <input value={edit.factory_name} onChange={e => setEdit({ ...edit, factory_name: e.target.value })} placeholder="Factory" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
             <input value={edit.factory_country} onChange={e => setEdit({ ...edit, factory_country: e.target.value })} placeholder="Country" style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
@@ -267,14 +284,11 @@ export default function OrderDetail() {
             </select>
             <input type="date" value={edit.ship_by} onChange={e => setEdit({ ...edit, ship_by: e.target.value })} style={{ padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }} />
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
-              <button className="btn primary small" type="submit" disabled={busy || !edit.name.trim()}>Save changes</button>
-              <button className="btn ghost small" type="button" onClick={() => setEditing(false)}>Cancel</button>
+              <button className="hx-newbtn" type="submit" disabled={busy || !edit.name.trim()}>Save changes</button>
+              <button className="x-btn ghost" type="button" onClick={() => setEditing(false)}>Cancel</button>
             </div>
           </form>
-          <p className="quiet" style={{ fontSize: 12, marginTop: 10 }}>
-            Editing order facts doesn't touch the Record — anything already signed stays signed. If a change affects
-            what you agreed with the factory, revise the record line so they countersign it.
-          </p>
+          </div>
         </div>
       )}
 
@@ -289,17 +303,19 @@ export default function OrderDetail() {
           { done: allConfirmed, title: 'They confirm, line by line', sub: 'Each confirmation is a dated countersignature. When every line is signed by both sides, you have the agreement of record.' },
         ]
         return (
-          <div className="card steps-card">
-            <div className="eyebrow">How this works</div>
-            {steps.map((s, i) => (
-              <div className={`step ${s.done ? 'done' : ''}`} key={i}>
-                <span className="step-dot">{s.done ? '✓' : i + 1}</span>
-                <div>
-                  <strong>{s.title}</strong>
-                  <span>{s.sub}</span>
+          <div className="ibx-card">
+            <div className="ibx-head slim"><div><div className="ibx-kick">How this works</div></div></div>
+            <div className="odx-body">
+              {steps.map((s, i) => (
+                <div className={`step ${s.done ? 'done' : ''}`} key={i}>
+                  <span className="step-dot">{s.done ? '✓' : i + 1}</span>
+                  <div>
+                    <strong>{s.title}</strong>
+                    <span>{s.sub}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )
       })()}
@@ -313,35 +329,39 @@ export default function OrderDetail() {
         ))}
       </nav>
 
-      <div className="section-label" id="stage">Stage</div>
-      <div className="card" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        {STAGES.map((s, i) => (
-          <button
-            key={s}
-            className={`btn small ${i === stageIdx ? 'primary' : 'ghost'}`}
-            onClick={() => setStage(s)}
-          >
-            {STAGE_LABELS[s]}
-          </button>
-        ))}
+      <div className="ibx-card" id="stage">
+        <div className="ibx-head slim"><div><div className="ibx-kick">Stage</div></div></div>
+        <div className="odx-body" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {STAGES.map((s, i) => (
+            <button
+              key={s}
+              className={i === stageIdx ? 'hx-newbtn' : 'x-btn ghost'}
+              type="button"
+              onClick={() => setStage(s)}
+            >
+              {STAGE_LABELS[s]}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="section-label" id="factory">Your factory</div>
-      <div className="card">
+      <div className="ibx-card" id="factory">
+        <div className="ibx-head slim"><div><div className="ibx-kick">Your factory</div></div></div>
+        <div className="odx-body">
         {!invite && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
             <p style={{ color: 'var(--ink-3)', fontSize: 13.5, margin: 0, flex: 1, minWidth: 220 }}>
               Invite {order.factory_name || 'your factory'} onto this order. One link, no account needed on their side — they see the record and confirm it line by line.
               {' '}No factory yet? <a href="../sourcing-apply.html">Clewa Sourcing finds one for you →</a>
             </p>
-            <button className="btn primary small" onClick={createInvite}>Create invite link</button>
+            <button className="hx-newbtn" type="button" onClick={createInvite}>Create invite link</button>
           </div>
         )}
         {invite && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
               <code style={{ flex: 1, minWidth: 240, fontSize: 12, padding: '9px 12px', background: 'var(--paper-2)', border: '1px solid var(--hair)', borderRadius: 9, overflowX: 'auto', whiteSpace: 'nowrap' }}>{inviteUrl(invite)}</code>
-              <button className="btn primary small" onClick={copyInvite}>{copied ? 'Copied ✓' : 'Copy link'}</button>
+              <button className="hx-newbtn" type="button" onClick={copyInvite}>{copied ? 'Copied ✓' : 'Copy link'}</button>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
               <label style={{ fontSize: 12.5, color: 'var(--ink-3)' }}>Their language:</label>
@@ -355,7 +375,8 @@ export default function OrderDetail() {
               </select>
               <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>Messages translate both ways once set.</span>
               <button
-                className="btn ghost small" style={{ marginLeft: 'auto' }}
+                className="x-btn ghost" style={{ marginLeft: 'auto' }}
+                type="button"
                 onClick={revokeInvite}
                 title="The old link stops working immediately; a fresh one is created"
               >
@@ -369,31 +390,40 @@ export default function OrderDetail() {
             </p>
           </>
         )}
+        </div>
       </div>
 
-      <div className="section-label" id="quotes">Quotes</div>
-      <div className="card">
-        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
-          The negotiation, kept. Accepting a quote writes the price to the record and updates this order.
-        </p>
-        <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
+      <div className="ibx-card" id="quotes">
+        <div className="ibx-head slim">
+          <div>
+            <div className="ibx-kick">Quotes</div>
+            <div className="ibx-sub">The negotiation, kept. Accepting a quote writes the price to the record and updates this order.</div>
+          </div>
+        </div>
+        <div className="odx-body">
+          <Quotes mode="brand" orderId={order.id} owner={order.owner} onAccepted={load} />
+        </div>
       </div>
 
-      <div className="section-label" id="record">
-        The Record
-        {invite?.accepted_at && activeLines.some(l => !l.factory_signed_at) && (
-          <a href="#" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} onClick={async e => {
-            e.preventDefault()
-            const n = activeLines.filter(l => !l.factory_signed_at).length
-            await supabase.from('order_messages').insert({
-              order_id: order.id, owner: order.owner, sender: 'brand',
-              body: `Friendly nudge: ${n} line${n === 1 ? '' : 's'} on the record ${n === 1 ? 'is' : 'are'} waiting for your confirmation — it takes one tap on your order link.`,
-            })
-            load()
-          }}>· nudge the factory</a>
-        )}
-      </div>
-      <div className="card">
+      <div className="ibx-card" id="record">
+        <div className="ibx-head slim">
+          <div>
+            <div className="ibx-kick">The Record</div>
+            <div className="ibx-sub">Every spec, price and term here is dated and signed by both sides — the agreement of record.</div>
+          </div>
+          {invite?.accepted_at && activeLines.some(l => !l.factory_signed_at) && (
+            <a href="#" className="hc-link" onClick={async e => {
+              e.preventDefault()
+              const n = activeLines.filter(l => !l.factory_signed_at).length
+              await supabase.from('order_messages').insert({
+                order_id: order.id, owner: order.owner, sender: 'brand',
+                body: `Friendly nudge: ${n} line${n === 1 ? '' : 's'} on the record ${n === 1 ? 'is' : 'are'} waiting for your confirmation — it takes one tap on your order link.`,
+              })
+              load()
+            }}>Nudge the factory →</a>
+          )}
+        </div>
+        <div className="odx-body">
         {activeLines.length === 0 && (
           <p style={{ color: 'var(--ink-3)', paddingBottom: 12 }}>
             Nothing on the record yet. Every spec, price and term you add here is dated and signed — if the bulk arrives wrong, it's not a he-said-she-said.
@@ -410,8 +440,8 @@ export default function OrderDetail() {
                   autoFocus
                   style={{ flex: 1, padding: '7px 10px', border: '1px solid var(--hair-2)', borderRadius: 8 }}
                 />
-                <button className="btn primary small" disabled={busy || !reviseText.trim()} onClick={() => reviseLine(l)}>Publish revision</button>
-                <button className="btn ghost small" onClick={() => { setReviseId(null); setReviseText('') }}>Cancel</button>
+                <button className="dm-btn primary" disabled={busy || !reviseText.trim()} onClick={() => reviseLine(l)}>Publish revision</button>
+                <button className="dm-btn" onClick={() => { setReviseId(null); setReviseText('') }}>Cancel</button>
               </span>
             ) : (
               <span className="rec-content">{l.content}</span>
@@ -451,8 +481,9 @@ export default function OrderDetail() {
             placeholder="e.g. 420gsm wool twill, colour 19-4008 TCX"
             style={{ flex: 1, padding: '9px 12px', border: '1px solid var(--hair-2)', borderRadius: 9 }}
           />
-          <button className="btn primary small" type="submit" disabled={busy || !newLine.trim()}>Add to record</button>
+          <button className="dm-btn primary" type="submit" disabled={busy || !newLine.trim()}>Add to record</button>
         </form>
+        </div>
       </div>
 
       {(() => {
@@ -473,58 +504,81 @@ export default function OrderDetail() {
         const met = conds.filter(c => c.ok).length
         return (
           <>
-            <div className="section-label" id="payment">Payment readiness</div>
-            <div className="card">
-              <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 10 }}>
-                Clewa never holds or moves money — you pay your factory directly. These are the conditions
-                worth verifying before you do. <strong style={{ color: met === 3 ? 'var(--sage)' : 'var(--thread)' }}>{met}/3 verified.</strong>
-              </p>
-              {conds.map((c, i) => (
-                <div className={`step ${c.ok ? 'done' : ''}`} key={i}>
-                  <span className="step-dot">{c.ok ? '✓' : '·'}</span>
-                  <div>
-                    <strong>{c.title}</strong>
-                    <span>{c.sub}</span>
+            <div className="ibx-card" id="payment">
+              <div className="ibx-head slim">
+                <div>
+                  <div className="ibx-kick">Payment readiness</div>
+                  <div className="ibx-sub">
+                    Clewa never holds or moves money — you pay your factory directly. These are the conditions
+                    worth verifying before you do.
                   </div>
                 </div>
-              ))}
+                <span className={`ot-stage ${met === 3 ? 'live' : 'risk'}`}>{met}/3 verified</span>
+              </div>
+              <div className="odx-body">
+                {conds.map((c, i) => (
+                  <div className={`step ${c.ok ? 'done' : ''}`} key={i}>
+                    <span className="step-dot">{c.ok ? '✓' : '·'}</span>
+                    <div>
+                      <strong>{c.title}</strong>
+                      <span>{c.sub}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="section-label" id="samples">Samples</div>
-      <div className="card">
-        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
-          The approval ladder — each round is visible to your factory, and an approval condition is written to the record.
-        </p>
-        <Samples mode="brand" orderId={order.id} owner={order.owner} />
-      </div>
+            <div className="ibx-card" id="samples">
+              <div className="ibx-head slim">
+                <div>
+                  <div className="ibx-kick">Samples</div>
+                  <div className="ibx-sub">The approval ladder — each round is visible to your factory, and an approval condition is written to the record.</div>
+                </div>
+              </div>
+              <div className="odx-body">
+                <Samples mode="brand" orderId={order.id} owner={order.owner} />
+              </div>
+            </div>
           </>
         )
       })()}
 
-      <div className="section-label" id="qc">Quality control</div>
-      <div className="card">
-        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
-          One checklist, two verdicts — {order.factory_name || 'your factory'} inspects the same list on their link. Disagreements surface here, not at the port.
-        </p>
-        <Qc mode="brand" orderId={order.id} owner={order.owner} />
+      <div className="ibx-card" id="qc">
+        <div className="ibx-head slim">
+          <div>
+            <div className="ibx-kick">Quality control</div>
+            <div className="ibx-sub">One checklist, two verdicts — {order.factory_name || 'your factory'} inspects the same list on their link. Disagreements surface here, not at the port.</div>
+          </div>
+        </div>
+        <div className="odx-body">
+          <Qc mode="brand" orderId={order.id} owner={order.owner} />
+        </div>
       </div>
 
-      <div className="section-label" id="docs">Documents</div>
-      <div className="card">
-        <Documents orderId={order.id} owner={order.owner} />
+      <div className="ibx-card" id="docs">
+        <div className="ibx-head slim"><div><div className="ibx-kick">Documents</div></div></div>
+        <div className="odx-body">
+          <Documents orderId={order.id} owner={order.owner} />
+        </div>
       </div>
 
-      <div className="section-label" id="messages">Messages</div>
-      <div className="card">
-        <p className="coach" style={{ color: 'var(--ink-3)', fontSize: 12.5, marginBottom: 12 }}>
-          Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.
-        </p>
-        <Messages mode="brand" orderId={order.id} owner={order.owner} />
+      <div className="ibx-card" id="messages">
+        <div className="ibx-head slim">
+          <div>
+            <div className="ibx-kick">Messages</div>
+            <div className="ibx-sub">Your factory sees this thread on their order link — one conversation, attached to the order{invite?.language ? `, translated to ${invite.language} for them` : ''}.</div>
+          </div>
+        </div>
+        <div className="odx-body">
+          <Messages mode="brand" orderId={order.id} owner={order.owner} />
+        </div>
       </div>
 
-      <div className="section-label" id="activity">Activity</div>
-      <div className="card">
-        <Activity orderId={order.id} />
+      <div className="ibx-card" id="activity">
+        <div className="ibx-head slim"><div><div className="ibx-kick">Activity</div></div></div>
+        <div className="odx-body">
+          <Activity orderId={order.id} />
+        </div>
       </div>
 
       {/* Print-only: the purchase order document */}
@@ -558,6 +612,6 @@ export default function OrderDetail() {
         </section>
         <p className="pp-foot">Generated by Clewa from the dual-signed record. Line-level signature timestamps are stored and exportable. clewa.io</p>
       </div>
-    </>
+    </div>
   )
 }

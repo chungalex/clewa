@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { CATEGORIES } from '../styleRules'
+import '../parity/settings.css'
 
 const START_METHODS = [
   { key: 'describe', title: 'Describe it', sub: 'A sentence or a paragraph — the builder structures it from there.' },
@@ -41,10 +42,20 @@ export default function NewStyle() {
   }
 
   return (
-    <>
-      <div className="main-head"><h1>New style</h1></div>
-      <div className="card" style={{ maxWidth: 620 }}>
-        <form onSubmit={submit}>
+    <section className="page on" data-page="newstyle">
+      <div className="page-w">
+        <div className="pg-bar">
+          <div>
+            <h2 className="pg-h">New style</h2>
+            <div className="pg-sub">Name it, pick a lane, and the guided builder takes it from there.</div>
+          </div>
+        </div>
+        <div className="ibx-card" style={{ maxWidth: 660 }}>
+          <div className="ibx-head slim"><div>
+            <div className="ibx-kick">Start a style</div>
+            <div className="ibx-sub">The builder turns this into a factory-ready brief and tells you what's missing.</div>
+          </div></div>
+          <form className="ibx-body" onSubmit={submit}>
           <div className="field">
             <label htmlFor="name">What are you calling it?</label>
             <input id="name" required autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Heavyweight Boxy Tee" />
@@ -76,12 +87,13 @@ export default function NewStyle() {
               <p className="field-hint">This becomes your product overview — the builder breaks the rest into guided sections.</p>
             </div>
           )}
-          <button className="btn gold" type="submit" disabled={busy || !name.trim()}>
+          <button className="hx-newbtn" type="submit" disabled={busy || !name.trim()}>
             {busy ? 'Creating…' : 'Open the builder →'}
           </button>
           {error && <p className="err-note">{error}</p>}
-        </form>
+          </form>
+        </div>
       </div>
-    </>
+    </section>
   )
 }
