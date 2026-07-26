@@ -6,6 +6,7 @@ import Loading from '../Loading'
 type Invite = { id: string; order_id: string; accepted_at: string | null }
 type Overnight = { at: string; text: string; to: string }
 type ProductSignal = { name: string; on_hand: number; weekly_sales: number; safety_stock: number }
+type FactoryRow = { name: string; closures: { label: string; from: string; to: string }[] }
 
 export default function Home() {
   const nav = useNavigate()
@@ -15,6 +16,7 @@ export default function Home() {
   const [invites, setInvites] = useState<Invite[]>([])
   const [overnight, setOvernight] = useState<Overnight[]>([])
   const [products, setProducts] = useState<ProductSignal[]>([])
+  const [factories, setFactories] = useState<FactoryRow[]>([])
   const [showTour, setShowTour] = useState(() => {
     try { return !localStorage.getItem('clewa-tour-done') } catch { return false }
   })
@@ -30,12 +32,14 @@ export default function Home() {
       supabase.from('record_lines').select('*'),
       supabase.from('order_invites').select('id, order_id, accepted_at').is('revoked_at', null),
       supabase.from('products').select('name, on_hand, weekly_sales, safety_stock'),
-    ]).then(async ([o, l, i, pr]) => {
+      supabase.from('factories').select('name, closures'),
+    ]).then(async ([o, l, i, pr, fa]) => {
       const ords = (o.data as Order[]) || []
       setOrders(ords)
       setLines((l.data as RecordLine[]) || [])
       setInvites((i.data as Invite[]) || [])
       setProducts((pr.data as ProductSignal[]) || [])
+      setFactories((fa.data as FactoryRow[]) || [])
       // Factory hours: the other side's activity in the last 48 hours.
       const since = new Date(Date.now() - 48 * 3600000).toISOString()
       const nameOf = (id: string) => ords.find(x => x.id === id)?.name || 'an order'
@@ -115,6 +119,8 @@ export default function Home() {
   const pricedActive = active.filter(o => o.quantity && o.unit_price)
     .sort((a, b) => b.quantity! * Number(b.unit_price) - a.quantity! * Number(a.unit_price)).slice(0, 4)
   const maxCommit = pricedActive.length ? pricedActive[0].quantity! * Number(pricedActive[0].unit_price) : 0
+  const awaitingFactory = lines.filter(l => !l.superseded_by && !l.factory_signed_at &&
+    active.some(o => o.id === l.order_id)).length
   const reorderCount = products.filter(p => p.weekly_sales > 0 && p.on_hand - p.safety_stock < p.weekly_sales * 6).length
   const agingCount = products.filter(p => p.on_hand > 0 && (p.weekly_sales === 0 || p.on_hand / p.weekly_sales > 26)).length
 
@@ -181,10 +187,35 @@ export default function Home() {
           <strong>{unitsInProduction > 0 ? unitsInProduction.toLocaleString() : '—'}</strong>
           <span>Units in production</span>
         </div>
+        <div className={`kpi ${awaitingFactory > 0 ? 'warn' : ''}`}>
+          <strong>{awaitingFactory}</strong>
+          <span>Line{awaitingFactory === 1 ? '' : 's'} awaiting factory signature</span>
+        </div>
         <div className="kpi">
           <strong>{daysToShip !== null ? `${daysToShip}d` : '—'}</strong>
           <span>{nextShip ? `To next ship · ${nextShip.name}` : 'No ship dates set'}</span>
         </div>
+      </div>
+
+      {/* The demo's 7-day week strip — today ringed, closure days striped, ship days dotted */}
+      <div className="week-strip">
+        {Array.from({ length: 7 }, (_, i) => {
+          const d = new Date(); d.setDate(d.getDate() + i)
+          const key = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
+          const closures = factories.flatMap(f => (f.closures || [])
+            .filter(c => key >= c.from && key <= c.to)
+            .map(c => `${f.name}${c.label ? ` (${c.label})` : ''} closed`))
+          const ships = active.filter(o => o.ship_by === key).map(o => `${o.name} ships`)
+          return (
+            <div className={`ws-day ${i === 0 ? 'today' : ''} ${closures.length ? 'closed' : ''}`} key={i}
+              title={[...closures, ...ships].join(' · ') || undefined}>
+              <span className="ws-dow">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+              <span className="ws-num">{d.getDate()}</span>
+              {ships.length > 0 && <span className="ws-dot" />}
+              {closures.length > 0 && <span className="ws-closed">closed</span>}
+            </div>
+          )
+        })}
       </div>
 
       <div className="home-grid">

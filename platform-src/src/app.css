@@ -543,3 +543,57 @@ body.pro-mode .coach, body.pro-mode .field-hint, body.pro-mode .steps-card { dis
 .rail-bar:hover .rb-head span { color: var(--thread); }
 .rb-track { height: 4px; background: var(--hair-soft); border-radius: 2px; }
 .rb-fill { height: 4px; border-radius: 2px; background: var(--gold-light); }
+
+/* ---- topbar: the demo's chrome, real ---- */
+.main-col { min-width: 0; }
+.topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  height: 58px; padding: 0 26px; border-bottom: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--paper-2) 90%, transparent); backdrop-filter: blur(10px); }
+.tb-crumb { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.tb-crumb h2 { font-family: var(--serif); font-weight: 400; font-size: 18px; letter-spacing: -0.01em; }
+.tb-brand { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.tb-tools { display: flex; align-items: center; gap: 10px; position: relative; }
+.tb-mode { display: flex; border: 1px solid var(--hair-2); border-radius: 999px; padding: 2px; background: var(--paper); cursor: pointer; }
+.tb-mode span { font-size: 11.5px; font-weight: 500; padding: 4px 11px; border-radius: 999px; color: var(--ink-3); transition: all 0.2s; }
+.tb-mode span.on { background: var(--ink); color: var(--on-dark); }
+.tb-search { position: relative; display: flex; align-items: center; }
+.tb-search svg { position: absolute; left: 11px; width: 14px; height: 14px; color: var(--ink-3); pointer-events: none; }
+.tb-search input { width: 230px; padding: 8px 12px 8px 32px; border: 1px solid var(--hair-2); border-radius: 999px;
+  background: var(--paper); font-size: 12.5px; transition: width 0.25s var(--ease), border-color 0.2s; }
+.tb-search input:focus { width: 300px; outline: none; border-color: var(--gold-light); }
+.tb-results { position: absolute; top: calc(100% + 8px); right: 0; width: 320px; background: var(--paper);
+  border: 1px solid var(--hair); border-radius: 12px; box-shadow: 0 24px 60px -28px rgba(26, 23, 20, 0.35);
+  padding: 6px; z-index: 60; }
+.tb-results button { display: block; width: 100%; text-align: left; padding: 9px 12px; border: none; background: none;
+  border-radius: 8px; cursor: pointer; font: inherit; }
+.tb-results button:hover { background: var(--gold-bg); }
+.tb-results button strong { display: block; font-size: 13px; color: var(--ink); }
+.tb-results button span { font-size: 11.5px; color: var(--ink-3); }
+.tb-none { display: block; padding: 12px; font-size: 12.5px; color: var(--ink-3); }
+.tb-bell { position: relative; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--hair-2);
+  background: var(--paper); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2); }
+.tb-bell:hover { border-color: var(--thread); color: var(--thread); }
+.tb-bell svg { width: 16px; height: 16px; }
+.tb-bell-badge { position: absolute; top: -5px; right: -5px; min-width: 16px; height: 16px; border-radius: 999px;
+  background: var(--thread); color: var(--paper); font-size: 10px; font-weight: 700; display: flex; align-items: center;
+  justify-content: center; padding: 0 4px; }
+.tb-bell-drop { right: 0; }
+.main { padding: 24px 30px 48px; }
+@media (max-width: 760px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .tb-search input { width: 130px; } .tb-search input:focus { width: 170px; }
+  .tb-mode { display: none; }
+  .tb-brand { display: none; }
+}
+
+/* ---- week strip ---- */
+.week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
+.ws-day { position: relative; text-align: center; padding: 9px 4px 8px; border: 1px solid var(--hair-soft); border-radius: 10px; background: var(--paper); }
+.ws-day.today { border-color: var(--thread); box-shadow: 0 0 0 1px var(--thread); }
+.ws-day.closed { background: repeating-linear-gradient(-45deg, var(--paper), var(--paper) 5px, var(--gold-bg) 5px, var(--gold-bg) 10px); }
+.ws-dow { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.ws-day.today .ws-dow { color: var(--thread); }
+.ws-num { display: block; font-family: var(--serif); font-size: 17px; margin-top: 1px; font-variant-numeric: tabular-nums; }
+.ws-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: var(--thread); box-shadow: 0 0 0 3px rgba(140, 106, 27, 0.14); }
+.ws-closed { display: block; font-size: 8.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--thread); margin-top: 1px; }
+@media (max-width: 700px) { .ws-num { font-size: 14px; } }

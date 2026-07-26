@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { Outlet, NavLink, Link } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
+import Topbar from '../Topbar'
 
 export default function Shell({ session }: { session: Session }) {
   const [brandName, setBrandName] = useState('')
   const [ordersBadge, setOrdersBadge] = useState(0)
   const [intelBadge, setIntelBadge] = useState(0)
+  const [needs, setNeeds] = useState<{ text: string; to: string }[]>([])
 
   useEffect(() => {
     supabase.from('profiles').select('brand_name').eq('id', session.user.id).single()
@@ -17,17 +19,26 @@ export default function Shell({ session }: { session: Session }) {
   useEffect(() => {
     async function computeBadges() {
       const [o, l, sm, qc] = await Promise.all([
-        supabase.from('orders').select('id, stage, ship_by').is('archived_at', null),
+        supabase.from('orders').select('id, name, stage, ship_by').is('archived_at', null),
         supabase.from('record_lines').select('order_id, factory_signed_at, superseded_by'),
         supabase.from('samples').select('order_id, status'),
         supabase.from('qc_checks').select('order_id, brand_status, factory_status'),
       ])
       const active = (o.data || []).filter(x => !['delivered', 'closed'].includes(x.stage))
       const needsYou = new Set<string>()
+      const items: { text: string; to: string }[] = []
       for (const x of active) {
-        if ((sm.data || []).some(s2 => s2.order_id === x.id && s2.status === 'submitted')) needsYou.add(x.id)
-        if ((l.data || []).some(l2 => l2.order_id === x.id && !l2.superseded_by && !l2.factory_signed_at)) needsYou.add(x.id)
+        const withName = x as { id: string; name?: string }
+        if ((sm.data || []).some(s2 => s2.order_id === x.id && s2.status === 'submitted')) {
+          needsYou.add(x.id)
+          items.push({ text: `Sample awaits your review — ${withName.name || 'order'}`, to: `/orders/${x.id}` })
+        }
+        if ((l.data || []).some(l2 => l2.order_id === x.id && !l2.superseded_by && !l2.factory_signed_at)) {
+          needsYou.add(x.id)
+          items.push({ text: `Record lines unconfirmed — ${withName.name || 'order'}`, to: `/orders/${x.id}` })
+        }
       }
+      setNeeds(items.slice(0, 8))
       setOrdersBadge(needsYou.size)
       let urgent = 0
       for (const x of active) {
@@ -82,9 +93,12 @@ export default function Shell({ session }: { session: Session }) {
           </span>
         </div>
       </aside>
-      <main className="main">
-        <Outlet />
-      </main>
+      <div className="main-col">
+        <Topbar brandName={brandName} needs={needs} />
+        <main className="main">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
