@@ -530,3 +530,16 @@ body.pro-mode .coach, body.pro-mode .field-hint, body.pro-mode .steps-card { dis
 .sc-body .meta { color: var(--ink-3); font-size: 12px; margin-top: 2px; }
 .sc-new { border-style: dashed; background: transparent; }
 .sc-new .sc-visual { background: transparent; }
+
+/* ---- home two-column: main + rail (the demo's composition) ---- */
+.home-grid { display: grid; grid-template-columns: 1fr 300px; gap: 18px; align-items: start; }
+@media (max-width: 1080px) { .home-grid { grid-template-columns: 1fr; } }
+.home-rail { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 18px; }
+.rail-bar { padding: 8px 0; cursor: pointer; }
+.rail-bar + .rail-bar { border-top: 1px solid var(--hair-soft); }
+.rail-bar .rb-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-bottom: 5px; }
+.rail-bar .rb-head span { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-bar .rb-head strong { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rail-bar:hover .rb-head span { color: var(--thread); }
+.rb-track { height: 4px; background: var(--hair-soft); border-radius: 2px; }
+.rb-fill { height: 4px; border-radius: 2px; background: var(--gold-light); }

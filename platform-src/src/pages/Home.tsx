@@ -1,10 +1,11 @@
-import Loading from '../Loading'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase, Order, RecordLine, STAGES, STAGE_LABELS } from '../supabase'
+import Loading from '../Loading'
 
 type Invite = { id: string; order_id: string; accepted_at: string | null }
 type Overnight = { at: string; text: string; to: string }
+type ProductSignal = { name: string; on_hand: number; weekly_sales: number; safety_stock: number }
 
 export default function Home() {
   const nav = useNavigate()
@@ -13,6 +14,7 @@ export default function Home() {
   const [lines, setLines] = useState<RecordLine[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
   const [overnight, setOvernight] = useState<Overnight[]>([])
+  const [products, setProducts] = useState<ProductSignal[]>([])
   const [showTour, setShowTour] = useState(() => {
     try { return !localStorage.getItem('clewa-tour-done') } catch { return false }
   })
@@ -27,12 +29,14 @@ export default function Home() {
       supabase.from('orders').select('*').is('archived_at', null).order('created_at', { ascending: false }),
       supabase.from('record_lines').select('*'),
       supabase.from('order_invites').select('id, order_id, accepted_at').is('revoked_at', null),
-    ]).then(async ([o, l, i]) => {
+      supabase.from('products').select('name, on_hand, weekly_sales, safety_stock'),
+    ]).then(async ([o, l, i, pr]) => {
       const ords = (o.data as Order[]) || []
       setOrders(ords)
       setLines((l.data as RecordLine[]) || [])
       setInvites((i.data as Invite[]) || [])
-      // While you slept: factory-side activity in the last 48 hours.
+      setProducts((pr.data as ProductSignal[]) || [])
+      // Factory hours: the other side's activity in the last 48 hours.
       const since = new Date(Date.now() - 48 * 3600000).toISOString()
       const nameOf = (id: string) => ords.find(x => x.id === id)?.name || 'an order'
       const [fm, fr, fq, fl] = await Promise.all([
@@ -42,14 +46,14 @@ export default function Home() {
         supabase.from('record_lines').select('order_id, factory_signed_at').gte('factory_signed_at', since),
       ])
       const ov: Overnight[] = []
-      for (const m of fm.data || []) ov.push({ at: m.created_at, text: `${m.sender_name || 'Factory'} messaged you on ${nameOf(m.order_id)}`, to: `/orders/${m.order_id}` })
-      for (const r of fr.data || []) ov.push({ at: r.created_at, text: `${r.reported_by || 'Factory'} reported ${r.units.toLocaleString()} units on ${nameOf(r.order_id)}`, to: `/orders/${r.order_id}` })
-      for (const q of fq.data || []) ov.push({ at: q.created_at, text: `New quote on ${nameOf(q.order_id)}: ${q.currency} ${Number(q.unit_price).toFixed(2)}/unit`, to: `/orders/${q.order_id}` })
+      for (const m of fm.data || []) ov.push({ at: m.created_at, text: `${m.sender_name || 'Factory'} messaged on ${nameOf(m.order_id)}`, to: `/orders/${m.order_id}` })
+      for (const r of fr.data || []) ov.push({ at: r.created_at, text: `${r.reported_by || 'Factory'}: ${r.units.toLocaleString()} units on ${nameOf(r.order_id)}`, to: `/orders/${r.order_id}` })
+      for (const q of fq.data || []) ov.push({ at: q.created_at, text: `New quote: ${q.currency} ${Number(q.unit_price).toFixed(2)} on ${nameOf(q.order_id)}`, to: `/orders/${q.order_id}` })
       const signsByOrder = new Map<string, number>()
       for (const ln of fl.data || []) signsByOrder.set(ln.order_id, (signsByOrder.get(ln.order_id) || 0) + 1)
-      for (const [oid, n] of signsByOrder) ov.push({ at: since, text: `${n} record line${n === 1 ? '' : 's'} countersigned on ${nameOf(oid)}`, to: `/orders/${oid}` })
+      for (const [oid, n] of signsByOrder) ov.push({ at: since, text: `${n} line${n === 1 ? '' : 's'} countersigned on ${nameOf(oid)}`, to: `/orders/${oid}` })
       ov.sort((a, b) => (a.at < b.at ? 1 : -1))
-      setOvernight(ov.slice(0, 6))
+      setOvernight(ov.slice(0, 5))
     })
   }, [])
 
@@ -75,7 +79,7 @@ export default function Home() {
     ? Math.ceil((new Date(nextShip.ship_by).getTime() - Date.now()) / 86400000)
     : null
 
-  // The "needs you / waiting on them" queue, from real state.
+  // Whose move — from real state.
   type QItem = { who: 'you' | 'them'; text: string; sub: string; to: string }
   const queue: QItem[] = []
   for (const o of active) {
@@ -93,7 +97,7 @@ export default function Home() {
           text: inv.accepted_at
             ? `${o.factory_name || 'Factory'} has ${pending.length} line${pending.length === 1 ? '' : 's'} to confirm on ${o.name}`
             : `Send the ${o.name} invite link to ${o.factory_name || 'your factory'}`,
-          sub: inv.accepted_at ? 'They opened the order — waiting on their signature' : "Created but not opened yet — send it by email or WhatsApp",
+          sub: inv.accepted_at ? 'They opened the order — waiting on their signature' : 'Created but not opened yet — send it by email or WhatsApp',
           to: `/orders/${o.id}`,
         })
       }
@@ -106,6 +110,13 @@ export default function Home() {
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
   const focus = needsYou[0] || null
   const restNeedsYou = focus ? needsYou.slice(1) : needsYou
+
+  // Rail data: money by order; inventory signals.
+  const pricedActive = active.filter(o => o.quantity && o.unit_price)
+    .sort((a, b) => b.quantity! * Number(b.unit_price) - a.quantity! * Number(a.unit_price)).slice(0, 4)
+  const maxCommit = pricedActive.length ? pricedActive[0].quantity! * Number(pricedActive[0].unit_price) : 0
+  const reorderCount = products.filter(p => p.weekly_sales > 0 && p.on_hand - p.safety_stock < p.weekly_sales * 6).length
+  const agingCount = products.filter(p => p.on_hand > 0 && (p.weekly_sales === 0 || p.on_hand / p.weekly_sales > 26)).length
 
   return (
     <>
@@ -133,7 +144,7 @@ export default function Home() {
           {[
             { t: 'Start in Styles if you have an idea', d: 'The guided builder turns a description into a factory-ready brief and tells you exactly what a factory still needs.', to: '/styles/new', cta: 'Describe your product →' },
             { t: 'Start in Orders if production is already moving', d: 'Put your specs, price and terms on the Record — dated and signed. Everything else hangs off this.', to: '/orders/new', cta: 'Create an order →' },
-            { t: 'Then invite your factory with one link', d: "No account on their side. They confirm your terms line by line from a phone — and from then on, both of you see the same truth.", to: '', cta: '' },
+            { t: 'Then invite your factory with one link', d: 'No account on their side. They confirm your terms line by line from a phone — and from then on, both of you see the same truth.', to: '', cta: '' },
           ].map((x, i) => (
             <div className="step" key={i}>
               <span className="step-dot">{i + 1}</span>
@@ -176,80 +187,122 @@ export default function Home() {
         </div>
       </div>
 
-      {(restNeedsYou.length > 0 || waiting.length > 0) && (
-        <>
-          <div className="section-label">Whose move is it?</div>
-          <div className="move-grid">
+      <div className="home-grid">
+        <div className="home-main">
+          {(restNeedsYou.length > 0 || waiting.length > 0) && (
+            <>
+              <div className="section-label">Whose move is it?</div>
+              <div className="move-grid">
+                <div className="card">
+                  <div className="card-head"><span className="ch-title">Waiting on you</span><span className="ch-sub">ranked by what it blocks</span></div>
+                  {restNeedsYou.length === 0 && <p className="quiet">{focus ? 'Nothing else — the focus above is the whole list.' : "Nothing — you're clear."}</p>}
+                  {restNeedsYou.map((q, i) => (
+                    <div className={`q-item ${i === 0 ? 'hot' : ''}`} key={i} onClick={() => nav(q.to)}>
+                      <strong>{q.text}</strong>
+                      <span>{q.sub}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="card">
+                  <div className="card-head"><span className="ch-title">Waiting on them</span><span className="ch-sub">the factory's move</span></div>
+                  {waiting.length === 0 && <p className="quiet">Nothing outstanding from factories.</p>}
+                  {waiting.map((q, i) => (
+                    <div className="q-item" key={i} onClick={() => nav(q.to)}>
+                      <strong>{q.text}</strong>
+                      <span>{q.sub}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="section-label">Active orders</div>
+          {active.length === 0 ? (
+            <div className="card empty">
+              <div className="eyebrow" style={{ justifyContent: 'center' }}>The thread starts here</div>
+              <h2>No active orders.</h2>
+              <p>Create your first production order — name it, and Clewa keeps every spec, price and term on the record from day one.</p>
+              <Link to="/orders/new" className="btn gold">Start your first order →</Link>
+            </div>
+          ) : (
+            <div className="card" style={{ padding: 0 }}>
+              {active.map(o => {
+                const stageIdx = STAGES.indexOf(o.stage)
+                return (
+                  <div className="order-row" role="link" tabIndex={0}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }}
+                    key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
+                    <div>
+                      <div className="name">{o.name}</div>
+                      <div className="meta">
+                        {o.quantity ? `${o.quantity.toLocaleString()} units` : 'Quantity TBD'}
+                        {o.factory_name ? ` · ${o.factory_name}` : ''}
+                        {o.ship_by ? ` · ship by ${o.ship_by}` : ''}
+                      </div>
+                      <div className="thread-track">
+                        {STAGES.slice(0, 8).map((st, i) => <span key={st} className={i <= stageIdx ? 'done' : ''} />)}
+                      </div>
+                    </div>
+                    <span className={`stage-pill ${o.stage}`}>{STAGE_LABELS[o.stage]}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        <aside className="home-rail">
+          {pricedActive.length > 0 && (
             <div className="card">
-              <div className="card-head"><span className="ch-title">Waiting on you</span><span className="ch-sub">ranked by what it blocks</span></div>
-              {restNeedsYou.length === 0 && <p className="quiet">{focus ? 'Nothing else — the focus above is the whole list.' : "Nothing — you're clear."}</p>}
-              {restNeedsYou.map((q, i) => (
-                <div className={`q-item ${i === 0 ? 'hot' : ''}`} key={i} onClick={() => nav(q.to)}>
-                  <strong>{q.text}</strong>
-                  <span>{q.sub}</span>
+              <div className="card-head"><span className="ch-title">Money</span><span className="ch-sub">committed by order</span></div>
+              {pricedActive.map(o => {
+                const v = o.quantity! * Number(o.unit_price)
+                return (
+                  <div className="rail-bar" key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
+                    <div className="rb-head">
+                      <span>{o.name}</span>
+                      <strong>{o.currency} {v.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+                    </div>
+                    <div className="rb-track"><div className="rb-fill" style={{ width: `${Math.max(8, Math.round((v / maxCommit) * 100))}%` }} /></div>
+                  </div>
+                )
+              })}
+              <Link to="/finances" style={{ fontSize: 12 }}>All finances →</Link>
+            </div>
+          )}
+
+          {overnight.length > 0 && (
+            <div className="card">
+              <div className="card-head"><span className="ch-title">Factory hours</span><span className="ch-sub">while you were away</span></div>
+              {overnight.map((o, i) => (
+                <div className="q-item" key={i} onClick={() => nav(o.to)}>
+                  <strong style={{ fontSize: 12.5 }}>{o.text}</strong>
+                  <span>{new Date(o.at).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })}</span>
                 </div>
               ))}
             </div>
+          )}
+
+          {(reorderCount > 0 || agingCount > 0) && (
             <div className="card">
-              <div className="card-head"><span className="ch-title">Waiting on them</span><span className="ch-sub">the factory's move</span></div>
-              {waiting.length === 0 && <p className="quiet">Nothing outstanding from factories.</p>}
-              {waiting.map((q, i) => (
-                <div className="q-item" key={i} onClick={() => nav(q.to)}>
-                  <strong>{q.text}</strong>
-                  <span>{q.sub}</span>
+              <div className="card-head"><span className="ch-title">Inventory signals</span><span className="ch-sub">from your products</span></div>
+              {reorderCount > 0 && (
+                <div className="q-item" onClick={() => nav('/inventory')}>
+                  <strong>{reorderCount} product{reorderCount === 1 ? '' : 's'} in the reorder window</strong>
+                  <span>Cover is running below six weeks</span>
                 </div>
-              ))}
+              )}
+              {agingCount > 0 && (
+                <div className="q-item" onClick={() => nav('/inventory')}>
+                  <strong>{agingCount} product{agingCount === 1 ? '' : 's'} aging</strong>
+                  <span>Capital sitting still — no sell-through recorded</span>
+                </div>
+              )}
             </div>
-          </div>
-        </>
-      )}
-
-      {overnight.length > 0 && (
-        <>
-          <div className="section-label">While you were away</div>
-          <div className="card">
-            <div className="card-head"><span className="ch-title">Factory hours</span><span className="ch-sub">what happened while you were offline</span></div>
-            {overnight.map((o, i) => (
-              <div className="q-item" key={i} onClick={() => nav(o.to)}>
-                <strong>{o.text}</strong>
-                <span>{new Date(o.at).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      <div className="section-label">Active orders</div>
-      {active.length === 0 ? (
-        <div className="card empty">
-          <div className="eyebrow" style={{ justifyContent: 'center' }}>The thread starts here</div>
-          <h2>No active orders.</h2>
-          <p>Create your first production order — name it, and Clewa keeps every spec, price and term on the record from day one.</p>
-          <Link to="/orders/new" className="btn gold">Start your first order →</Link>
-        </div>
-      ) : (
-        <div className="card" style={{ padding: 0 }}>
-          {active.map(o => {
-            const stageIdx = STAGES.indexOf(o.stage)
-            return (
-              <div className="order-row" role="link" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') (e.currentTarget as HTMLElement).click() }} key={o.id} onClick={() => nav(`/orders/${o.id}`)}>
-                <div>
-                  <div className="name">{o.name}</div>
-                  <div className="meta">
-                    {o.quantity ? `${o.quantity.toLocaleString()} units` : 'Quantity TBD'}
-                    {o.factory_name ? ` · ${o.factory_name}` : ''}
-                    {o.ship_by ? ` · ship by ${o.ship_by}` : ''}
-                  </div>
-                  <div className="thread-track">
-                    {STAGES.slice(0, 8).map((s, i) => <span key={s} className={i <= stageIdx ? 'done' : ''} />)}
-                  </div>
-                </div>
-                <span className={`stage-pill ${o.stage}`}>{STAGE_LABELS[o.stage]}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+          )}
+        </aside>
+      </div>
     </>
   )
 }
