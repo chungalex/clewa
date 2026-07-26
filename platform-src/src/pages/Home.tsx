@@ -94,6 +94,8 @@ export default function Home() {
     .map(([c, v]) => `${c} ${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`)
     .join(' · ')
   const fmtMoney = (cur: string, v: number) => `${cur} ${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+  // The demo's compact stat format: $61.4k — one line, always.
+  const fmtK = (cur: string, v: number) => v >= 10000 ? `${cur} ${(v / 1000).toFixed(1)}k` : fmtMoney(cur, v)
   const unitsInProduction = active.filter(o => ['production', 'qc', 'ship'].includes(o.stage))
     .reduce((s, o) => s + (o.quantity || 0), 0)
   const nextShip = active.filter(o => o.ship_by).sort((a, b) => (a.ship_by! < b.ship_by! ? -1 : 1))[0]
@@ -249,7 +251,7 @@ export default function Home() {
 
       {/* KPI STRIP */}
       <div className="cv2-pulse">
-        <div className="cv2-stat"><div className="cs-num">{committed > 0 ? fmtMoney(commCurrency, committed) : '—'}</div><div className="cs-lab">Committed{otherCommitted ? ` · plus ${otherCommitted}` : ''}</div></div>
+        <div className="cv2-stat"><div className="cs-num">{committed > 0 ? fmtK(commCurrency, committed) : '—'}</div><div className="cs-lab">Committed{otherCommitted ? ` · plus ${otherCommitted}` : ''}</div></div>
         <div className="cv2-stat"><div className="cs-num">{active.length}</div><div className="cs-lab">Active order{active.length === 1 ? '' : 's'}</div></div>
         <div className="cv2-stat"><div className="cs-num">{unitsInProduction > 0 ? unitsInProduction.toLocaleString() : '—'}</div><div className="cs-lab">Units in production</div></div>
         {(() => {
@@ -321,12 +323,10 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="hx-track">
-                      {[0, 1, 2, 3, 4].map(i => (
-                        <span key={i}>
-                          <span className={`ht-k ${i < k ? 'done' : i === k ? 'now' : ''}`} />
-                          {i < 4 && <span className={`ht-l ${i < k ? 'done' : ''}`} />}
-                        </span>
-                      ))}
+                      {[0, 1, 2, 3, 4].flatMap(i => [
+                        <span key={`k${i}`} className={`ht-k ${i < k ? 'done' : i === k ? 'now' : ''}`} />,
+                        ...(i < 4 ? [<span key={`l${i}`} className={`ht-l ${i < k ? 'done' : ''}`} />] : []),
+                      ])}
                     </div>
                     <div className="bo-next">{next[0]} — <b>{next[1]}</b></div>
                   </div>
