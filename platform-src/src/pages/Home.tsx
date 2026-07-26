@@ -181,7 +181,7 @@ export default function Home() {
           <div className="section-label">Whose move is it?</div>
           <div className="move-grid">
             <div className="card">
-              <div className="eyebrow">Waiting on you</div>
+              <div className="card-head"><span className="ch-title">Waiting on you</span><span className="ch-sub">ranked by what it blocks</span></div>
               {restNeedsYou.length === 0 && <p className="quiet">Nothing else — the focus above is the whole list.</p>}
               {restNeedsYou.map((q, i) => (
                 <div className={`q-item ${i === 0 ? 'hot' : ''}`} key={i} onClick={() => nav(q.to)}>
@@ -191,7 +191,7 @@ export default function Home() {
               ))}
             </div>
             <div className="card">
-              <div className="eyebrow">Waiting on them</div>
+              <div className="card-head"><span className="ch-title">Waiting on them</span><span className="ch-sub">the factory's move</span></div>
               {waiting.length === 0 && <p className="quiet">Nothing outstanding from factories.</p>}
               {waiting.map((q, i) => (
                 <div className="q-item" key={i} onClick={() => nav(q.to)}>
@@ -208,6 +208,7 @@ export default function Home() {
         <>
           <div className="section-label">While you were away</div>
           <div className="card">
+            <div className="card-head"><span className="ch-title">Factory hours</span><span className="ch-sub">what happened while you were offline</span></div>
             {overnight.map((o, i) => (
               <div className="q-item" key={i} onClick={() => nav(o.to)}>
                 <strong>{o.text}</strong>
