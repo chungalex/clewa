@@ -182,7 +182,7 @@ export default function Home() {
           <div className="move-grid">
             <div className="card">
               <div className="card-head"><span className="ch-title">Waiting on you</span><span className="ch-sub">ranked by what it blocks</span></div>
-              {restNeedsYou.length === 0 && <p className="quiet">Nothing else — the focus above is the whole list.</p>}
+              {restNeedsYou.length === 0 && <p className="quiet">{focus ? 'Nothing else — the focus above is the whole list.' : "Nothing — you're clear."}</p>}
               {restNeedsYou.map((q, i) => (
                 <div className={`q-item ${i === 0 ? 'hot' : ''}`} key={i} onClick={() => nav(q.to)}>
                   <strong>{q.text}</strong>
