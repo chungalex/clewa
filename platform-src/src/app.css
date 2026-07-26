@@ -928,3 +928,31 @@ body.app {
 .bm-bar { background: #EDEBE6; }
 .focus { background: var(--dark); }
 .cv2-pulse { box-shadow: 0 1px 0 rgba(27,23,19,0.02); }
+
+/* ---- Orders: the demo's table, verbatim ---- */
+.pg-h { font-family: var(--serif); font-size: 26px; letter-spacing: -0.01em; margin: 0 0 4px; font-weight: 300; }
+.pg-sub { font-size: 13.5px; color: var(--ink-3); }
+.pg-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.dv-tools { display: flex; gap: 8px; align-items: center; }
+.x-btn .xb-ic { width: 14px; height: 14px; color: #4A6B52; display: inline-flex; }
+.otab { border: 1px solid var(--hair); border-radius: 12px; overflow: hidden; background: var(--paper); }
+.otab-head, .otab-row { display: grid; grid-template-columns: 1.4fr 1.1fr 1.5fr 0.9fr 0.8fr; gap: 18px; align-items: center; }
+.otab-head { padding: 13px 20px; background: var(--paper-2); border-bottom: 1px solid var(--hair); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.otab-row { padding: 16px 20px; border-top: 1px solid var(--hair-soft); cursor: pointer; transition: background 0.2s; }
+.otab-row:first-of-type { border-top: 0; }
+.otab-row:hover { background: var(--paper-2); }
+.otab-row .ot-name { font-family: var(--serif); font-size: 16px; letter-spacing: -0.01em; }
+.otab-row .ot-sub { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.otab-row .ot-fac { font-size: 13px; color: var(--ink-2); }
+.otab-row .ot-val { font-family: var(--serif); font-size: 15px; }
+.ot-stage { font-size: 11px; font-weight: 500; border-radius: 999px; padding: 4px 11px; white-space: nowrap; justify-self: start; }
+.ot-stage.live { color: #4A6B52; border: 1px solid #C2D1BD; background: #ECF1EA; }
+.ot-stage.risk { color: var(--thread); border: 1px solid var(--thread-dim); background: rgba(178,58,46,0.06); }
+.ot-stage.idle { color: var(--ink-2); border: 1px solid var(--hair); }
+.o-track { display: flex; align-items: center; gap: 0; }
+.o-track .ot { flex: 1; height: 2px; background: var(--hair); }
+.o-track .ot.done { background: var(--thread); }
+.o-track .ok { width: 8px; height: 8px; border-radius: 50%; background: var(--hair); flex-shrink: 0; }
+.o-track .ok.done { background: var(--thread); }
+.o-track .ok.now { width: 10px; height: 10px; background: var(--paper); border: 2px solid var(--thread); }
+@media (max-width: 900px) { .otab-head { display: none; } .otab-row { grid-template-columns: 1fr auto; } .otab-row .ot-fac, .otab-row .o-track { display: none; } }
